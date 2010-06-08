@@ -404,6 +404,7 @@ public:
     
     // javascript
     bool Execute(const wxString& js_code);
+    wxString ExecuteScriptWithResult(const wxString& js_code);
     
     // printing
     void Print(bool silent = false);
@@ -460,6 +461,7 @@ private:
     void FetchFavIcon(void* uri);
     void OnFavIconFetched(const wxString& filename);
     void OnDOMContentLoaded();
+    bool ExecuteJSCode(const wxString& js_code, wxString& result);
     
 private:
 

@@ -19,6 +19,7 @@
 #include "nsptr.h"
 #include "nsutils.h"
 #include "nsweak.h"
+#include <jsapi.h>
 
 
 #endif
