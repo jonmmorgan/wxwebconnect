@@ -2866,6 +2866,72 @@ wxString wxWebControl::GetCurrentURI() const
     return ns2wx(spec);
 }
 
+bool wxWebControl::SetContent(const wxString& strBaseURI, const wxString& strContent, const wxString& strContentType)
+{
+    nsresult rv;
+    m_content_loaded = false;
+
+    ns_smartptr<nsIURI> uri;
+    if (!strBaseURI.IsEmpty())
+        uri = nsNewURI(strBaseURI);
+
+    nsCString nsContentType;
+    wx2ns(strContentType, nsContentType);
+
+    std::string strutf8data = strContent.ToUTF8();
+
+    ns_smartptr<nsIWebBrowserStream> browserStream(m_ptrs->m_web_browser);
+    if (!browserStream.p)   {
+        return false;
+    }
+
+    browserStream->OpenStream(uri, nsContentType);
+    browserStream->AppendToStream((const PRUint8*)strutf8data.c_str(), strutf8data.length());
+    browserStream->CloseStream();
+
+    return true;
+/*
+    nsresult rv;
+    m_content_loaded = false;
+
+    ns_smartptr<nsIStringInputStream> inputStream(nsCreateInstance("@mozilla.org/io/string-input-stream;1"));
+    fprintf(stderr, "Input stream created\n");
+    if (!inputStream.p)
+        return false;
+    // convert our string to stream
+    std::string strutf8data = strContent.ToUTF8();
+    inputStream->SetData( strutf8data.c_str(), strutf8data.length() );
+    fprintf(stderr, "Data set on input stream\n");
+    // get document shell 
+    //ns_smartptr<nsIScriptGlobalObject> sgo(m_ptrs->m_web_browser);
+    //ns_smartptr<nsIScriptGlobalObject> sgo = nsRequestInterface(m_ptrs->m_web_browser);
+    if (sgo.empty())
+        fprintf(stderr, "No nsIScriptGlobalObject\n");
+        return false;
+    ns_smartptr<nsIDocShell> docShell(sgo->GetDocShell());
+    //ns<nsPIDOMWindow> window = do_QueryInterface(aContext);
+    ns_smartptr<nsIDocShell> docShell = nsRequestInterface(m_ptrs->m_web_browser);
+    if (!docShell.p)
+        fprintf(stderr, "Not got doc shell\n");
+        return false;
+    ns_smartptr<nsIURI> uri;
+    if (!strBaseURI.IsEmpty())
+        uri = nsNewURI(strBaseURI);
+    fprintf(stderr, "strContentType: %s\n", strContentType.ToAscii());
+    nsCString nsContentType;
+    wx2ns(strContentType, nsContentType);
+    // finally, load the stream we made!
+    rv = docShell->LoadStream( inputStream, uri.p, nsContentType, nsDependentCString("UTF-8"), NULL);
+    fprintf(stderr, "docShell LoadStream.\n");
+
+    if (NS_FAILED(rv))
+        fprintf(stderr, "Load stream failed\n");
+        return false; 
+    fprintf(stderr, "ending WebControl::SetContent()\n");
+    return true;
+*/
+}
+
 // (METHOD) wxWebControl::GoForward
 // Description:
 //
