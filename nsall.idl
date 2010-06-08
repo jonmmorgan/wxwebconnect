@@ -3125,46 +3125,99 @@ interface nsIWindowWatcher : nsISupports
 ///////////////////////////////////////////////////////////////////////////////
 //  nsIXPCSecurityManager
 ///////////////////////////////////////////////////////////////////////////////
+[ptr] native nsAXPCNativeCallContextPtr(nsAXPCNativeCallContext);
 
+%{ C++
+#include "jspubtd.h"
 
-%{C++
-struct JSObject;
-typedef long jsval;
+class nsAXPCNativeCallContext;
 %}
+
+interface nsIClassInfo;
+
+[scriptable, uuid(ea604e90-40ba-11d5-90bb-0010a4e73d9a)]
+interface nsIProgrammingLanguage : nsISupports
+{
+    /**
+     * Identifiers for programming languages.
+     */
+    const PRUint32 UNKNOWN     = 0;
+    const PRUint32 CPLUSPLUS   = 1;
+    const PRUint32 JAVASCRIPT  = 2;
+    const PRUint32 PYTHON      = 3;
+    const PRUint32 PERL        = 4;
+    const PRUint32 JAVA        = 5;
+    const PRUint32 ZX81_BASIC  = 6;  // it could happen :)
+    const PRUint32 JAVASCRIPT2 = 7;
+    const PRUint32 RUBY =        8;
+    const PRUint32 PHP =         9;
+    const PRUint32 TCL =         10;
+    // This list can grow indefinitely. Just don't ever change an existing item.
+    const PRUint32 MAX         = 10; // keep this as the largest index.
+    
+};
 
 [ptr] native JSContextPtr(JSContext);
 [ptr] native JSObjectPtr(JSObject);
-native JSVal(jsval);
-
-interface nsIClassInfo;
-interface nsIXPCNativeCallContext;
+      native JSVal(jsval);
+[ptr] native JSStackFramePtr(JSStackFrame);
 
 [uuid(31431440-f1ce-11d2-985a-006008962422)]
 interface nsIXPCSecurityManager : nsISupports
 {
-    void CanCreateWrapper(
-                   in JSContextPtr js_context,
-                   in nsIIDRef iid,
-                   in nsISupports obj,
-                   in nsIClassInfo class_info,
-                   inout voidPtr policy);
+    /**
+    * These flags are used when calling nsIXPConnect::SetSecurityManager
+    */
 
-    void CanCreateInstance(
-                   in JSContextPtr js_context,
-                   in nsCIDRef cid);
+    const PRUint32 HOOK_CREATE_WRAPPER  = 1 << 0;
+    const PRUint32 HOOK_CREATE_INSTANCE = 1 << 1;
+    const PRUint32 HOOK_GET_SERVICE     = 1 << 2;
+    const PRUint32 HOOK_CALL_METHOD     = 1 << 3;
+    const PRUint32 HOOK_GET_PROPERTY    = 1 << 4;
+    const PRUint32 HOOK_SET_PROPERTY    = 1 << 5;
 
-    void CanGetService(
-                   in JSContextPtr js_context,
-                   in nsCIDRef cid);
+    const PRUint32 HOOK_ALL             = HOOK_CREATE_WRAPPER  |
+                                          HOOK_CREATE_INSTANCE |
+                                          HOOK_GET_SERVICE     |
+                                          HOOK_CALL_METHOD     |
+                                          HOOK_GET_PROPERTY    |
+                                          HOOK_SET_PROPERTY    ;
 
-    void CanAccess(in PRUint32 action,
-                   in nsIXPCNativeCallContext call_context,
-                   in JSContextPtr js_context,
-                   in JSObjectPtr js_object,
-                   in nsISupports obj,
-                   in nsIClassInfo class_info,
-                   in JSVal name,
-                   inout voidPtr policy);
+    /**
+    * For each of these hooks returning NS_OK means 'let the action continue'.
+    * Returning an error code means 'veto the action'. XPConnect will return
+    * JS_FALSE to the js engine if the action is vetoed. The implementor of this
+    * interface is responsible for setting a JS exception into the JSContext
+    * if that is appropriate.
+    */
+
+    void CanCreateWrapper(in JSContextPtr aJSContext,
+                          in nsIIDRef aIID,
+                          in nsISupports aObj,
+                          in nsIClassInfo aClassInfo,
+                          inout voidPtr aPolicy);
+
+    void CanCreateInstance(in JSContextPtr aJSContext,
+                           in nsCIDRef aCID);
+
+    void CanGetService(in JSContextPtr aJSContext,
+                       in nsCIDRef aCID);
+
+    /*
+     * Used for aAction below
+     */
+    const PRUint32 ACCESS_CALL_METHOD  = 0;
+    const PRUint32 ACCESS_GET_PROPERTY = 1;
+    const PRUint32 ACCESS_SET_PROPERTY = 2;
+
+    void CanAccess(in PRUint32 aAction,
+                   in nsAXPCNativeCallContextPtr aCallContext,
+                   in JSContextPtr aJSContext,
+                   in JSObjectPtr aJSObject,
+                   in nsISupports aObj,
+                   in nsIClassInfo aClassInfo,
+                   in JSVal aName,
+                   inout voidPtr aPolicy);
 };
 
 
@@ -3181,98 +3234,284 @@ interface nsIPrincipal : nsISupports //nsISerializable
 
 
 
-[uuid(f4d74511-2b2d-4a14-a3e4-a392ac5ac3ff)]
+[scriptable, uuid(f8e350b9-9f31-451a-8c8f-d10fea26b780)]
 interface nsIScriptSecurityManager : nsIXPCSecurityManager
 {
-    void checkPropertyAccess(
-                      in JSContextPtr js_context,
-                      in JSObjectPtr js_object,
-                      in string class_name,
-                      in JSVal property,
-                      in PRUint32 action);
+    ///////////////// Security Checks //////////////////
+    /**
+     * Checks whether the running script is allowed to access aProperty.
+     */
+    [noscript] void checkPropertyAccess(in JSContextPtr aJSContext,
+                                        in JSObjectPtr aJSObject,
+                                        in string aClassName,
+                                        in JSVal aProperty,
+                                        in PRUint32 aAction);
 
-    void checkConnect(in JSContextPtr js_context,
-                      in nsIURI target_uri,
-                      in string class_name,
-                      in string property);
+    /**
+     * Checks whether the running script is allowed to connect to aTargetURI
+     */
+    [noscript] void checkConnect(in JSContextPtr aJSContext,
+                                 in nsIURI aTargetURI,
+                                 in string aClassName,
+                                 in string aProperty);
 
-    void checkLoadURIFromScript(
-                      in JSContextPtr cx,
-                      in nsIURI uri);
+    /**
+     * Check that the script currently running in context "cx" can load "uri".
+     *
+     * Will return error code NS_ERROR_DOM_BAD_URI if the load request 
+     * should be denied.
+     *
+     * @param cx the JSContext of the script causing the load
+     * @param uri the URI that is being loaded
+     */
+    [noscript] void checkLoadURIFromScript(in JSContextPtr cx, in nsIURI uri);
 
-    void checkLoadURIWithPrincipal(
-                      in nsIPrincipal principal,
-                      in nsIURI uri, 
+    /**
+     * Default CheckLoadURI permissions
+     */
+    // Default permissions
+    const unsigned long STANDARD = 0;
+
+    // Indicate that the load is a load of a new document that is not
+    // user-triggered.  Here "user-triggered" could be broadly interpreted --
+    // for example, scripted sets of window.location.href might be treated as
+    // "user-triggered" in some circumstances.  A typical example of a load
+    // that is not user-triggered is a <meta> refresh load.  If this flag is
+    // set, the load will be denied if the originating principal's URI has the
+    // nsIProtocolHandler::URI_FORBIDS_AUTOMATIC_DOCUMENT_REPLACEMENT flag set.
+    const unsigned long LOAD_IS_AUTOMATIC_DOCUMENT_REPLACEMENT = 1 << 0;
+
+    // Allow the loading of chrome URLs by non-chrome URLs.  Use with great
+    // care!  This will actually allow the loading of any URI which has the
+    // nsIProtocolHandler::URI_IS_UI_RESOURCE protocol handler flag set.  Ths
+    // probably means at least chrome: and resource:.
+    const unsigned long ALLOW_CHROME = 1 << 1;
+
+    // Don't allow URLs which would inherit the caller's principal (such as
+    // javascript: or data:) to load.  See
+    // nsIProtocolHandler::URI_INHERITS_SECURITY_CONTEXT.
+    const unsigned long DISALLOW_INHERIT_PRINCIPAL = 1 << 2;
+
+    // Alias for DISALLOW_INHERIT_PRINCIPAL for backwards compat with
+    // JS-implemented extensions.
+    const unsigned long DISALLOW_SCRIPT_OR_DATA = DISALLOW_INHERIT_PRINCIPAL;
+
+    // Don't allow javascript: URLs to load
+    //   WARNING: Support for this value was added in Mozilla 1.7.8 and
+    //   Firefox 1.0.4.  Use in prior versions WILL BE IGNORED.
+    // When using this, make sure that you actually want DISALLOW_SCRIPT, not
+    // DISALLOW_INHERIT_PRINCIPAL
+    const unsigned long DISALLOW_SCRIPT = 1 << 3;
+
+    /**
+     * Check that content with principal aPrincipal can load "uri".
+     *
+     * Will return error code NS_ERROR_DOM_BAD_URI if the load request 
+     * should be denied.
+     *
+     * @param aPrincipal the principal identifying the actor causing the load
+     * @param uri the URI that is being loaded
+     * @param flags the permission set, see above
+     */
+    void checkLoadURIWithPrincipal(in nsIPrincipal aPrincipal,
+                                   in nsIURI uri, 
+                                   in unsigned long flags);
+
+    /**
+     * Check that content from "from" can load "uri".
+     *
+     * Will return error code NS_ERROR_DOM_BAD_URI if the load request 
+     * should be denied.
+     *
+     * @param from the URI causing the load
+     * @param uri the URI that is being loaded
+     * @param flags the permission set, see above
+     *
+     * @deprecated Use checkLoadURIWithPrincipal instead of this function.
+     */
+    void checkLoadURI(in nsIURI from, in nsIURI uri, 
                       in unsigned long flags);
 
-    void checkLoadURI(in nsIURI from,
-                      in nsIURI uri,
-                      in unsigned long flags);
+    /**
+     * Similar to checkLoadURIWithPrincipal but there are two differences:
+     *
+     * 1) The URI is a string, not a URI object.
+     * 2) This function assumes that the URI may still be subject to fixup (and
+     * hence will check whether fixed-up versions of the URI are allowed to
+     * load as well); if any of the versions of this URI is not allowed, this
+     * function will return error code NS_ERROR_DOM_BAD_URI.
+     */
+    void checkLoadURIStrWithPrincipal(in nsIPrincipal aPrincipal,
+                                      in AUTF8String uri, 
+                                      in unsigned long flags);     
+    
+    /**
+     * Same as CheckLoadURI but takes string arguments for ease of use
+     * by scripts
+     *
+     * @deprecated Use checkLoadURIStrWithPrincipal instead of this function.
+     */
+    void checkLoadURIStr(in AUTF8String from, in AUTF8String uri, 
+                         in unsigned long flags);
 
-    void checkLoadURIStr(
-                      in AUTF8String from,
-                      in AUTF8String uri,
-                      in unsigned long flags);
+    /**
+     * Check that the function 'funObj' is allowed to run on 'targetObj'
+     *
+     * Will return error code NS_ERROR_DOM_SECURITY_ERR if the function
+     * should not run
+     *
+     * @param cx The current active JavaScript context.
+     * @param funObj The function trying to run..
+     * @param targetObj The object the function will run on.
+     */
+    [noscript] void checkFunctionAccess(in JSContextPtr cx, in voidPtr funObj,
+                                        in voidPtr targetObj);
 
-    void checkFunctionAccess(
-                      in JSContextPtr cx,
-                      in voidPtr fun_obj,
-                      in voidPtr target_obj);
+    /**
+     * Return true if content from the given principal is allowed to
+     * execute scripts.
+     */
+    [noscript] boolean canExecuteScripts(in JSContextPtr cx,
+                                         in nsIPrincipal principal);
 
-    boolean canExecuteScripts(
-                      in JSContextPtr cx,
-                      in nsIPrincipal principal);
+    ///////////////// Principals /////////////////////// 
+    /**
+     * Return the principal of the innermost frame of the currently 
+     * executing script. Will return null if there is no script 
+     * currently executing.
+     */
+    [noscript] nsIPrincipal getSubjectPrincipal();
 
-    nsIPrincipal getSubjectPrincipal();
+    /**
+     * Return the all-powerful system principal.
+     */
+    [noscript] nsIPrincipal getSystemPrincipal();
 
-    nsIPrincipal getSystemPrincipal();
+    /**
+     * Return a principal with the specified certificate fingerprint, subject
+     * name (the full name or concatenated set of names of the entity
+     * represented by the certificate), pretty name, certificate, and
+     * codebase URI.  The certificate fingerprint and subject name MUST be
+     * nonempty; otherwise an error will be thrown.  Similarly, aCert must
+     * not be null.
+     */
+    [noscript] nsIPrincipal
+         getCertificatePrincipal(in AUTF8String aCertFingerprint,
+                                 in AUTF8String aSubjectName,
+                                 in AUTF8String aPrettyName,
+                                 in nsISupports aCert,
+                                 in nsIURI aURI);
 
-    nsIPrincipal getCertificatePrincipal(
-                      in AUTF8String cert_fingerprint,
-                      in AUTF8String subject_name,
-                      in AUTF8String pretty_name,
-                      in nsISupports cert,
-                      in nsIURI uri);
-            
-    nsIPrincipal getCodebasePrincipal(in nsIURI uri);
+    /**
+     * Return a principal that has the same origin as aURI.
+     */
+    nsIPrincipal getCodebasePrincipal(in nsIURI aURI);
 
-    short requestCapability(
-                      in nsIPrincipal principal,
-                      in string capability);
-
+    ///////////////// Capabilities API /////////////////////
+    /**
+     * Request that 'capability' can be enabled by scripts or applets
+     * running with 'principal'. Will prompt user if
+     * necessary. Returns nsIPrincipal::ENABLE_GRANTED or
+     * nsIPrincipal::ENABLE_DENIED based on user's choice.
+     */
+    [noscript] short requestCapability(in nsIPrincipal principal,
+                                       in string capability);
+    
+    /**
+     * Return true if the currently executing script has 'capability' enabled.
+     */
     boolean isCapabilityEnabled(in string capability);
+    
+    /**
+     * Enable 'capability' in the innermost frame of the currently executing
+     * script.
+     */
     void enableCapability(in string capability);
+
+    /**
+     * Remove 'capability' from the innermost frame of the currently
+     * executing script. Any setting of 'capability' from enclosing
+     * frames thus comes into effect.
+     */
     void revertCapability(in string capability);
+
+    /**
+     * Disable 'capability' in the innermost frame of the currently executing
+     * script.
+     */
     void disableCapability(in string capability);
 
-    void setCanEnableCapability(
-                      in AUTF8String certificate_id,
-                      in string capability,
-                      in short can_enable);
+    //////////////// Master Certificate Functions ////////////////////
+    /**
+     * Allow 'certificateID' to enable 'capability.' Can only be performed
+     * by code signed by the system certificate.
+     */
+    // XXXbz Capabilities can't have non-ascii chars?
+    // XXXbz ideally we'd pass a subjectName here too, and the nsISupports
+    // cert we're enabling for...
+    void setCanEnableCapability(in AUTF8String certificateFingerprint,
+                                in string capability, 
+                                in short canEnable);
 
-    nsIPrincipal getObjectPrincipal(
-                      in JSContextPtr cx,
-                      in JSObjectPtr obj);
+    ///////////////////////
+    /**
+     * Return the principal of the specified object in the specified context.
+     */
+    [noscript] nsIPrincipal getObjectPrincipal(in JSContextPtr cx,
+                                               in JSObjectPtr obj);
 
-    boolean subjectPrincipalIsSystem();
+    /**
+     * Returns true if the principal of the currently running script is the
+     * system principal, false otherwise.
+     */
+    [noscript] boolean subjectPrincipalIsSystem();
 
-    void checkSameOrigin(
-                      in JSContextPtr js_context,
-                      in nsIURI target_uri);
+    /**
+     * Returns OK if aJSContext and target have the same "origin"
+     * (scheme, host, and port).
+     */
+    [noscript] void checkSameOrigin(in JSContextPtr aJSContext,
+                                    in nsIURI aTargetURI);
 
-    void checkSameOriginURI(
-                      in nsIURI source_uri,
-                      in nsIURI target_uri);
+    /**
+     * Returns OK if aSourceURI and target have the same "origin"
+     * (scheme, host, and port).
+     * ReportError flag suppresses error reports for functions that
+     * don't need reporting.
+     */
+    void checkSameOriginURI(in nsIURI aSourceURI,
+                            in nsIURI aTargetURI,
+                            in boolean reportError);
 
-    void checkSameOriginPrincipal(
-                      in nsIPrincipal source_principal,
-                      in nsIPrincipal target_principal);
+    /**
+     * Returns the principal of the global object of the given context, or null
+     * if no global or no principal.
+     */
+    [noscript] nsIPrincipal getPrincipalFromContext(in JSContextPtr cx);
 
-    nsIPrincipal getPrincipalFromContext(in JSContextPtr cx);
+    /**
+     * Get the principal for the given channel.  This will typically be the
+     * channel owner if there is one, and the codebase principal for the
+     * channel's URI otherwise.  aChannel must not be null.
+     */
+    nsIPrincipal getChannelPrincipal(in nsIChannel aChannel);
 
-    boolean securityCompareURIs(
-                      in nsIURI subject_uri,
-                      in nsIURI object_uri);
+    /**
+     * Check whether a given principal is a system principal.  This allows us
+     * to avoid handing back the system principal to script while allowing
+     * script to check whether a given principal is system.
+     */
+    boolean isSystemPrincipal(in nsIPrincipal aPrincipal);
+
+    /**
+     * Same as getSubjectPrincipal(), only faster. cx must *never* be
+     * passed null, and it must be the context on the top of the
+     * context stack. Does *not* reference count the returned
+     * principal.
+     */
+    [noscript,notxpcom] nsIPrincipal getCxSubjectPrincipal(in JSContextPtr cx);
+    [noscript,notxpcom] nsIPrincipal getCxSubjectPrincipalAndFrame(in JSContextPtr cx,
+                                                                   out JSStackFramePtr fp);
 };
 
 /**
