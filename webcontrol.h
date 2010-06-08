@@ -17,6 +17,9 @@
 #include "dom.h"
 
 
+#undef SWIG
+#undef WXDLLIMPEXP_AUI
+#define WXDLLIMPEXP_AUI
 
 ///////////////////////////////////////////////////////////////////////////////
 //  web states, used by the EVT_WEB_STATECHANGE event
