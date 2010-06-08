@@ -9,13 +9,15 @@
 # */
 
 
-include ../top.mak
+#include ../top.mak
 
 
 INCLUDES = 
 DEFINES = ${LARGEFILE_DEFINES}
 CFLAGS = ${WX_CFLAGS} -g -ggdb -fno-rtti
 LIBS = ${WX_LIBS} 
+#XPIDL = ../../../../../webconnect_testapp/xr/xpidl
+XPIDL = /cygdrive/d/devel/xr-1.8/xpidl
 
 
 OBJECTS = \
@@ -26,7 +28,9 @@ OBJECTS = \
 	webframe.o \
 	webprefs.o 
 
-all: libwebconnect.a
+all: nsall.h
+
+#all: libwebconnect.a
 
 libwebconnect.a: $(OBJECTS)
 	ar rc libwebconnect.a $(OBJECTS)
@@ -40,3 +44,5 @@ $(OBJECTS): %.o : %.cpp
 	@$(CPP) $(CFLAGS) $(INCLUDES) $(DEFINES) -c $<
 
 
+nsall.h: nsall.idl
+	$(XPIDL) -m header nsall.idl
