@@ -18,6 +18,8 @@
 #endif
 
 
+#include <jsapi.h>
+
 ///////////////////////////////////////////////////////////////////////////////
 //  types, forwards, etc
 ///////////////////////////////////////////////////////////////////////////////
@@ -84,6 +86,7 @@ const PRBool PR_FALSE = 0;
 
 
 nsresult XPCOMGlueStartup(const char* xpcom_dll_path);
+bool SetupJSFunctions(const char* js_dll_path);
 nsresult NS_InitXPCOM2(nsIServiceManager** result, nsIFile* bin_directory, nsIDirectoryServiceProvider* app_file_location_provider);
 void*    NS_Alloc(PRSize size);
 void     NS_Free(void* ptr);
@@ -103,6 +106,12 @@ PRUint32 NS_CStringGetData(const nsACString& str, const char** str_data, PRBool*
 
 
 
+typedef JSString *(*JS_ValueToStringFunc)(JSContext *context, jsval val);
+extern JS_ValueToStringFunc JS_ValueToStringImpl;
+typedef char *(*JS_EncodeStringFunc)(JSContext *cx, JSString *str);
+extern JS_EncodeStringFunc JS_EncodeStringImpl;
+typedef void (*JS_freeFunc)(JSContext *cx, void *p);
+extern JS_freeFunc JS_freeImpl;
 
 ///////////////////////////////////////////////////////////////////////////////
 //  macros and interface implementations
