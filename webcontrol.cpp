@@ -18,6 +18,7 @@
 #include <wx/filename.h>
 #include <wx/stdpaths.h>
 #include <wx/file.h>
+#include <wx/event.h>
 #include "webframe.h"
 #include "webcontrol.h"
 #include "nsinclude.h"
@@ -459,6 +460,16 @@ void BrowserChrome::ChromeInit()
     nsresult res;
 
     res = m_wnd->m_ptrs->m_event_target->AddEventListener(
+                                            NS_LITERAL_STRING("keydown"),
+                                            this,
+                                            PR_TRUE);
+
+    res = m_wnd->m_ptrs->m_event_target->AddEventListener(
+                                            NS_LITERAL_STRING("keyup"),
+                                            this,
+                                            PR_TRUE);
+
+    res = m_wnd->m_ptrs->m_event_target->AddEventListener(
                                             NS_LITERAL_STRING("mousedown"),
                                             this,
                                             PR_TRUE);
@@ -503,6 +514,16 @@ void BrowserChrome::ChromeInit()
 void BrowserChrome::ChromeUninit()
 {
     nsresult res;
+
+    res = m_wnd->m_ptrs->m_event_target->RemoveEventListener(
+                                            NS_LITERAL_STRING("keydown"),
+                                            this,
+                                            PR_TRUE);
+
+    res = m_wnd->m_ptrs->m_event_target->RemoveEventListener(
+                                            NS_LITERAL_STRING("keyup"),
+                                            this,
+                                            PR_TRUE);
     
     res = m_wnd->m_ptrs->m_event_target->RemoveEventListener(
                                             NS_LITERAL_STRING("mousedown"),
@@ -1055,6 +1076,51 @@ NS_IMETHODIMP BrowserChrome::HandleEvent(nsIDOMEvent* evt)
         return NS_OK;
     }
     
+    if (type == wxT("keydown") ||
+        type == wxT("keyup"))
+    {
+        int evtid;
+        if (type == wxT("keydown"))
+        {
+            evtid = wxEVT_KEY_DOWN;
+        }
+         else if (type == wxT("keyup"))
+        {
+            evtid = wxEVT_KEY_UP;
+        }
+         else
+        {
+            wxFAIL_MSG(wxT("NS event type needs to be mapped to wxWebConnect event type"));
+        }
+
+        wxKeyEvent _wxKeyEvent(evtid);
+
+        ns_smartptr<nsIDOMKeyEvent> key_evt = nsToSmart(evt);
+        if (!key_evt)
+            return NS_ERROR_NOT_IMPLEMENTED;
+
+        PRBool altKey, shiftKey, ctrlKey, metaKey;
+        PRUint32 keyCode;
+        key_evt->GetAltKey(&altKey);
+        key_evt->GetShiftKey(&shiftKey);
+        key_evt->GetCtrlKey(&ctrlKey);
+        key_evt->GetMetaKey(&metaKey);
+        // XXX: Will this need some translating?
+        key_evt->GetKeyCode(&keyCode);
+
+        _wxKeyEvent.m_altDown = (bool)altKey;
+        _wxKeyEvent.m_shiftDown = (bool)shiftKey;
+        _wxKeyEvent.m_controlDown = (bool)ctrlKey;
+        _wxKeyEvent.m_metaDown = (bool)metaKey;
+        _wxKeyEvent.m_keyCode = (int)keyCode;
+
+        // fill out and send a mouse event
+        _wxKeyEvent.SetEventObject(m_wnd);
+
+        m_wnd->GetEventHandler()->ProcessEvent(_wxKeyEvent);
+    
+        return NS_OK;
+    }
 
     if (type == wxT("mousedown") ||
         type == wxT("mouseup") ||
