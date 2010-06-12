@@ -659,6 +659,19 @@ NS_DEFINE_STATIC_IID_ACCESSOR(NS_ISCRIPTCONTEXT_IID)
 
 bool wxWebControl::Execute(const wxString& js_code)
 {
+    wxString result;
+    return ExecuteJSCode(js_code, result);
+}
+
+wxString wxWebControl::ExecuteScriptWithResult(const wxString& js_code)
+{
+    wxString result;
+    ExecuteJSCode(js_code, result);
+    return result;
+}
+
+bool wxWebControl::ExecuteJSCode(const wxString& js_code, wxString& result)
+{
     nsresult rv;
 
     ns_smartptr<nsIScriptSecurityManager> security_manager;
@@ -693,7 +706,16 @@ bool wxWebControl::Execute(const wxString& js_code)
         nsnull,
         &out,
         nsnull);
-        
+    if (NS_FAILED(rv))  {
+        return false;
+    }
+    // XXX: Root this variable properly to prevent GC?
+    JSString *jsstring = JS_ValueToString((JSContext*)ctx->GetNativeContext(), out);
+    if (jsstring)  {
+        wxString _wxString(JS_GetStringBytes(jsstring), wxConvUTF8);
+        result = _wxString;
+    }
+
     return true;
 }
 
@@ -3510,7 +3532,6 @@ wxString wxWebControl::GetCurrentURI() const
 
 bool wxWebControl::SetContent(const wxString& strBaseURI, const wxString& strContent, const wxString& strContentType)
 {
-    nsresult rv;
     m_content_loaded = false;
 
     ns_smartptr<nsIURI> uri;
