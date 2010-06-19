@@ -3682,8 +3682,8 @@ interface nsIPrincipal : nsISupports //nsISerializable
 //  nsIScriptSecurityManager
 ///////////////////////////////////////////////////////////////////////////////
 
-[uuid(f4d74511-2b2d-4a14-a3e4-a392ac5ac3ff)]
-//[scriptable, uuid(f8e350b9-9f31-451a-8c8f-d10fea26b780)]
+//[uuid(f4d74511-2b2d-4a14-a3e4-a392ac5ac3ff)]
+[scriptable, uuid(f8e350b9-9f31-451a-8c8f-d10fea26b780)]
 interface nsIScriptSecurityManager : nsIXPCSecurityManager
 {
     ///////////////// Security Checks //////////////////

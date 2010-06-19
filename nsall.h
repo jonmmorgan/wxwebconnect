@@ -20579,11 +20579,11 @@ NS_IMETHODIMP nsPrincipal::Placeholder()
 
 
 /* starting interface:    nsIScriptSecurityManager */
-#define NS_ISCRIPTSECURITYMANAGER_IID_STR "f4d74511-2b2d-4a14-a3e4-a392ac5ac3ff"
+#define NS_ISCRIPTSECURITYMANAGER_IID_STR "f8e350b9-9f31-451a-8c8f-d10fea26b780"
 
 #define NS_ISCRIPTSECURITYMANAGER_IID \
-  {0xf4d74511, 0x2b2d, 0x4a14, \
-    { 0xa3, 0xe4, 0xa3, 0x92, 0xac, 0x5a, 0xc3, 0xff }}
+  {0xf8e350b9, 0x9f31, 0x451a, \
+    { 0x8c, 0x8f, 0xd1, 0x0f, 0xea, 0x26, 0xb7, 0x80 }}
 
 class NS_NO_VTABLE nsIScriptSecurityManager : public nsIXPCSecurityManager {
  public: 
