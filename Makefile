@@ -4,7 +4,7 @@
 #   Project:  Kirix Web Kit
 #   (C) Copyright 2006, Kirix Corporation, All Rights Reserved.
 #
-#   Developer(s):	Benjamin I. Williams
+#   Developer(s):       Benjamin I. Williams
 #
 #   Changes:
 #
@@ -12,13 +12,19 @@
 #
 # ---------------------------------------------------------------------------
 
-#include ../top.mak
+# These two settings need to be adjusted to your build environment
+WX_DIR := ../wxWidgets
+WX_CONFIG := ${WX_DIR}/wx-config
+
+WX_CFLAGS := $(shell ${WX_CONFIG} --prefix=${WX_DIR} --cppflags)
+WX_LIBS := $(shell ${WX_CONFIG} --prefix=${WX_DIR} --libs)
 
 
-INCLUDES = 
-DEFINES = ${LARGEFILE_DEFINES}
+INCLUDE =
+DEFINES =
 CFLAGS = ${WX_CFLAGS} -g -ggdb -fno-rtti
-LIBS = ${WX_LIBS} 
+LIBS = ${WX_LIBS}
+CPP = g++
 #XPIDL = ../../../../../webconnect_testapp/xr/xpidl
 XPIDL = /cygdrive/d/devel/xr-1.8/xpidl
 
@@ -29,7 +35,7 @@ OBJECTS = \
 	promptservice.o \
 	webcontrol.o \
 	webframe.o \
-	webprefs.o 
+	webprefs.o
 
 all: nsall.h
 
@@ -43,9 +49,7 @@ clean:
 	rm -f *.o libwebconnect.a
 
 $(OBJECTS): %.o : %.cpp
-	@echo $<
 	$(CPP) $(CFLAGS) $(INCLUDES) $(DEFINES) -c $<
-
 
 nsall.h: nsall.idl
 	$(XPIDL) -m header nsall.idl

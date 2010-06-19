@@ -5,7 +5,7 @@
 // Modified by:
 // Created:     2006-10-08
 // RCS-ID:      
-// Copyright:   (C) Copyright 2006-2009, Kirix Corporation, All Rights Reserved.
+// Copyright:   (C) Copyright 2006-2010, Kirix Corporation, All Rights Reserved.
 // Licence:     wxWindows Library Licence, Version 3.1
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -292,7 +292,28 @@ interface nsIAppShell : nsISupports
 
 
 interface nsIInterfaceRequestor;
-interface nsIX509Cert;
+interface nsIInterfaceRequestor;
+
+
+[scriptable, uuid(f0980f60-ee3d-11d4-998b-00b0d02354a0)]
+interface nsIX509Cert : nsISupports
+{
+    // to be filled out later
+};
+
+
+[scriptable, uuid(cfede939-def1-49be-81ed-d401b3a07d1c)]
+interface nsISSLStatus : nsISupports
+{
+    readonly attribute nsIX509Cert serverCert;
+    readonly attribute string cipherName;
+    readonly attribute unsigned long keyLength;
+    readonly attribute unsigned long secretKeyLength;
+    readonly attribute boolean isDomainMismatch;
+    readonly attribute boolean isNotValidAtThisTime;
+    readonly attribute boolean isUntrusted;
+};
+
 
 
 [scriptable, object, uuid(86960956-edb0-11d4-998b-00b0d02354a0)]
@@ -308,6 +329,70 @@ interface nsIBadCertListener : nsISupports
     void notifyCrlNextupdate(in nsIInterfaceRequestor socketInfo, in AUTF8String targetURL, in nsIX509Cert cert);
 };
 
+
+
+[scriptable, uuid(2c3d268c-ad82-49f3-99aa-e9ffddd7a0dc)]
+interface nsIBadCertListener2 : nsISupports
+{
+    boolean notifyCertProblem(in nsIInterfaceRequestor socket_info, 
+                              in nsISSLStatus status,
+                              in AUTF8String target_site);
+};
+
+
+[scriptable, uuid(a5ae8b05-a76e-408f-b0ba-02a831265749)]
+interface nsIRecentBadCertsService : nsISupports
+{
+    nsISSLStatus getRecentBadCert(in AString host_name_with_port);
+    
+    void addBadCert(in AString host_name_with_port,
+                    in nsISSLStatus status);
+};
+
+
+
+[scriptable, uuid(31738d2a-77d3-4359-84c9-4be2f38fb8c5)]
+interface nsICertOverrideService : nsISupports
+{
+    const short ERROR_UNTRUSTED = 1;
+    const short ERROR_MISMATCH = 2;
+    const short ERROR_TIME = 4;
+
+    void rememberValidityOverride(
+                            in ACString host_name, 
+                            in PRInt32 port,
+                            in nsIX509Cert cert,
+                            in PRUint32 override_bits,
+                            in boolean temporary);
+
+    boolean hasMatchingOverride(
+                            in ACString host_name, 
+                            in PRInt32 port,
+                            in nsIX509Cert cert,
+                            out PRUint32 override_bits,
+                            out boolean is_temporary);
+
+    boolean getValidityOverride(
+                            in ACString host_name, 
+                            in PRInt32 port,
+                            out ACString hash_alg,
+                            out ACString fingerprint,
+                            out PRUint32 override_bits,
+                            out boolean is_temporary);
+
+    void clearValidityOverride(
+                            in ACString host_name,
+                            in PRInt32 port);
+
+    void getAllOverrideHostsWithPorts(
+                            out PRUint32 count, 
+                            [array, size_is(count)] out wstring hosts_with_ports_array);
+
+    PRUint32 isCertUsedForOverrides(
+                            in nsIX509Cert cert,
+                            in boolean check_temporaries,
+                            in boolean check_permanents);
+};
 
 
 
@@ -445,11 +530,57 @@ interface nsIRequest : nsISupports
 
 
 ///////////////////////////////////////////////////////////////////////////////
-//  nsIChannel
+//  nsIURI
 ///////////////////////////////////////////////////////////////////////////////
 
 
-interface nsIURI;
+[scriptable, uuid(07a22cc0-0ce5-11d3-9331-00104ba0fd40)]
+interface nsIURI : nsISupports
+{
+    attribute AUTF8String spec;
+    readonly attribute AUTF8String prePath;
+    attribute ACString scheme;
+    attribute AUTF8String userPass;
+    attribute AUTF8String username;
+    attribute AUTF8String password;
+    attribute AUTF8String hostPort;
+    attribute AUTF8String host;
+    attribute long port;
+    attribute AUTF8String path;
+
+    boolean equals(in nsIURI other);
+    boolean schemeIs(in string scheme);
+    nsIURI clone();
+    AUTF8String resolve(in AUTF8String relative_path);
+    
+    readonly attribute ACString asciiSpec;
+    readonly attribute ACString asciiHost;
+    readonly attribute ACString originCharset;
+};
+
+
+///////////////////////////////////////////////////////////////////////////////
+//  nsIURIFixup
+///////////////////////////////////////////////////////////////////////////////
+
+[scriptable, uuid(773081ac-9f81-4bdb-9e7a-5e87b4361f09)]
+interface nsIURIFixup : nsISupports
+{
+    const unsigned long FIXUP_FLAG_NONE = 0;
+    const unsigned long FIXUP_FLAG_ALLOW_KEYWORD_LOOKUP = 1;
+    const unsigned long FIXUP_FLAGS_MAKE_ALTERNATE_URI = 2;
+
+    nsIURI createExposableURI(in nsIURI uri);
+    nsIURI createFixupURI(in AUTF8String aURIText, in unsigned long fixup_flags);
+    nsIURI keywordToURI(in AUTF8String keyword);
+};
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+//  nsIChannel
+///////////////////////////////////////////////////////////////////////////////
+
 interface nsIInterfaceRequestor;
 interface nsIInputStream;
 interface nsIStreamListener;
@@ -546,7 +677,6 @@ interface nsIComponentManager : nsISupports
 
 interface nsIFactory;
 interface nsISimpleEnumerator;
-interface nsIFile;
 
 [scriptable, uuid(2417cbfe-65ad-48a6-b4b6-eb84db174392)]
 interface nsIComponentRegistrar : nsISupports
@@ -594,7 +724,6 @@ interface nsIComponentRegistrar : nsISupports
 interface nsIContextMenuInfo;
 interface nsIDOMEvent;
 interface nsIDOMNode;
-interface nsIURI;
 interface imgIContainer;
 
 
@@ -627,7 +756,6 @@ interface nsIContextMenuInfo : nsISupports
 ///////////////////////////////////////////////////////////////////////////////
 
 
-interface nsIFile;
 interface nsISimpleEnumerator;
 
 
@@ -1728,16 +1856,15 @@ interface nsIEmbeddingSiteWindow2 : nsIEmbeddingSiteWindow
 
 
 interface nsIWebProgressListener2;
-interface nsIFile;
-interface nsIURI;
+interface nsIMIMEInfo18;
 interface nsIMIMEInfo;
 
 
 
 [scriptable, object, uuid(99a0882d-2ff9-4659-9952-9ac531ba5592)]
-interface nsIHelperAppLauncher : nsICancelable
+interface nsIHelperAppLauncher18 : nsICancelable
 {
-    readonly attribute nsIMIMEInfo MIMEInfo;
+    readonly attribute nsIMIMEInfo18 MIMEInfo;
     readonly attribute nsIURI source;
     readonly attribute AString suggestedFileName;
 
@@ -1755,6 +1882,28 @@ interface nsIHelperAppLauncher : nsICancelable
     readonly attribute PRTime timeDownloadStarted;
 };
 
+[scriptable, object, uuid(d9a19faf-497b-408c-b995-777d956b72c0)]
+interface nsIHelperAppLauncher : nsICancelable
+{
+    readonly attribute nsIMIMEInfo MIMEInfo;
+    readonly attribute nsIURI source;
+    readonly attribute AString suggestedFileName;
+
+    void saveToDisk(in nsIFile new_file_location,
+                    in boolean remember_this_preference);
+
+    void launchWithApplication(in nsIFile application,
+                               in boolean remember_this_preference);
+
+    void setWebProgressListener(in nsIWebProgressListener2 web_progress_listener);
+
+    void closeProgressWindow();
+
+    readonly attribute nsIFile targetFile;
+    readonly attribute boolean targetFileIsExecutable;
+    readonly attribute PRTime timeDownloadStarted;
+    readonly attribute PRInt64 contentLength;
+};
 
 
 
@@ -1767,13 +1916,12 @@ interface nsIHelperAppLauncher;
 interface nsILocalFile;
 
 [scriptable, object, uuid(64355793-988d-40a5-ba8e-fcde78cac631)]
-interface nsIHelperAppLauncherDialog : nsISupports
+interface nsIHelperAppLauncherDialog18 : nsISupports
 {
     const unsigned long REASON_CANTHANDLE = 0;
     const unsigned long REASON_SERVERREQUEST = 1;
     const unsigned long REASON_TYPESNIFFED = 2;
     
-
     void show(in nsIHelperAppLauncher launcher,
               in nsISupports windowContext,
               in unsigned long reason);
@@ -1785,6 +1933,25 @@ interface nsIHelperAppLauncherDialog : nsISupports
               in wstring suggestedFileExtension);
 };
 
+
+[scriptable, object, uuid(f3704fdc-8ae6-4eba-a3c3-f02958ac0649)]
+interface nsIHelperAppLauncherDialog : nsISupports
+{
+    const unsigned long REASON_CANTHANDLE = 0;
+    const unsigned long REASON_SERVERREQUEST = 1;
+    const unsigned long REASON_TYPESNIFFED = 2;
+    
+    void show(in nsIHelperAppLauncher launcher,
+              in nsISupports windowContext,
+              in unsigned long reason);
+
+    nsILocalFile promptForSaveToFile(
+              in nsIHelperAppLauncher launcher,
+              in nsISupports windowContext,
+              in wstring defaultFile,
+              in wstring suggestedFileExtension,
+              in boolean force_prompt);
+};
 
 
 
@@ -1862,8 +2029,6 @@ interface nsIInputStreamChannel : nsISupports
 
 
 interface nsIProtocolHandler;
-interface nsIURI;
-interface nsIFile;
 interface nsIChannel;
 
 
@@ -1919,12 +2084,14 @@ interface nsIJSContextStack : nsISupports
 
 
 interface nsIUTF8StringEnumerator;
-interface nsIFile;
 interface nsMIMEInfoHandleAction;
+interface nsIHandlerApp;
+interface nsIMutableArray;
+interface nsIArray;
+typedef long nsHandlerInfoAction;
 
-
-[scriptable, uuid(cd7083f8-5fe9-4248-bb09-0b0e2982fde8)]
-interface nsIMIMEInfo : nsISupports
+[scriptable, uuid(1448b42f-cf0d-466e-9a15-64e876ebe857)]
+interface nsIMIMEInfo18 : nsISupports
 {
     nsIUTF8StringEnumerator getFileExtensions();
     void setFileExtensions(in AUTF8String extensions);
@@ -1959,13 +2126,61 @@ interface nsIMIMEInfo : nsISupports
 
 
 
+
+
+[scriptable, uuid(325e56a7-3762-4312-aec7-f1fcf84b4145)] 
+interface nsIHandlerInfo : nsISupports
+{
+    const long saveToDisk = 0;
+    const long alwaysAsk = 1;
+    const long useHelperApp = 2;
+    const long handleInternally = 3;
+    const long useSystemDefault = 4;
+    
+    readonly attribute ACString type;
+    attribute AString description;
+    attribute nsIHandlerApp preferredApplicationHandler;
+    readonly attribute nsIMutableArray possibleApplicationHandlers;
+    readonly attribute boolean hasDefaultHandler;
+    readonly attribute AString defaultDescription;
+
+    void launchWithURI(in nsIURI uri,
+                       [optional] in nsIInterfaceRequestor window_context);
+
+    attribute nsHandlerInfoAction preferredAction;
+
+    attribute boolean alwaysAskBeforeHandling;
+};
+
+
+[scriptable, uuid(cd7083f8-5fe9-4248-bb09-0b0e2982fde8)]
+interface nsIMIMEInfo : nsIHandlerInfo
+{
+    nsIUTF8StringEnumerator getFileExtensions();
+    
+    void setFileExtensions(in AUTF8String extensions);
+    boolean extensionExists(in AUTF8String extension);
+    void appendExtension(in AUTF8String extension);
+    
+    attribute AUTF8String primaryExtension;
+    readonly attribute ACString MIMEType;
+    attribute PRUint32 macType;
+    attribute PRUint32 macCreator;
+    
+    boolean equals(in nsIMIMEInfo mime_info);
+    
+    readonly attribute nsIArray possibleLocalHandlers;
+    
+    void launchWithFile(in nsIFile file);
+};
+
+
+
 ///////////////////////////////////////////////////////////////////////////////
 //  nsIPref
 ///////////////////////////////////////////////////////////////////////////////
 
-
 interface nsIFileSpec;
-interface nsIFile;
 interface nsILocalFile;
 interface nsIPrefBranch;
 interface nsIObserver;
@@ -2077,14 +2292,50 @@ interface nsIPref : nsISupports
 
 
 ///////////////////////////////////////////////////////////////////////////////
-//  nsIPrint
+//  nsIWebBrowserPrint
 ///////////////////////////////////////////////////////////////////////////////
 
-
+interface nsIPrintSettings18;
 interface nsIPrintSettings;
 interface nsIDOMWindow;
 interface nsIWebProgressListener;
 
+[scriptable, uuid(9a7ca4b0-fbba-11d4-a869-00105a183419)]
+interface nsIWebBrowserPrint18 : nsISupports
+{
+    const short PRINTPREVIEW_GOTO_PAGENUM = 0;
+    const short PRINTPREVIEW_PREV_PAGE = 1;
+    const short PRINTPREVIEW_NEXT_PAGE = 2;
+    const short PRINTPREVIEW_HOME = 3;
+    const short PRINTPREVIEW_END = 4;
+
+    readonly attribute nsIPrintSettings18 globalPrintSettings;
+    readonly attribute nsIPrintSettings18 currentPrintSettings;
+    readonly attribute nsIDOMWindow currentChildDOMWindow;
+    readonly attribute boolean doingPrint;
+    readonly attribute boolean doingPrintPreview;
+    readonly attribute boolean isFramesetDocument;
+    readonly attribute boolean isFramesetFrameSelected;
+    readonly attribute boolean isIFrameSelected;
+    readonly attribute boolean isRangeSelection;
+    readonly attribute long printPreviewNumPages;
+
+    void print(in nsIPrintSettings18 thePrintSettings,
+               in nsIWebProgressListener WPListener);
+
+    void printPreview(
+                in nsIPrintSettings18 thePrintSettings,
+                in nsIDOMWindow childDOMWin,
+                in nsIWebProgressListener WPListener);
+
+    void printPreviewNavigate(in short navType, in long pageNum);
+    void cancel();
+    void enumerateDocumentNames(
+                out PRUint32 count,
+                [retval, array, size_is(count)] out wstring result);
+                
+    void exitPrintPreview();
+};
 
 [scriptable, uuid(9a7ca4b0-fbba-11d4-a869-00105a183419)]
 interface nsIWebBrowserPrint : nsISupports
@@ -2124,17 +2375,34 @@ interface nsIWebBrowserPrint : nsISupports
 };
 
 
+[scriptable, uuid(841387C8-72E6-484b-9296-BF6EEA80D58A)]
+interface nsIPrintSettingsService : nsISupports
+{
+    readonly attribute nsIPrintSettings globalPrintSettings;
+    readonly attribute nsIPrintSettings newPrintSettings;
+    readonly attribute wstring defaultPrinterName;
+
+    void initPrintSettingsFromPrinter(in wstring printer_name,
+                                      in nsIPrintSettings print_settings);
+                                      
+    void initPrintSettingsFromPrefs(in nsIPrintSettings print_settings,
+                                    in boolean use_printer_name_prefix,
+                                    in unsigned long flags);
+                                    
+    void savePrintSettingsToPrefs(in nsIPrintSettings print_settings,
+                                  in boolean user_printer_name_prefix,
+                                  in unsigned long flags);
+};
 
 
 ///////////////////////////////////////////////////////////////////////////////
 //  nsIPrintSettings
 ///////////////////////////////////////////////////////////////////////////////
 
-
 interface nsIPrintSession;
 
 [scriptable, uuid(f1094df6-ce0e-42c9-9847-2f663172c38d)]
-interface nsIPrintSettings : nsISupports
+interface nsIPrintSettings18 : nsISupports
 {
     const unsigned long kInitSaveOddEvenPages = 0x1;
     const unsigned long kInitSaveHeaderLeft = 0x2;
@@ -2263,6 +2531,144 @@ interface nsIPrintSettings : nsISupports
 };
 
 
+[scriptable, uuid(5af07661-6477-4235-8814-4a45215855b8)]
+interface nsIPrintSettings : nsISupports
+{
+    const unsigned long kInitSaveOddEvenPages = 0x1;
+    const unsigned long kInitSaveHeaderLeft = 0x2;
+    const unsigned long kInitSaveHeaderCenter = 0x4;
+    const unsigned long kInitSaveHeaderRight = 0x8;
+    const unsigned long kInitSaveFooterLeft = 0x10;
+    const unsigned long kInitSaveFooterCenter = 0x20;
+    const unsigned long kInitSaveFooterRight = 0x40;
+    const unsigned long kInitSaveBGColors = 0x80;
+    const unsigned long kInitSaveBGImages = 0x100;
+    const unsigned long kInitSavePaperSize = 0x200;
+    const unsigned long kInitSavePaperData = 0x2000;
+    const unsigned long kInitSaveUnwriteableMargins = 0x4000;
+    const unsigned long kInitSaveEdges = 0x8000;
+    const unsigned long kInitSaveReversed = 0x10000;
+    const unsigned long kInitSaveInColor = 0x20000;
+    const unsigned long kInitSaveOrientation = 0x40000;
+    const unsigned long kInitSavePrintCommand = 0x80000;
+    const unsigned long kInitSavePrinterName = 0x100000;
+    const unsigned long kInitSavePrintToFile = 0x200000;
+    const unsigned long kInitSaveToFileName = 0x400000;
+    const unsigned long kInitSavePageDelay = 0x800000;
+    const unsigned long kInitSaveMargins = 0x1000000;
+    const unsigned long kInitSaveNativeData = 0x2000000;
+    const unsigned long kInitSavePlexName = 0x4000000;
+    const unsigned long kInitSaveShrinkToFit = 0x8000000;
+    const unsigned long kInitSaveScaling = 0x10000000;
+    const unsigned long kInitSaveColorspace = 0x20000000;
+    const unsigned long kInitSaveResolutionName = 0x40000000;
+    const unsigned long kInitSaveDownloadFonts = 0x80000000;
+    const unsigned long kInitSaveAll = 0xffffffff;
+    const long kPrintOddPages = 0x1;
+    const long kPrintEvenPages = 0x2;
+    const long kEnableSelectionRB = 0x4;
+    const long kRangeAllPages = 0;
+    const long kRangeSpecifiedPageRange = 1;
+    const long kRangeSelection = 2;
+    const long kRangeFocusFrame = 3;
+    const long kJustLeft = 0;
+    const long kJustCenter = 1;
+    const long kJustRight = 2;
+    const short kUseInternalDefault = 0;
+    const short kUseSettingWhenPossible = 1;
+    const short kPaperSizeNativeData = 0;
+    const short kPaperSizeDefined = 1;
+    const short kPaperSizeInches = 0;
+    const short kPaperSizeMillimeters = 1;
+    const short kPortraitOrientation = 0;
+    const short kLandscapeOrientation = 1;
+    const short kNoFrames = 0;
+    const short kFramesAsIs = 1;
+    const short kSelectedFrame = 2;
+    const short kEachFrameSep = 3;
+    const short kFrameEnableNone = 0;
+    const short kFrameEnableAll = 1;
+    const short kFrameEnableAsIsAndEach = 2;
+    const short kOutputFormatNative = 0;
+    const short kOutputFormatPS = 1;
+    const short kOutputFormatPDF = 2;
+    void SetPrintOptions(in PRInt32 type, in boolean turn_on_off);
+    boolean GetPrintOptions(in PRInt32 type);
+    PRInt32 GetPrintOptionsBits();
+    void GetEffectivePageSize(out double width, out double height);
+    nsIPrintSettings clone();
+    void assign(in nsIPrintSettings print_settings);
+
+    [noscript] attribute nsIPrintSession printSession; /* We hold a weak reference */
+
+    attribute long startPageRange; 
+    attribute long endPageRange; 
+    attribute double edgeTop;
+    attribute double edgeLeft;
+    attribute double edgeBottom;
+    attribute double edgeRight;
+    attribute double marginTop;
+    attribute double marginLeft;
+    attribute double marginBottom;
+    attribute double marginRight;
+    attribute double unwriteableMarginTop;
+    attribute double unwriteableMarginLeft;
+    attribute double unwriteableMarginBottom;
+    attribute double unwriteableMarginRight;
+    attribute double scaling;
+    attribute boolean printBGColors;
+    attribute boolean printBGImages;
+    attribute short printRange; 
+    attribute wstring title;
+    attribute wstring docURL;
+    attribute wstring headerStrLeft;
+    attribute wstring headerStrCenter;
+    attribute wstring headerStrRight;
+    attribute wstring footerStrLeft;
+    attribute wstring footerStrCenter;
+    attribute wstring footerStrRight;
+    attribute short howToEnableFrameUI;
+    attribute boolean isCancelled;
+    attribute short printFrameTypeUsage;
+    attribute short printFrameType;
+    attribute boolean printSilent;
+    attribute boolean shrinkToFit;
+    attribute boolean showPrintProgress;
+    attribute wstring paperName;
+    attribute short paperSizeType;
+    attribute short paperData;
+    attribute double paperWidth;
+    attribute double paperHeight;
+    attribute short paperSizeUnit;
+    attribute wstring plexName;
+    attribute wstring colorspace;
+    attribute wstring resolutionName;
+    attribute boolean downloadFonts;
+    attribute boolean printReversed;
+    attribute boolean printInColor;
+    attribute long orientation;
+    attribute wstring printCommand;
+    attribute long numCopies;
+    attribute wstring printerName;
+    attribute boolean printToFile;
+    attribute wstring toFileName;
+    attribute short outputFormat;
+    attribute long printPageDelay;
+    attribute boolean isInitializedFromPrinter;
+    attribute boolean isInitializedFromPrefs;
+/*
+    [noscript] void SetMarginInTwips(in nsNativeMarginRef aMargin);
+    [noscript] void SetEdgeInTwips(in nsNativeMarginRef aEdge);
+    [noscript] void GetMarginInTwips(in nsNativeMarginRef aMargin);
+    [noscript] void GetEdgeInTwips(in nsNativeMarginRef aEdge);
+    [noscript] void SetupSilentPrinting();
+    [noscript] void SetUnwriteableMarginInTwips(in nsNativeMarginRef aEdge);
+    [noscript] void GetUnwriteableMarginInTwips(in nsNativeMarginRef aEdge);
+*/
+};
+
+
+
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -2363,12 +2769,59 @@ interface nsIPromptService : nsISupports
 };
 
 
+interface nsIAuthInformation;
+interface nsIAuthPromptCallback;
+
+[scriptable, uuid(cf86d196-dbee-4482-9dfa-3477aa128319)]
+interface nsIPromptService2 : nsIPromptService
+{
+    boolean promptAuth(
+                in nsIDOMWindow parent,
+                in nsIChannel channel,
+                in PRUint32 level,
+                in nsIAuthInformation auth_info,
+                in wstring checkbox_label,
+                inout boolean check_value);
+
+    nsICancelable asyncPromptAuth(
+                in nsIDOMWindow parent,
+                in nsIChannel channel,
+                in nsIAuthPromptCallback callbck,
+                in nsISupports contxt,
+                in PRUint32 level,
+                in nsIAuthInformation auth_info,
+                in wstring checkbox_label,
+                inout boolean check_value);
+};
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+//  nsIAuthInformation
+///////////////////////////////////////////////////////////////////////////////
+
+[scriptable, uuid(0d73639c-2a92-4518-9f92-28f71fea5f20)]
+interface nsIAuthInformation : nsISupports
+{
+    const PRUint32 AUTH_HOST = 1;
+    const PRUint32 AUTH_PROXY = 2;
+    const PRUint32 NEED_DOMAIN = 4;
+    const PRUint32 ONLY_PASSWORD = 8;
+
+    readonly attribute unsigned long flags;
+    readonly attribute AString realm;
+    readonly attribute AUTF8String authenticationScheme;
+    attribute AString username;
+    attribute AString password;
+    attribute AString domain;
+};
+
 
 
 ///////////////////////////////////////////////////////////////////////////////
 //  nsIProperties
 ///////////////////////////////////////////////////////////////////////////////
-
 
 [scriptable, uuid(78650582-4e93-4b60-8e85-26ebd3eb14ca)]
 interface nsIProperties : nsISupports
@@ -2505,7 +2958,6 @@ interface nsITooltipListener : nsISupports
 
 interface nsIWebProgress;
 interface nsIRequest;
-interface nsIURI;
 
 [scriptable, uuid(570f39d1-efd0-11d3-b093-00a024ffc08c)]
 interface nsIWebProgressListener : nsISupports
@@ -2566,7 +3018,7 @@ interface nsIWebProgressListener : nsISupports
 
 
 [scriptable, uuid(3f24610d-1e1f-4151-9d2e-239884742324)]
-interface nsIWebProgressListener2 : nsIWebProgressListener
+interface nsIWebProgressListener2_18 : nsIWebProgressListener
 {
     void onProgressChange64(in nsIWebProgress web_progress,
                             in nsIRequest request,
@@ -2576,7 +3028,22 @@ interface nsIWebProgressListener2 : nsIWebProgressListener
                             in long long max_total_progress);
 };
 
+[scriptable, uuid(dde39de0-e4e0-11da-8ad9-0800200c9a66)]
+interface nsIWebProgressListener2 : nsIWebProgressListener
+{
+    void onProgressChange64(in nsIWebProgress web_progress,
+                            in nsIRequest request,
+                            in long long cur_self_progress,
+                            in long long max_self_progress,
+                            in long long cur_total_progress,
+                            in long long max_total_progress);
 
+    boolean onRefreshAttempted(
+                            in nsIWebProgress web_progress,
+                            in nsIURI refresh_uri,
+                            in long millis,
+                            in boolean same_uri);
+};
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -2590,7 +3057,7 @@ interface nsICancelable;
 
 
 [scriptable, uuid(23c51569-e9a1-4a92-adeb-3723db82ef7c)]
-interface nsITransfer : nsIWebProgressListener2
+interface nsITransfer18 : nsIWebProgressListener2_18
 {
     void init(in nsIURI source,
               in nsIURI target,
@@ -2601,36 +3068,16 @@ interface nsITransfer : nsIWebProgressListener2
               in nsICancelable cancelable);
 };
 
-
-
-
-///////////////////////////////////////////////////////////////////////////////
-//  nsIURI
-///////////////////////////////////////////////////////////////////////////////
-
-
-[scriptable, uuid(07a22cc0-0ce5-11d3-9331-00104ba0fd40)]
-interface nsIURI : nsISupports
+[scriptable, uuid(23c51569-e9a1-4a92-adeb-3723db82ef7c)]
+interface nsITransfer : nsIWebProgressListener2
 {
-    attribute AUTF8String spec;
-    readonly attribute AUTF8String prePath;
-    attribute ACString scheme;
-    attribute AUTF8String userPass;
-    attribute AUTF8String username;
-    attribute AUTF8String password;
-    attribute AUTF8String hostPort;
-    attribute AUTF8String host;
-    attribute long port;
-    attribute AUTF8String path;
-
-    boolean equals(in nsIURI other);
-    boolean schemeIs(in string scheme);
-    nsIURI clone();
-    AUTF8String resolve(in AUTF8String relative_path);
-    
-    readonly attribute ACString asciiSpec;
-    readonly attribute ACString asciiHost;
-    readonly attribute ACString originCharset;
+    void init(in nsIURI source,
+              in nsIURI target,
+              in AString display_name,
+              in nsIMIMEInfo mime_info,
+              in PRTime start_time,
+              in nsILocalFile temp_file,
+              in nsICancelable cancelable);
 };
 
 
@@ -2705,12 +3152,12 @@ interface nsIStandardURL : nsIMutable
               in nsIURI aBaseURI);
 };
 
+
 ///////////////////////////////////////////////////////////////////////////////
 //  nsIURIContentListener
 ///////////////////////////////////////////////////////////////////////////////
 
 
-interface nsIURI;
 interface nsIRequest;
 interface nsIStreamListener;
 interface nsIURIContentListener;
@@ -2771,7 +3218,6 @@ interface nsIURILoader : nsISupports
 
     void stop(in nsISupports load_cookie);
 };
-
 
 
 
@@ -2934,8 +3380,6 @@ interface nsIWebBrowserFocus : nsISupports
 ///////////////////////////////////////////////////////////////////////////////
 
 
-interface nsIURI;
-interface nsIFile;
 interface nsIChannel;
 interface nsIWebProgressListener;
 interface nsIInputStream;
@@ -3016,7 +3460,6 @@ interface nsIWebBrowserPersist : nsICancelable
 ///////////////////////////////////////////////////////////////////////////////
 
 
-interface nsIURI;
 interface nsIInputStream;
 interface nsIDOMDocument;
 interface nsISHistory;
@@ -3222,8 +3665,9 @@ interface nsIXPCSecurityManager : nsISupports
 
 
 
-interface nsIURI;
-
+///////////////////////////////////////////////////////////////////////////////
+//  nsIPrincipal
+///////////////////////////////////////////////////////////////////////////////
 
 [uuid(0575ea96-4561-4dc6-a818-3c4c97c2430d)]
 interface nsIPrincipal : nsISupports //nsISerializable
@@ -3234,7 +3678,12 @@ interface nsIPrincipal : nsISupports //nsISerializable
 
 
 
-[scriptable, uuid(f8e350b9-9f31-451a-8c8f-d10fea26b780)]
+///////////////////////////////////////////////////////////////////////////////
+//  nsIScriptSecurityManager
+///////////////////////////////////////////////////////////////////////////////
+
+[uuid(f4d74511-2b2d-4a14-a3e4-a392ac5ac3ff)]
+//[scriptable, uuid(f8e350b9-9f31-451a-8c8f-d10fea26b780)]
 interface nsIScriptSecurityManager : nsIXPCSecurityManager
 {
     ///////////////// Security Checks //////////////////
@@ -4318,4 +4767,21 @@ interface nsIWebBrowserStream : nsISupports
    *        This method was called without a preceding openStream.
    */
   void closeStream();
+};
+
+
+///////////////////////////////////////////////////////////////////////////////
+//  nsISSLCertErrorDialog
+///////////////////////////////////////////////////////////////////////////////
+
+[scriptable, uuid(0729ce8e-8935-4989-ba72-a2d6307f2365)]
+interface nsISSLCertErrorDialog : nsISupports
+{
+    void showCertError(in nsIInterfaceRequestor ctx, 
+                       in nsISSLStatus status,
+                       in nsIX509Cert cert,
+                       in AString text_error_message,
+                       in AString html_error_message,
+                       in ACString host_name,
+                       in PRUint32 port_number);
 };

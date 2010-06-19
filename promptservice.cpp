@@ -5,7 +5,7 @@
 // Modified by:
 // Created:     2006-10-07
 // RCS-ID:      
-// Copyright:   (C) Copyright 2006-2009, Kirix Corporation, All Rights Reserved.
+// Copyright:   (C) Copyright 2006-2010, Kirix Corporation, All Rights Reserved.
 // Licence:     wxWindows Library Licence, Version 3.1
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -262,22 +262,154 @@ END_EVENT_TABLE()
 
 
 
+
+
+/*
+class PromptDlgBadCert : public wxDialog
+{
+
+    enum
+    {
+        ID_UsernameTextCtrl = wxID_HIGHEST+1,
+        ID_PasswordTextCtrl
+    };
+    
+public:
+
+    PromptDlgBadCert(wxWindow* parent)
+                         : wxDialog(parent,
+                                    -1,
+                                    _("Authentication Required"),
+                                    wxDefaultPosition,
+                                    wxSize(400, 200),
+                                    wxDEFAULT_DIALOG_STYLE |
+                                    wxCENTER)
+    {
+        // create a platform standards-compliant OK/Cancel sizer
+        
+        wxButton* yes_button = new wxButton(this, wxID_YES);
+        wxButton* no_button = new wxButton(this, wxID_NO);
+        
+        wxStdDialogButtonSizer* yes_no_sizer = new wxStdDialogButtonSizer;
+        yes_no_sizer->AddButton(yes_button);
+        yes_no_sizer->AddButton(no_button);
+        yes_no_sizer->Realize();
+        yes_no_sizer->AddSpacer(5);
+        
+        no_button->SetDefault();
+        
+        // this code is necessary to get the sizer's bottom margin to 8
+        wxSize min_size = yes_no_sizer->GetMinSize();
+        min_size.SetHeight(min_size.GetHeight()+16);
+        yes_no_sizer->SetMinSize(min_size);
+        
+        
+        // create username/password sizer
+        
+        wxBitmap bmp = wxArtProvider::GetBitmap(wxART_QUESTION, wxART_MESSAGE_BOX);
+        wxStaticBitmap* bitmap_question = new wxStaticBitmap(this, -1, bmp);
+        m_message_ctrl = new wxStaticText(this, -1, m_message);
+        
+        wxBoxSizer* vert_sizer = new wxBoxSizer(wxVERTICAL);
+        vert_sizer->Add(m_message_ctrl, 0, wxEXPAND);
+        vert_sizer->AddSpacer(16);
+
+        // create top sizer
+        
+        wxBoxSizer* top_sizer = new wxBoxSizer(wxHORIZONTAL);
+        top_sizer->AddSpacer(7);
+        top_sizer->Add(bitmap_question, 0, wxTOP, 7);
+        top_sizer->AddSpacer(15);
+        top_sizer->Add(vert_sizer, 1, wxEXPAND | wxTOP, 7);
+
+        // create main sizer
+        
+        wxBoxSizer* main_sizer = new wxBoxSizer(wxVERTICAL);
+        main_sizer->AddSpacer(8);
+        main_sizer->Add(top_sizer, 0, wxEXPAND | wxLEFT | wxRIGHT, 8);
+        main_sizer->AddStretchSpacer();
+        main_sizer->Add(yes_no_sizer, 0, wxEXPAND);
+
+        SetSizer(main_sizer);
+        Layout();
+    }
+    
+    ~PromptDlgBadCert()
+    {
+    }
+
+    void SetMessage(const wxString& message)
+    {
+        m_message = message;
+        m_message_ctrl->SetLabel(m_message);
+        wxSizer* sizer = m_message_ctrl->GetContainingSizer();
+        m_message_ctrl->Wrap(sizer->GetSize().GetWidth());
+        Layout();
+    }
+
+private:
+
+    // event handlers
+    
+    void OnYes(wxCommandEvent& evt)
+    {
+        EndModal(wxID_YES);
+    }
+    
+    void OnNo(wxCommandEvent& evt)
+    {
+        EndModal(wxID_NO);
+    }
+
+private:
+    
+    wxString m_message;
+    
+    wxStaticText* m_message_ctrl;
+    wxCheckBox* m_username_ctrl;
+    
+    DECLARE_EVENT_TABLE()
+};
+
+
+BEGIN_EVENT_TABLE(PromptDlgBadCert, wxDialog)
+    EVT_BUTTON(wxID_YES, PromptDlgBadCert::OnYes)
+    EVT_BUTTON(wxID_NO, PromptDlgBadCert::OnNo)
+END_EVENT_TABLE()
+*/
+
+
+
+
+
+
+
+
+
+
+
+
 ///////////////////////////////////////////////////////////////////////////////
 //  PromptService class implementation
 ///////////////////////////////////////////////////////////////////////////////
 
 
-class PromptService : public nsIPromptService,
-                      public nsIBadCertListener
+class PromptService : public nsIPromptService2,
+                      public nsIBadCertListener,
+                      public nsIBadCertListener2
 {
 public:
 
     PromptService();
     virtual ~PromptService();
 
+    void onBadCertificate(const wxString& message, nsIDOMWindow* dom_window);
+    
     NS_DECL_ISUPPORTS
     NS_DECL_NSIPROMPTSERVICE
+    NS_DECL_NSIPROMPTSERVICE2
     NS_DECL_NSIBADCERTLISTENER
+    NS_DECL_NSIBADCERTLISTENER2
 };
 
 
@@ -287,6 +419,7 @@ NS_IMPL_RELEASE(PromptService)
 NS_INTERFACE_MAP_BEGIN(PromptService)
     NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIPromptService)
     NS_INTERFACE_MAP_ENTRY(nsIPromptService)
+    NS_INTERFACE_MAP_ENTRY(nsIPromptService2)
     NS_INTERFACE_MAP_ENTRY(nsIBadCertListener)
 NS_INTERFACE_MAP_END
 
@@ -305,6 +438,17 @@ NS_IMETHODIMP PromptService::Alert(nsIDOMWindow* parent,
 {
     wxString title = ns2wx(ns_dialog_title);
     wxString text = ns2wx(ns_text);
+
+
+    if (text.Find(wxT("ssl_error_")) != -1 ||
+        text.Find(wxT("sec_error_")) != -1)
+    {
+        onBadCertificate(text, parent);
+        return NS_OK;
+    }
+
+
+
 
     wxMessageBox(text,
                  title,
@@ -424,6 +568,7 @@ NS_IMETHODIMP PromptService::PromptUsernameAndPassword(
                                     PRBool* check_value,
                                     PRBool* retval)
 {
+    // this version is used by xulrunner 1.8.x -- see below for the newer version
     wxWindow* wxparent = GetTopFrameFromDOMWindow(parent);
     
     PromptDlgPassword dlg(wxparent);
@@ -474,6 +619,12 @@ NS_IMETHODIMP PromptService::ConfirmUnknownIssuer(
                                     PRInt16* certAddType,
                                     PRBool* retval)
 {
+    if (wxWebControl::GetIgnoreCertErrors())
+    {
+        *retval = PR_TRUE;
+        return NS_OK;
+    }
+
     int res = wxMessageBox(
         _("The requested web page is certified by an unknown authority.  Would you like to continue?"),
         _("Website Certified by an Unknown Authority"),
@@ -491,12 +642,69 @@ NS_IMETHODIMP PromptService::ConfirmUnknownIssuer(
     return NS_OK;
 }
 
+NS_IMETHODIMP PromptService::PromptAuth(nsIDOMWindow* parent,
+                                        nsIChannel* channel,
+                                        PRUint32 level,
+                                        nsIAuthInformation* auth_info,
+                                        const PRUnichar* checkbox_label,
+                                        PRBool* check_value,
+                                        PRBool* retval)
+{
+    // this version used by newer >= 1.9.1 versions of xulrunner
+    wxWindow* wxparent = GetTopFrameFromDOMWindow(parent);
+    
+    PromptDlgPassword dlg(wxparent);
+    dlg.SetMessage(_("Please enter a username and password:"));
+    
+    int res = dlg.ShowModal();
+    if (res == wxID_OK)
+    {
+        nsEmbedString ns_username;
+        nsEmbedString ns_password;
+
+        wx2ns(dlg.GetUserName(), ns_username);
+        wx2ns(dlg.GetPassword(), ns_password);
+        
+        auth_info->SetUsername(ns_username);
+        auth_info->SetPassword(ns_password);
+        
+        *retval = PR_TRUE;
+    }
+     else
+    {
+        *retval = PR_FALSE;
+    }
+    
+    return NS_OK;
+}
+
+NS_IMETHODIMP PromptService::AsyncPromptAuth(nsIDOMWindow* parent,
+                                        nsIChannel* channel,
+                                        nsIAuthPromptCallback* callbck,
+                                        nsISupports* contxt,
+                                        PRUint32 level,
+                                        nsIAuthInformation* auth_info,
+                                        const PRUnichar* checkbox_label,
+                                        PRBool* check_value,
+                                        nsICancelable** retval)
+{
+    return NS_OK;
+}
+
+
+
 NS_IMETHODIMP PromptService::ConfirmMismatchDomain(
                                     nsIInterfaceRequestor* socketInfo,
                                     const nsACString& targetURL,
                                     nsIX509Cert *cert,
                                     PRBool* retval)
 {
+    if (wxWebControl::GetIgnoreCertErrors())
+    {
+        *retval = PR_TRUE;
+        return NS_OK;
+    }
+
     int res = wxMessageBox(
         _("The requested web page uses a certificate which does not match the domain.  Would you like to continue?"),
         _("Domain Mismatch"),
@@ -518,6 +726,12 @@ NS_IMETHODIMP PromptService::ConfirmCertExpired(
                                     nsIX509Cert* cert,
                                     PRBool* retval)
 {
+    if (wxWebControl::GetIgnoreCertErrors())
+    {
+        *retval = PR_TRUE;
+        return NS_OK;
+    }
+
     int res = wxMessageBox(
         _("The requested web page uses a certificate which has expired.  Would you like to continue?"),
         _("Certificate Expired"),
@@ -542,6 +756,105 @@ NS_IMETHODIMP PromptService::NotifyCrlNextupdate(
     return NS_OK;
 }
 
+NS_IMETHODIMP PromptService::NotifyCertProblem(
+                                    nsIInterfaceRequestor *socket_info,
+                                    nsISSLStatus *status,
+                                    const nsACString& target_site,
+                                    PRBool *retval)
+{
+    if (wxWebControl::GetIgnoreCertErrors())
+    {
+        *retval = PR_TRUE;
+        return NS_OK;
+    }
+
+    *retval = PR_TRUE;
+    return NS_OK;
+}
+
+void PromptService::onBadCertificate(const wxString& message, nsIDOMWindow* dom_window)
+{
+    wxString msg_text = message;
+    msg_text += wxT("\n");
+    msg_text += _("Would you like to accept this certificate and continue?");
+    
+    int res = wxMessageBox(msg_text,
+             _("Secure Connection Warning"),
+             wxYES_NO,
+             GetTopFrameFromDOMWindow(dom_window));
+
+    if (res != wxYES)
+        return;
+
+
+    wxWebControl* ctrl = GetWebControlFromDOMWindow(dom_window);
+    if (!ctrl)
+        return;
+
+    ns_smartptr<nsIURIFixup> uri_fixup = nsGetService("@mozilla.org/docshell/urifixup;1");
+    if (!uri_fixup)
+        return;
+    
+    wxString load_uri = ctrl->GetCurrentLoadURI();
+    
+    ns_smartptr<nsIURI> uri;
+    nsEmbedCString load_uri_text;
+    wx2ns(load_uri, load_uri_text);
+    uri_fixup->CreateFixupURI(load_uri_text, 0, &uri.p);
+
+    if (!uri)
+        return;
+    
+    nsEmbedCString ns_host;
+    PRInt32 ns_port = 0;
+    uri->GetAsciiHost(ns_host);
+    uri->GetPort(&ns_port);
+    if (ns_port <= 0)
+        ns_port = 443;
+    
+    ns_smartptr<nsIRecentBadCertsService> bad_certs = nsGetService("@mozilla.org/security/recentbadcerts;1");
+    if (bad_certs)
+    {
+        wxString wx_host_port = ns2wx(ns_host);
+        wx_host_port += wxString::Format(wxT(":%d"), ns_port);
+        
+        nsEmbedString ns_host_port;
+        wx2ns(wx_host_port, ns_host_port);
+            
+        ns_smartptr<nsISSLStatus> status;
+        bad_certs->GetRecentBadCert(ns_host_port, &status.p);
+        if (status)
+        {
+            ns_smartptr<nsICertOverrideService> cert_override = nsGetService("@mozilla.org/security/certoverride;1");
+            if (cert_override)
+            {
+                ns_smartptr<nsIX509Cert> cert;
+                status->GetServerCert(&cert.p);
+                
+                if (cert)
+                {
+                    PRBool is_untrusted, is_domain_mismatch, is_not_valid_at_this_time;
+                    
+                    status->GetIsUntrusted(&is_untrusted);
+                    status->GetIsDomainMismatch(&is_domain_mismatch);
+                    status->GetIsNotValidAtThisTime(&is_not_valid_at_this_time);
+                
+                    unsigned int flags = 0;
+                    if (is_untrusted)
+                        flags |= nsICertOverrideService::ERROR_UNTRUSTED;
+                    if (is_domain_mismatch)
+                        flags |= nsICertOverrideService::ERROR_MISMATCH;
+                    if (is_not_valid_at_this_time)
+                        flags |= nsICertOverrideService::ERROR_TIME;
+
+                    cert_override->RememberValidityOverride(ns_host, ns_port, cert, flags, PR_FALSE /* permanently */);
+                    
+                    ctrl->OpenURI(load_uri);
+                }
+            }
+        }
+    }
+}
 
 
 
@@ -599,6 +912,106 @@ void CreatePromptServiceFactory(nsIFactory** result)
     *result = obj;
 }
 
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+//  TransferService class implementation
+///////////////////////////////////////////////////////////////////////////////
+
+
+class TransferService18 : public nsITransfer18
+{
+public:
+
+    NS_DECL_ISUPPORTS
+
+    TransferService18()
+    {
+    }
+
+    NS_IMETHODIMP Init(nsIURI* source,
+                       nsIURI* target,
+                       const nsAString& display_name,
+                       nsIMIMEInfo* mime_info,
+                       PRTime start_time,
+                       nsILocalFile* temp_file,
+                       nsICancelable* cancelable)
+    {
+        return NS_OK;
+    }
+
+    NS_IMETHOD OnStateChange(nsIWebProgress* web_progress,
+                             nsIRequest* request,
+                             PRUint32 state_flags,
+                             nsresult status)
+    {
+        return NS_OK;
+    }
+
+    NS_IMETHOD OnProgressChange(nsIWebProgress* web_progress,
+                                nsIRequest* request,
+                                PRInt32 cur_self_progress,
+                                PRInt32 max_self_progress,
+                                PRInt32 cur_total_progress,
+                                PRInt32 max_total_progress)
+    {
+        return OnProgressChange64(web_progress,
+                                  request,
+                                  cur_self_progress,
+                                  max_self_progress,
+                                  cur_total_progress,
+                                  max_total_progress);
+    }
+    
+    NS_IMETHOD OnProgressChange64(
+                                 nsIWebProgress* web_progress,
+                                 nsIRequest* request,
+                                 PRInt64 cur_self_progress,
+                                 PRInt64 max_self_progress,
+                                 PRInt64 cur_total_progress,
+                                 PRInt64 max_total_progress)
+    {
+       return NS_OK;
+    }
+    
+    NS_IMETHOD OnLocationChange(
+                             nsIWebProgress* web_progress,
+                             nsIRequest* request,
+                             nsIURI* location)
+    {
+       return NS_OK;
+    }
+
+    NS_IMETHOD OnStatusChange(
+                             nsIWebProgress* web_progress,
+                             nsIRequest* request,
+                             nsresult status,
+                             const PRUnichar* message)
+    {
+        return NS_OK;
+    }
+
+
+    NS_IMETHOD OnSecurityChange(
+                             nsIWebProgress* web_progress,
+                             nsIRequest* request,
+                             PRUint32 state)
+    {
+       return NS_OK;
+    }
+};
+
+
+NS_IMPL_ADDREF(TransferService18)
+NS_IMPL_RELEASE(TransferService18)
+
+NS_INTERFACE_MAP_BEGIN(TransferService18)
+    NS_INTERFACE_MAP_ENTRY(nsISupports)
+    NS_INTERFACE_MAP_ENTRY(nsITransfer18)
+    NS_INTERFACE_MAP_ENTRY(nsIWebProgressListener2_18)
+    NS_INTERFACE_MAP_ENTRY(nsIWebProgressListener)
+NS_INTERFACE_MAP_END
 
 
 
@@ -687,8 +1100,17 @@ public:
     {
        return NS_OK;
     }
+    
+    NS_IMETHOD OnRefreshAttempted(
+                        nsIWebProgress* web_progress,
+                        nsIURI* refresh_uri,
+                        PRInt32 millis,
+                        PRBool same_uri,
+                        PRBool *retval)
+    {
+        return NS_OK;
+    }
 };
-
 
 NS_IMPL_ADDREF(TransferService)
 NS_IMPL_RELEASE(TransferService)
@@ -699,7 +1121,6 @@ NS_INTERFACE_MAP_BEGIN(TransferService)
     NS_INTERFACE_MAP_ENTRY(nsIWebProgressListener2)
     NS_INTERFACE_MAP_ENTRY(nsIWebProgressListener)
 NS_INTERFACE_MAP_END
-
 
 
 
@@ -731,13 +1152,25 @@ public:
         if (outer)
             return NS_ERROR_NO_AGGREGATION;
         
-        TransferService* obj = new TransferService();
-        if (!obj)
-            return NS_ERROR_OUT_OF_MEMORY;
-            
-        obj->AddRef();
-        res = obj->QueryInterface(iid, result);
-        obj->Release();
+        if (wxWebControl::IsVersion18())
+        {
+            TransferService18* obj = new TransferService18();
+            if (!obj)
+                return NS_ERROR_OUT_OF_MEMORY;
+            obj->AddRef();
+            res = obj->QueryInterface(iid, result);
+            obj->Release();
+        }
+         else
+        {
+            TransferService* obj = new TransferService();
+            if (!obj)
+                return NS_ERROR_OUT_OF_MEMORY;
+            obj->AddRef();
+            res = obj->QueryInterface(iid, result);
+            obj->Release();
+        }
+        
         
         return res;
     }
@@ -766,7 +1199,8 @@ void CreateTransferFactory(nsIFactory** result)
 ///////////////////////////////////////////////////////////////////////////////
 
 
-class UnknownContentTypeHandler : public nsIHelperAppLauncherDialog
+class UnknownContentTypeHandler : public nsIHelperAppLauncherDialog,
+                                  public nsIHelperAppLauncherDialog18
 {
 public:
 
@@ -775,7 +1209,7 @@ public:
     NS_IMETHOD Show(nsIHelperAppLauncher* launcher,
                     nsISupports* _context,
                     PRUint32 reason)
-    {        
+    {     
         ns_smartptr<nsISupports> context = _context;
         ns_smartptr<nsIDOMWindow> parent = nsRequestInterface(context);
         wxWebControl* ctrl = GetWebControlFromDOMWindow(parent);
@@ -807,16 +1241,27 @@ public:
         wxString filename = ns2wx(ns_filename);
         
         
+        // fetch mime type
         nsEmbedCString ns_mimetype;
-        ns_smartptr<nsIMIMEInfo> mime_info;
-        launcher->GetMIMEInfo(&mime_info.p);
+        ns_smartptr<nsISupports> mime_info_supports;
+        launcher->GetMIMEInfo((nsIMIMEInfo**)&mime_info_supports.p);
         wxString mime_type;
+        
+        ns_smartptr<nsIMIMEInfo18> mime_info18 = mime_info_supports;
+        if (mime_info18)
+        {
+            mime_info18->GetMIMEType(ns_mimetype);
+            mime_type = ns2wx(ns_mimetype);
+        }
+        ns_smartptr<nsIMIMEInfo> mime_info = mime_info_supports;
         if (mime_info)
         {
             mime_info->GetMIMEType(ns_mimetype);
             mime_type = ns2wx(ns_mimetype);
-        }
+        }        
         
+        
+        // setup event object
         wxWebEvent evt(wxEVT_WEB_INITDOWNLOAD, ctrl->GetId());
         evt.SetEventObject(ctrl);
         evt.SetFilename(filename);
@@ -848,7 +1293,7 @@ public:
                         NS_NewNativeLocalFile(nsDependentCString(fname.c_str()), PR_TRUE, &filep);
 
                         launcher->SaveToDisk(filep, PR_FALSE);
-                        
+
                         if (filep)
                             filep->Release();
                     }
@@ -865,9 +1310,13 @@ public:
             if (evt.m_download_listener)
             {
                 evt.m_download_listener->Init(url, evt.m_download_action_path);
-                ProgressListenerAdaptor* progress = new ProgressListenerAdaptor(evt.m_download_listener);
-                progress->AddRef();
-                launcher->SetWebProgressListener(progress);
+                nsIWebProgressListener* progress = CreateProgressListenerAdaptor(evt.m_download_listener);
+                
+                if (wxWebControl::IsVersion18())
+                    launcher->SetWebProgressListener((nsIWebProgressListener2*)(nsIWebProgressListener2_18*)progress);
+                     else
+                    launcher->SetWebProgressListener((nsIWebProgressListener2*)progress);
+                
                 progress->Release();
             }
         
@@ -903,6 +1352,16 @@ public:
                                    const PRUnichar* suggested_file_extension,
                                    nsILocalFile** new_file)
     {
+        return PromptForSaveToFile(launcher, window_context, default_file, suggested_file_extension, false, new_file);
+    }
+    
+    NS_IMETHOD PromptForSaveToFile(nsIHelperAppLauncher* launcher,
+                                   nsISupports* window_context,
+                                   const PRUnichar* default_file,
+                                   const PRUnichar* suggested_file_extension,
+                                   PRBool force_prompt,
+                                   nsILocalFile** new_file)
+    {
         ns_smartptr<nsISupports> context = window_context;
         ns_smartptr<nsIDOMWindow> parent = nsRequestInterface(context);
         
@@ -934,7 +1393,19 @@ public:
 };
 
 
-NS_IMPL_ISUPPORTS1(UnknownContentTypeHandler, nsIHelperAppLauncherDialog);
+NS_IMPL_ADDREF(UnknownContentTypeHandler)
+NS_IMPL_RELEASE(UnknownContentTypeHandler)
+
+NS_INTERFACE_MAP_BEGIN(UnknownContentTypeHandler)
+    NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIHelperAppLauncherDialog)
+    NS_INTERFACE_MAP_ENTRY(nsIHelperAppLauncherDialog)
+    NS_INTERFACE_MAP_ENTRY(nsIHelperAppLauncherDialog18)
+NS_INTERFACE_MAP_END
+
+
+
+
+
 
 
 
@@ -992,4 +1463,147 @@ void CreateUnknownContentTypeHandlerFactory(nsIFactory** result)
     obj->AddRef();
     *result = obj;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class CertOverrideService : public nsICertOverrideService
+{
+public:
+
+    NS_DECL_ISUPPORTS
+
+
+    CertOverrideService()
+    {
+    }
+
+    virtual ~CertOverrideService()
+    {
+    }
+
+    NS_IMETHOD RememberValidityOverride(const nsACString& host_name,
+                                        PRInt32 port, nsIX509Cert* cert,
+                                        PRUint32 override_bits,
+                                        PRBool temporary)
+    {
+        return NS_ERROR_NOT_IMPLEMENTED;
+    }
+
+    NS_IMETHOD HasMatchingOverride(const nsACString& host_name,
+                                   PRInt32 port,
+                                   nsIX509Cert* cert,
+                                   PRUint32* override_bits,
+                                   PRBool* is_temporary,
+                                   PRBool *_retval)
+    {
+        *override_bits = 3;
+        *_retval = PR_TRUE;
+        return NS_OK;
+    }
+
+    NS_IMETHOD GetValidityOverride(const nsACString& host_name,
+                                   PRInt32 port,
+                                   nsACString& hash_alg,
+                                   nsACString& fingerprint,
+                                   PRUint32* override_bits,
+                                   PRBool* is_temporary,
+                                   PRBool* _retval)
+    {
+        return NS_ERROR_NOT_IMPLEMENTED;
+    }
+
+    NS_IMETHOD ClearValidityOverride(const nsACString& host_name,
+                                     PRInt32 port)
+    {
+        return NS_ERROR_NOT_IMPLEMENTED;
+    }
+
+    NS_IMETHOD GetAllOverrideHostsWithPorts(PRUint32* count,
+                                            PRUnichar*** hosts_with_ports_array)
+    {
+        return NS_ERROR_NOT_IMPLEMENTED;
+    }
+
+    NS_IMETHOD IsCertUsedForOverrides(nsIX509Cert *cert,
+                                      PRBool check_temporaries,
+                                      PRBool check_permanents,
+                                      PRUint32 *_retval)
+    {
+        return NS_ERROR_NOT_IMPLEMENTED;
+    }
+};
+
+
+NS_IMPL_ISUPPORTS1(CertOverrideService, nsICertOverrideService);
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+//  CertOverrideFactory class implementation
+///////////////////////////////////////////////////////////////////////////////
+
+
+class CertOverrideFactory : public nsIFactory
+{
+public:
+    NS_DECL_ISUPPORTS
+    
+    CertOverrideFactory()
+    {
+        NS_INIT_ISUPPORTS();
+    }
+    
+    NS_IMETHOD CreateInstance(nsISupports* outer,
+                              const nsIID& iid,
+                              void** result)
+    {
+        nsresult res;
+        
+        if (!result)
+            return NS_ERROR_NULL_POINTER;
+            
+        if (outer)
+            return NS_ERROR_NO_AGGREGATION;
+        
+        CertOverrideService* obj = new CertOverrideService;
+        if (!obj)
+            return NS_ERROR_OUT_OF_MEMORY;
+            
+        obj->AddRef();
+        res = obj->QueryInterface(iid, result);
+        obj->Release();
+        
+        return res;
+    }
+    
+    NS_IMETHOD LockFactory(PRBool lock)
+    {
+        return NS_OK;
+    }
+};
+
+NS_IMPL_ISUPPORTS1(CertOverrideFactory, nsIFactory);
+
+
+void CreateCertOverrideFactory(nsIFactory** result)
+{
+    CertOverrideFactory* obj = new CertOverrideFactory;
+    obj->AddRef();
+    *result = obj;
+}
+
 

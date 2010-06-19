@@ -5,7 +5,7 @@
 // Modified by:
 // Created:     2006-10-08
 // RCS-ID:      
-// Copyright:   (C) Copyright 2006-2009, Kirix Corporation, All Rights Reserved.
+// Copyright:   (C) Copyright 2006-2010, Kirix Corporation, All Rights Reserved.
 // Licence:     wxWindows Library Licence, Version 3.1
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -624,6 +624,137 @@ ns_smartptr<nsIURI> nsNewURI(const wxString& spec)
 
 
 ///////////////////////////////////////////////////////////////////////////////
+//  ProgressListenerAdaptor18 class implementation
+///////////////////////////////////////////////////////////////////////////////
+
+
+ProgressListenerAdaptor18::ProgressListenerAdaptor18(wxWebProgressBase* progress)
+{
+    m_progress = progress;
+    
+    if (m_progress)
+        m_progress->OnStart();
+}
+
+ProgressListenerAdaptor18::~ProgressListenerAdaptor18()
+{
+}
+
+NS_IMETHODIMP ProgressListenerAdaptor18::Init(
+                                           nsIURI* source,
+                                           nsIURI* target,
+                                           const nsAString& display_name,
+                                           nsIMIMEInfo* mime_info,
+                                           PRTime start_time,
+                                           nsILocalFile* temp_file,
+                                           nsICancelable* cancelable)
+{
+    return NS_OK;
+}
+
+NS_IMETHODIMP ProgressListenerAdaptor18::OnStateChange(
+                         nsIWebProgress* web_progress,
+                         nsIRequest* request,
+                         PRUint32 state_flags,
+                         nsresult status)
+{
+    if (state_flags & nsIWebProgressListener::STATE_STOP)
+    {
+        if (m_progress)
+            m_progress->OnFinish();
+    }
+    
+    return NS_OK;
+}
+
+NS_IMETHODIMP ProgressListenerAdaptor18::OnProgressChange(
+                         nsIWebProgress* web_progress,
+                         nsIRequest* request,
+                         PRInt32 cur_self_progress,
+                         PRInt32 max_self_progress,
+                         PRInt32 cur_total_progress,
+                         PRInt32 max_total_progress)
+{
+    return OnProgressChange64(web_progress,
+                              request,
+                              cur_self_progress,
+                              max_self_progress,
+                              cur_total_progress,
+                              max_total_progress);
+}
+
+NS_IMETHODIMP ProgressListenerAdaptor18::OnProgressChange64(
+                         nsIWebProgress* web_progress,
+                         nsIRequest* request,
+                         PRInt64 cur_self_progress,
+                         PRInt64 max_self_progress,
+                         PRInt64 cur_total_progress,
+                         PRInt64 max_total_progress)
+{
+    if (m_progress)
+    {
+        m_progress->OnProgressChange(wxLongLong(cur_self_progress),
+                                     wxLongLong(max_self_progress));
+                                     
+        if (m_progress->IsCancelled())
+            request->Cancel(0x804b0002 /*NS_BINDING_ABORTED*/);
+    }
+    
+    return NS_OK;
+}
+
+
+NS_IMETHODIMP ProgressListenerAdaptor18::OnLocationChange(
+                     nsIWebProgress* web_progress,
+                     nsIRequest* request,
+                     nsIURI* location)
+{
+   return NS_OK;
+}
+
+NS_IMETHODIMP ProgressListenerAdaptor18::OnStatusChange(
+                     nsIWebProgress* web_progress,
+                     nsIRequest* request,
+                     nsresult status,
+                     const PRUnichar* message)
+{
+    if (NS_FAILED(status))
+    {
+        if (m_progress && !m_progress->IsCancelled())
+            m_progress->OnError(ns2wx(message));
+    }
+    
+    return NS_OK;
+}
+
+
+NS_IMETHODIMP ProgressListenerAdaptor18::OnSecurityChange(
+                     nsIWebProgress* web_progress,
+                     nsIRequest* request,
+                     PRUint32 state)
+{
+   return NS_OK;
+}
+
+             
+NS_IMPL_ADDREF(ProgressListenerAdaptor18)
+NS_IMPL_RELEASE(ProgressListenerAdaptor18)
+
+NS_INTERFACE_MAP_BEGIN(ProgressListenerAdaptor18)
+    NS_INTERFACE_MAP_ENTRY(nsISupports)
+    NS_INTERFACE_MAP_ENTRY(nsITransfer18)
+    NS_INTERFACE_MAP_ENTRY(nsIWebProgressListener2_18)
+    NS_INTERFACE_MAP_ENTRY(nsIWebProgressListener)
+NS_INTERFACE_MAP_END
+
+
+
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////
 //  ProgressListenerAdaptor class implementation
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -736,7 +867,16 @@ NS_IMETHODIMP ProgressListenerAdaptor::OnSecurityChange(
    return NS_OK;
 }
 
-
+NS_IMETHODIMP ProgressListenerAdaptor::OnRefreshAttempted(
+                        nsIWebProgress* web_progress,
+                        nsIURI* refresh_uri,
+                        PRInt32 millis,
+                        PRBool same_uri,
+                        PRBool *retval)
+{
+    return NS_OK;
+}
+             
 NS_IMPL_ADDREF(ProgressListenerAdaptor)
 NS_IMPL_RELEASE(ProgressListenerAdaptor)
 
@@ -747,3 +887,22 @@ NS_INTERFACE_MAP_BEGIN(ProgressListenerAdaptor)
     NS_INTERFACE_MAP_ENTRY(nsIWebProgressListener)
 NS_INTERFACE_MAP_END
 
+
+
+
+
+nsIWebProgressListener* CreateProgressListenerAdaptor(wxWebProgressBase* progress)
+{
+    if (wxWebControl::IsVersion18())
+    {
+        ProgressListenerAdaptor18* p = new ProgressListenerAdaptor18(progress);
+        p->AddRef();
+        return (nsIWebProgressListener*)p;
+    }
+     else
+    {
+        ProgressListenerAdaptor* p = new ProgressListenerAdaptor(progress);
+        p->AddRef();
+        return (nsIWebProgressListener*)p;
+    }
+}

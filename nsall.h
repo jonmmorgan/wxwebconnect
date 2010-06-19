@@ -1477,7 +1477,212 @@ NS_IMETHODIMP nsAppShell::Exit()
 
 class nsIInterfaceRequestor; /* forward declaration */
 
-class nsIX509Cert; /* forward declaration */
+class nsIInterfaceRequestor; /* forward declaration */
+
+
+/* starting interface:    nsIX509Cert */
+#define NS_IX509CERT_IID_STR "f0980f60-ee3d-11d4-998b-00b0d02354a0"
+
+#define NS_IX509CERT_IID \
+  {0xf0980f60, 0xee3d, 0x11d4, \
+    { 0x99, 0x8b, 0x00, 0xb0, 0xd0, 0x23, 0x54, 0xa0 }}
+
+class NS_NO_VTABLE nsIX509Cert : public nsISupports {
+ public: 
+
+  NS_DEFINE_STATIC_IID_ACCESSOR(NS_IX509CERT_IID)
+
+};
+
+/* Use this macro when declaring classes that implement this interface. */
+#define NS_DECL_NSIX509CERT \
+  /* no methods! */
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object. */
+#define NS_FORWARD_NSIX509CERT(_to) \
+  /* no methods! */
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
+#define NS_FORWARD_SAFE_NSIX509CERT(_to) \
+  /* no methods! */
+
+#if 0
+/* Use the code below as a template for the implementation class for this interface. */
+
+/* Header file */
+class nsX509Cert : public nsIX509Cert
+{
+public:
+  NS_DECL_ISUPPORTS
+  NS_DECL_NSIX509CERT
+
+  nsX509Cert();
+
+private:
+  ~nsX509Cert();
+
+protected:
+  /* additional members */
+};
+
+/* Implementation file */
+NS_IMPL_ISUPPORTS1(nsX509Cert, nsIX509Cert)
+
+nsX509Cert::nsX509Cert()
+{
+  /* member initializers and constructor code */
+}
+
+nsX509Cert::~nsX509Cert()
+{
+  /* destructor code */
+}
+
+/* End of implementation class template. */
+#endif
+
+
+/* starting interface:    nsISSLStatus */
+#define NS_ISSLSTATUS_IID_STR "cfede939-def1-49be-81ed-d401b3a07d1c"
+
+#define NS_ISSLSTATUS_IID \
+  {0xcfede939, 0xdef1, 0x49be, \
+    { 0x81, 0xed, 0xd4, 0x01, 0xb3, 0xa0, 0x7d, 0x1c }}
+
+class NS_NO_VTABLE nsISSLStatus : public nsISupports {
+ public: 
+
+  NS_DEFINE_STATIC_IID_ACCESSOR(NS_ISSLSTATUS_IID)
+
+  /* readonly attribute nsIX509Cert serverCert; */
+  NS_IMETHOD GetServerCert(nsIX509Cert * *aServerCert) = 0;
+
+  /* readonly attribute string cipherName; */
+  NS_IMETHOD GetCipherName(char * *aCipherName) = 0;
+
+  /* readonly attribute unsigned long keyLength; */
+  NS_IMETHOD GetKeyLength(PRUint32 *aKeyLength) = 0;
+
+  /* readonly attribute unsigned long secretKeyLength; */
+  NS_IMETHOD GetSecretKeyLength(PRUint32 *aSecretKeyLength) = 0;
+
+  /* readonly attribute boolean isDomainMismatch; */
+  NS_IMETHOD GetIsDomainMismatch(PRBool *aIsDomainMismatch) = 0;
+
+  /* readonly attribute boolean isNotValidAtThisTime; */
+  NS_IMETHOD GetIsNotValidAtThisTime(PRBool *aIsNotValidAtThisTime) = 0;
+
+  /* readonly attribute boolean isUntrusted; */
+  NS_IMETHOD GetIsUntrusted(PRBool *aIsUntrusted) = 0;
+
+};
+
+/* Use this macro when declaring classes that implement this interface. */
+#define NS_DECL_NSISSLSTATUS \
+  NS_IMETHOD GetServerCert(nsIX509Cert * *aServerCert); \
+  NS_IMETHOD GetCipherName(char * *aCipherName); \
+  NS_IMETHOD GetKeyLength(PRUint32 *aKeyLength); \
+  NS_IMETHOD GetSecretKeyLength(PRUint32 *aSecretKeyLength); \
+  NS_IMETHOD GetIsDomainMismatch(PRBool *aIsDomainMismatch); \
+  NS_IMETHOD GetIsNotValidAtThisTime(PRBool *aIsNotValidAtThisTime); \
+  NS_IMETHOD GetIsUntrusted(PRBool *aIsUntrusted); 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object. */
+#define NS_FORWARD_NSISSLSTATUS(_to) \
+  NS_IMETHOD GetServerCert(nsIX509Cert * *aServerCert) { return _to GetServerCert(aServerCert); } \
+  NS_IMETHOD GetCipherName(char * *aCipherName) { return _to GetCipherName(aCipherName); } \
+  NS_IMETHOD GetKeyLength(PRUint32 *aKeyLength) { return _to GetKeyLength(aKeyLength); } \
+  NS_IMETHOD GetSecretKeyLength(PRUint32 *aSecretKeyLength) { return _to GetSecretKeyLength(aSecretKeyLength); } \
+  NS_IMETHOD GetIsDomainMismatch(PRBool *aIsDomainMismatch) { return _to GetIsDomainMismatch(aIsDomainMismatch); } \
+  NS_IMETHOD GetIsNotValidAtThisTime(PRBool *aIsNotValidAtThisTime) { return _to GetIsNotValidAtThisTime(aIsNotValidAtThisTime); } \
+  NS_IMETHOD GetIsUntrusted(PRBool *aIsUntrusted) { return _to GetIsUntrusted(aIsUntrusted); } 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
+#define NS_FORWARD_SAFE_NSISSLSTATUS(_to) \
+  NS_IMETHOD GetServerCert(nsIX509Cert * *aServerCert) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetServerCert(aServerCert); } \
+  NS_IMETHOD GetCipherName(char * *aCipherName) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetCipherName(aCipherName); } \
+  NS_IMETHOD GetKeyLength(PRUint32 *aKeyLength) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetKeyLength(aKeyLength); } \
+  NS_IMETHOD GetSecretKeyLength(PRUint32 *aSecretKeyLength) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetSecretKeyLength(aSecretKeyLength); } \
+  NS_IMETHOD GetIsDomainMismatch(PRBool *aIsDomainMismatch) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetIsDomainMismatch(aIsDomainMismatch); } \
+  NS_IMETHOD GetIsNotValidAtThisTime(PRBool *aIsNotValidAtThisTime) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetIsNotValidAtThisTime(aIsNotValidAtThisTime); } \
+  NS_IMETHOD GetIsUntrusted(PRBool *aIsUntrusted) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetIsUntrusted(aIsUntrusted); } 
+
+#if 0
+/* Use the code below as a template for the implementation class for this interface. */
+
+/* Header file */
+class nsSSLStatus : public nsISSLStatus
+{
+public:
+  NS_DECL_ISUPPORTS
+  NS_DECL_NSISSLSTATUS
+
+  nsSSLStatus();
+
+private:
+  ~nsSSLStatus();
+
+protected:
+  /* additional members */
+};
+
+/* Implementation file */
+NS_IMPL_ISUPPORTS1(nsSSLStatus, nsISSLStatus)
+
+nsSSLStatus::nsSSLStatus()
+{
+  /* member initializers and constructor code */
+}
+
+nsSSLStatus::~nsSSLStatus()
+{
+  /* destructor code */
+}
+
+/* readonly attribute nsIX509Cert serverCert; */
+NS_IMETHODIMP nsSSLStatus::GetServerCert(nsIX509Cert * *aServerCert)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute string cipherName; */
+NS_IMETHODIMP nsSSLStatus::GetCipherName(char * *aCipherName)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute unsigned long keyLength; */
+NS_IMETHODIMP nsSSLStatus::GetKeyLength(PRUint32 *aKeyLength)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute unsigned long secretKeyLength; */
+NS_IMETHODIMP nsSSLStatus::GetSecretKeyLength(PRUint32 *aSecretKeyLength)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute boolean isDomainMismatch; */
+NS_IMETHODIMP nsSSLStatus::GetIsDomainMismatch(PRBool *aIsDomainMismatch)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute boolean isNotValidAtThisTime; */
+NS_IMETHODIMP nsSSLStatus::GetIsNotValidAtThisTime(PRBool *aIsNotValidAtThisTime)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute boolean isUntrusted; */
+NS_IMETHODIMP nsSSLStatus::GetIsUntrusted(PRBool *aIsUntrusted)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* End of implementation class template. */
+#endif
 
 
 /* starting interface:    nsIBadCertListener */
@@ -1585,6 +1790,297 @@ NS_IMETHODIMP nsBadCertListener::ConfirmCertExpired(nsIInterfaceRequestor *socke
 
 /* void notifyCrlNextupdate (in nsIInterfaceRequestor socketInfo, in AUTF8String targetURL, in nsIX509Cert cert); */
 NS_IMETHODIMP nsBadCertListener::NotifyCrlNextupdate(nsIInterfaceRequestor *socketInfo, const nsACString & targetURL, nsIX509Cert *cert)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* End of implementation class template. */
+#endif
+
+
+/* starting interface:    nsIBadCertListener2 */
+#define NS_IBADCERTLISTENER2_IID_STR "2c3d268c-ad82-49f3-99aa-e9ffddd7a0dc"
+
+#define NS_IBADCERTLISTENER2_IID \
+  {0x2c3d268c, 0xad82, 0x49f3, \
+    { 0x99, 0xaa, 0xe9, 0xff, 0xdd, 0xd7, 0xa0, 0xdc }}
+
+class NS_NO_VTABLE nsIBadCertListener2 : public nsISupports {
+ public: 
+
+  NS_DEFINE_STATIC_IID_ACCESSOR(NS_IBADCERTLISTENER2_IID)
+
+  /* boolean notifyCertProblem (in nsIInterfaceRequestor socket_info, in nsISSLStatus status, in AUTF8String target_site); */
+  NS_IMETHOD NotifyCertProblem(nsIInterfaceRequestor *socket_info, nsISSLStatus *status, const nsACString & target_site, PRBool *_retval) = 0;
+
+};
+
+/* Use this macro when declaring classes that implement this interface. */
+#define NS_DECL_NSIBADCERTLISTENER2 \
+  NS_IMETHOD NotifyCertProblem(nsIInterfaceRequestor *socket_info, nsISSLStatus *status, const nsACString & target_site, PRBool *_retval); 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object. */
+#define NS_FORWARD_NSIBADCERTLISTENER2(_to) \
+  NS_IMETHOD NotifyCertProblem(nsIInterfaceRequestor *socket_info, nsISSLStatus *status, const nsACString & target_site, PRBool *_retval) { return _to NotifyCertProblem(socket_info, status, target_site, _retval); } 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
+#define NS_FORWARD_SAFE_NSIBADCERTLISTENER2(_to) \
+  NS_IMETHOD NotifyCertProblem(nsIInterfaceRequestor *socket_info, nsISSLStatus *status, const nsACString & target_site, PRBool *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->NotifyCertProblem(socket_info, status, target_site, _retval); } 
+
+#if 0
+/* Use the code below as a template for the implementation class for this interface. */
+
+/* Header file */
+class nsBadCertListener2 : public nsIBadCertListener2
+{
+public:
+  NS_DECL_ISUPPORTS
+  NS_DECL_NSIBADCERTLISTENER2
+
+  nsBadCertListener2();
+
+private:
+  ~nsBadCertListener2();
+
+protected:
+  /* additional members */
+};
+
+/* Implementation file */
+NS_IMPL_ISUPPORTS1(nsBadCertListener2, nsIBadCertListener2)
+
+nsBadCertListener2::nsBadCertListener2()
+{
+  /* member initializers and constructor code */
+}
+
+nsBadCertListener2::~nsBadCertListener2()
+{
+  /* destructor code */
+}
+
+/* boolean notifyCertProblem (in nsIInterfaceRequestor socket_info, in nsISSLStatus status, in AUTF8String target_site); */
+NS_IMETHODIMP nsBadCertListener2::NotifyCertProblem(nsIInterfaceRequestor *socket_info, nsISSLStatus *status, const nsACString & target_site, PRBool *_retval)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* End of implementation class template. */
+#endif
+
+
+/* starting interface:    nsIRecentBadCertsService */
+#define NS_IRECENTBADCERTSSERVICE_IID_STR "a5ae8b05-a76e-408f-b0ba-02a831265749"
+
+#define NS_IRECENTBADCERTSSERVICE_IID \
+  {0xa5ae8b05, 0xa76e, 0x408f, \
+    { 0xb0, 0xba, 0x02, 0xa8, 0x31, 0x26, 0x57, 0x49 }}
+
+class NS_NO_VTABLE nsIRecentBadCertsService : public nsISupports {
+ public: 
+
+  NS_DEFINE_STATIC_IID_ACCESSOR(NS_IRECENTBADCERTSSERVICE_IID)
+
+  /* nsISSLStatus getRecentBadCert (in AString host_name_with_port); */
+  NS_IMETHOD GetRecentBadCert(const nsAString & host_name_with_port, nsISSLStatus **_retval) = 0;
+
+  /* void addBadCert (in AString host_name_with_port, in nsISSLStatus status); */
+  NS_IMETHOD AddBadCert(const nsAString & host_name_with_port, nsISSLStatus *status) = 0;
+
+};
+
+/* Use this macro when declaring classes that implement this interface. */
+#define NS_DECL_NSIRECENTBADCERTSSERVICE \
+  NS_IMETHOD GetRecentBadCert(const nsAString & host_name_with_port, nsISSLStatus **_retval); \
+  NS_IMETHOD AddBadCert(const nsAString & host_name_with_port, nsISSLStatus *status); 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object. */
+#define NS_FORWARD_NSIRECENTBADCERTSSERVICE(_to) \
+  NS_IMETHOD GetRecentBadCert(const nsAString & host_name_with_port, nsISSLStatus **_retval) { return _to GetRecentBadCert(host_name_with_port, _retval); } \
+  NS_IMETHOD AddBadCert(const nsAString & host_name_with_port, nsISSLStatus *status) { return _to AddBadCert(host_name_with_port, status); } 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
+#define NS_FORWARD_SAFE_NSIRECENTBADCERTSSERVICE(_to) \
+  NS_IMETHOD GetRecentBadCert(const nsAString & host_name_with_port, nsISSLStatus **_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetRecentBadCert(host_name_with_port, _retval); } \
+  NS_IMETHOD AddBadCert(const nsAString & host_name_with_port, nsISSLStatus *status) { return !_to ? NS_ERROR_NULL_POINTER : _to->AddBadCert(host_name_with_port, status); } 
+
+#if 0
+/* Use the code below as a template for the implementation class for this interface. */
+
+/* Header file */
+class nsRecentBadCertsService : public nsIRecentBadCertsService
+{
+public:
+  NS_DECL_ISUPPORTS
+  NS_DECL_NSIRECENTBADCERTSSERVICE
+
+  nsRecentBadCertsService();
+
+private:
+  ~nsRecentBadCertsService();
+
+protected:
+  /* additional members */
+};
+
+/* Implementation file */
+NS_IMPL_ISUPPORTS1(nsRecentBadCertsService, nsIRecentBadCertsService)
+
+nsRecentBadCertsService::nsRecentBadCertsService()
+{
+  /* member initializers and constructor code */
+}
+
+nsRecentBadCertsService::~nsRecentBadCertsService()
+{
+  /* destructor code */
+}
+
+/* nsISSLStatus getRecentBadCert (in AString host_name_with_port); */
+NS_IMETHODIMP nsRecentBadCertsService::GetRecentBadCert(const nsAString & host_name_with_port, nsISSLStatus **_retval)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void addBadCert (in AString host_name_with_port, in nsISSLStatus status); */
+NS_IMETHODIMP nsRecentBadCertsService::AddBadCert(const nsAString & host_name_with_port, nsISSLStatus *status)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* End of implementation class template. */
+#endif
+
+
+/* starting interface:    nsICertOverrideService */
+#define NS_ICERTOVERRIDESERVICE_IID_STR "31738d2a-77d3-4359-84c9-4be2f38fb8c5"
+
+#define NS_ICERTOVERRIDESERVICE_IID \
+  {0x31738d2a, 0x77d3, 0x4359, \
+    { 0x84, 0xc9, 0x4b, 0xe2, 0xf3, 0x8f, 0xb8, 0xc5 }}
+
+class NS_NO_VTABLE nsICertOverrideService : public nsISupports {
+ public: 
+
+  NS_DEFINE_STATIC_IID_ACCESSOR(NS_ICERTOVERRIDESERVICE_IID)
+
+  enum { ERROR_UNTRUSTED = 1 };
+
+  enum { ERROR_MISMATCH = 2 };
+
+  enum { ERROR_TIME = 4 };
+
+  /* void rememberValidityOverride (in ACString host_name, in PRInt32 port, in nsIX509Cert cert, in PRUint32 override_bits, in boolean temporary); */
+  NS_IMETHOD RememberValidityOverride(const nsACString & host_name, PRInt32 port, nsIX509Cert *cert, PRUint32 override_bits, PRBool temporary) = 0;
+
+  /* boolean hasMatchingOverride (in ACString host_name, in PRInt32 port, in nsIX509Cert cert, out PRUint32 override_bits, out boolean is_temporary); */
+  NS_IMETHOD HasMatchingOverride(const nsACString & host_name, PRInt32 port, nsIX509Cert *cert, PRUint32 *override_bits, PRBool *is_temporary, PRBool *_retval) = 0;
+
+  /* boolean getValidityOverride (in ACString host_name, in PRInt32 port, out ACString hash_alg, out ACString fingerprint, out PRUint32 override_bits, out boolean is_temporary); */
+  NS_IMETHOD GetValidityOverride(const nsACString & host_name, PRInt32 port, nsACString & hash_alg, nsACString & fingerprint, PRUint32 *override_bits, PRBool *is_temporary, PRBool *_retval) = 0;
+
+  /* void clearValidityOverride (in ACString host_name, in PRInt32 port); */
+  NS_IMETHOD ClearValidityOverride(const nsACString & host_name, PRInt32 port) = 0;
+
+  /* void getAllOverrideHostsWithPorts (out PRUint32 count, [array, size_is (count)] out wstring hosts_with_ports_array); */
+  NS_IMETHOD GetAllOverrideHostsWithPorts(PRUint32 *count, PRUnichar ***hosts_with_ports_array) = 0;
+
+  /* PRUint32 isCertUsedForOverrides (in nsIX509Cert cert, in boolean check_temporaries, in boolean check_permanents); */
+  NS_IMETHOD IsCertUsedForOverrides(nsIX509Cert *cert, PRBool check_temporaries, PRBool check_permanents, PRUint32 *_retval) = 0;
+
+};
+
+/* Use this macro when declaring classes that implement this interface. */
+#define NS_DECL_NSICERTOVERRIDESERVICE \
+  NS_IMETHOD RememberValidityOverride(const nsACString & host_name, PRInt32 port, nsIX509Cert *cert, PRUint32 override_bits, PRBool temporary); \
+  NS_IMETHOD HasMatchingOverride(const nsACString & host_name, PRInt32 port, nsIX509Cert *cert, PRUint32 *override_bits, PRBool *is_temporary, PRBool *_retval); \
+  NS_IMETHOD GetValidityOverride(const nsACString & host_name, PRInt32 port, nsACString & hash_alg, nsACString & fingerprint, PRUint32 *override_bits, PRBool *is_temporary, PRBool *_retval); \
+  NS_IMETHOD ClearValidityOverride(const nsACString & host_name, PRInt32 port); \
+  NS_IMETHOD GetAllOverrideHostsWithPorts(PRUint32 *count, PRUnichar ***hosts_with_ports_array); \
+  NS_IMETHOD IsCertUsedForOverrides(nsIX509Cert *cert, PRBool check_temporaries, PRBool check_permanents, PRUint32 *_retval); 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object. */
+#define NS_FORWARD_NSICERTOVERRIDESERVICE(_to) \
+  NS_IMETHOD RememberValidityOverride(const nsACString & host_name, PRInt32 port, nsIX509Cert *cert, PRUint32 override_bits, PRBool temporary) { return _to RememberValidityOverride(host_name, port, cert, override_bits, temporary); } \
+  NS_IMETHOD HasMatchingOverride(const nsACString & host_name, PRInt32 port, nsIX509Cert *cert, PRUint32 *override_bits, PRBool *is_temporary, PRBool *_retval) { return _to HasMatchingOverride(host_name, port, cert, override_bits, is_temporary, _retval); } \
+  NS_IMETHOD GetValidityOverride(const nsACString & host_name, PRInt32 port, nsACString & hash_alg, nsACString & fingerprint, PRUint32 *override_bits, PRBool *is_temporary, PRBool *_retval) { return _to GetValidityOverride(host_name, port, hash_alg, fingerprint, override_bits, is_temporary, _retval); } \
+  NS_IMETHOD ClearValidityOverride(const nsACString & host_name, PRInt32 port) { return _to ClearValidityOverride(host_name, port); } \
+  NS_IMETHOD GetAllOverrideHostsWithPorts(PRUint32 *count, PRUnichar ***hosts_with_ports_array) { return _to GetAllOverrideHostsWithPorts(count, hosts_with_ports_array); } \
+  NS_IMETHOD IsCertUsedForOverrides(nsIX509Cert *cert, PRBool check_temporaries, PRBool check_permanents, PRUint32 *_retval) { return _to IsCertUsedForOverrides(cert, check_temporaries, check_permanents, _retval); } 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
+#define NS_FORWARD_SAFE_NSICERTOVERRIDESERVICE(_to) \
+  NS_IMETHOD RememberValidityOverride(const nsACString & host_name, PRInt32 port, nsIX509Cert *cert, PRUint32 override_bits, PRBool temporary) { return !_to ? NS_ERROR_NULL_POINTER : _to->RememberValidityOverride(host_name, port, cert, override_bits, temporary); } \
+  NS_IMETHOD HasMatchingOverride(const nsACString & host_name, PRInt32 port, nsIX509Cert *cert, PRUint32 *override_bits, PRBool *is_temporary, PRBool *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->HasMatchingOverride(host_name, port, cert, override_bits, is_temporary, _retval); } \
+  NS_IMETHOD GetValidityOverride(const nsACString & host_name, PRInt32 port, nsACString & hash_alg, nsACString & fingerprint, PRUint32 *override_bits, PRBool *is_temporary, PRBool *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetValidityOverride(host_name, port, hash_alg, fingerprint, override_bits, is_temporary, _retval); } \
+  NS_IMETHOD ClearValidityOverride(const nsACString & host_name, PRInt32 port) { return !_to ? NS_ERROR_NULL_POINTER : _to->ClearValidityOverride(host_name, port); } \
+  NS_IMETHOD GetAllOverrideHostsWithPorts(PRUint32 *count, PRUnichar ***hosts_with_ports_array) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetAllOverrideHostsWithPorts(count, hosts_with_ports_array); } \
+  NS_IMETHOD IsCertUsedForOverrides(nsIX509Cert *cert, PRBool check_temporaries, PRBool check_permanents, PRUint32 *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->IsCertUsedForOverrides(cert, check_temporaries, check_permanents, _retval); } 
+
+#if 0
+/* Use the code below as a template for the implementation class for this interface. */
+
+/* Header file */
+class nsCertOverrideService : public nsICertOverrideService
+{
+public:
+  NS_DECL_ISUPPORTS
+  NS_DECL_NSICERTOVERRIDESERVICE
+
+  nsCertOverrideService();
+
+private:
+  ~nsCertOverrideService();
+
+protected:
+  /* additional members */
+};
+
+/* Implementation file */
+NS_IMPL_ISUPPORTS1(nsCertOverrideService, nsICertOverrideService)
+
+nsCertOverrideService::nsCertOverrideService()
+{
+  /* member initializers and constructor code */
+}
+
+nsCertOverrideService::~nsCertOverrideService()
+{
+  /* destructor code */
+}
+
+/* void rememberValidityOverride (in ACString host_name, in PRInt32 port, in nsIX509Cert cert, in PRUint32 override_bits, in boolean temporary); */
+NS_IMETHODIMP nsCertOverrideService::RememberValidityOverride(const nsACString & host_name, PRInt32 port, nsIX509Cert *cert, PRUint32 override_bits, PRBool temporary)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* boolean hasMatchingOverride (in ACString host_name, in PRInt32 port, in nsIX509Cert cert, out PRUint32 override_bits, out boolean is_temporary); */
+NS_IMETHODIMP nsCertOverrideService::HasMatchingOverride(const nsACString & host_name, PRInt32 port, nsIX509Cert *cert, PRUint32 *override_bits, PRBool *is_temporary, PRBool *_retval)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* boolean getValidityOverride (in ACString host_name, in PRInt32 port, out ACString hash_alg, out ACString fingerprint, out PRUint32 override_bits, out boolean is_temporary); */
+NS_IMETHODIMP nsCertOverrideService::GetValidityOverride(const nsACString & host_name, PRInt32 port, nsACString & hash_alg, nsACString & fingerprint, PRUint32 *override_bits, PRBool *is_temporary, PRBool *_retval)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void clearValidityOverride (in ACString host_name, in PRInt32 port); */
+NS_IMETHODIMP nsCertOverrideService::ClearValidityOverride(const nsACString & host_name, PRInt32 port)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void getAllOverrideHostsWithPorts (out PRUint32 count, [array, size_is (count)] out wstring hosts_with_ports_array); */
+NS_IMETHODIMP nsCertOverrideService::GetAllOverrideHostsWithPorts(PRUint32 *count, PRUnichar ***hosts_with_ports_array)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* PRUint32 isCertUsedForOverrides (in nsIX509Cert cert, in boolean check_temporaries, in boolean check_permanents); */
+NS_IMETHODIMP nsCertOverrideService::IsCertUsedForOverrides(nsIX509Cert *cert, PRBool check_temporaries, PRBool check_permanents, PRUint32 *_retval)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
@@ -2283,7 +2779,441 @@ NS_IMETHODIMP nsRequest::SetLoadFlags(nsLoadFlags aLoadFlags)
 /* End of implementation class template. */
 #endif
 
-class nsIURI; /* forward declaration */
+
+/* starting interface:    nsIURI */
+#define NS_IURI_IID_STR "07a22cc0-0ce5-11d3-9331-00104ba0fd40"
+
+#define NS_IURI_IID \
+  {0x07a22cc0, 0x0ce5, 0x11d3, \
+    { 0x93, 0x31, 0x00, 0x10, 0x4b, 0xa0, 0xfd, 0x40 }}
+
+class NS_NO_VTABLE nsIURI : public nsISupports {
+ public: 
+
+  NS_DEFINE_STATIC_IID_ACCESSOR(NS_IURI_IID)
+
+  /* attribute AUTF8String spec; */
+  NS_IMETHOD GetSpec(nsACString & aSpec) = 0;
+  NS_IMETHOD SetSpec(const nsACString & aSpec) = 0;
+
+  /* readonly attribute AUTF8String prePath; */
+  NS_IMETHOD GetPrePath(nsACString & aPrePath) = 0;
+
+  /* attribute ACString scheme; */
+  NS_IMETHOD GetScheme(nsACString & aScheme) = 0;
+  NS_IMETHOD SetScheme(const nsACString & aScheme) = 0;
+
+  /* attribute AUTF8String userPass; */
+  NS_IMETHOD GetUserPass(nsACString & aUserPass) = 0;
+  NS_IMETHOD SetUserPass(const nsACString & aUserPass) = 0;
+
+  /* attribute AUTF8String username; */
+  NS_IMETHOD GetUsername(nsACString & aUsername) = 0;
+  NS_IMETHOD SetUsername(const nsACString & aUsername) = 0;
+
+  /* attribute AUTF8String password; */
+  NS_IMETHOD GetPassword(nsACString & aPassword) = 0;
+  NS_IMETHOD SetPassword(const nsACString & aPassword) = 0;
+
+  /* attribute AUTF8String hostPort; */
+  NS_IMETHOD GetHostPort(nsACString & aHostPort) = 0;
+  NS_IMETHOD SetHostPort(const nsACString & aHostPort) = 0;
+
+  /* attribute AUTF8String host; */
+  NS_IMETHOD GetHost(nsACString & aHost) = 0;
+  NS_IMETHOD SetHost(const nsACString & aHost) = 0;
+
+  /* attribute long port; */
+  NS_IMETHOD GetPort(PRInt32 *aPort) = 0;
+  NS_IMETHOD SetPort(PRInt32 aPort) = 0;
+
+  /* attribute AUTF8String path; */
+  NS_IMETHOD GetPath(nsACString & aPath) = 0;
+  NS_IMETHOD SetPath(const nsACString & aPath) = 0;
+
+  /* boolean equals (in nsIURI other); */
+  NS_IMETHOD Equals(nsIURI *other, PRBool *_retval) = 0;
+
+  /* boolean schemeIs (in string scheme); */
+  NS_IMETHOD SchemeIs(const char *scheme, PRBool *_retval) = 0;
+
+  /* nsIURI clone (); */
+  NS_IMETHOD Clone(nsIURI **_retval) = 0;
+
+  /* AUTF8String resolve (in AUTF8String relative_path); */
+  NS_IMETHOD Resolve(const nsACString & relative_path, nsACString & _retval) = 0;
+
+  /* readonly attribute ACString asciiSpec; */
+  NS_IMETHOD GetAsciiSpec(nsACString & aAsciiSpec) = 0;
+
+  /* readonly attribute ACString asciiHost; */
+  NS_IMETHOD GetAsciiHost(nsACString & aAsciiHost) = 0;
+
+  /* readonly attribute ACString originCharset; */
+  NS_IMETHOD GetOriginCharset(nsACString & aOriginCharset) = 0;
+
+};
+
+/* Use this macro when declaring classes that implement this interface. */
+#define NS_DECL_NSIURI \
+  NS_IMETHOD GetSpec(nsACString & aSpec); \
+  NS_IMETHOD SetSpec(const nsACString & aSpec); \
+  NS_IMETHOD GetPrePath(nsACString & aPrePath); \
+  NS_IMETHOD GetScheme(nsACString & aScheme); \
+  NS_IMETHOD SetScheme(const nsACString & aScheme); \
+  NS_IMETHOD GetUserPass(nsACString & aUserPass); \
+  NS_IMETHOD SetUserPass(const nsACString & aUserPass); \
+  NS_IMETHOD GetUsername(nsACString & aUsername); \
+  NS_IMETHOD SetUsername(const nsACString & aUsername); \
+  NS_IMETHOD GetPassword(nsACString & aPassword); \
+  NS_IMETHOD SetPassword(const nsACString & aPassword); \
+  NS_IMETHOD GetHostPort(nsACString & aHostPort); \
+  NS_IMETHOD SetHostPort(const nsACString & aHostPort); \
+  NS_IMETHOD GetHost(nsACString & aHost); \
+  NS_IMETHOD SetHost(const nsACString & aHost); \
+  NS_IMETHOD GetPort(PRInt32 *aPort); \
+  NS_IMETHOD SetPort(PRInt32 aPort); \
+  NS_IMETHOD GetPath(nsACString & aPath); \
+  NS_IMETHOD SetPath(const nsACString & aPath); \
+  NS_IMETHOD Equals(nsIURI *other, PRBool *_retval); \
+  NS_IMETHOD SchemeIs(const char *scheme, PRBool *_retval); \
+  NS_IMETHOD Clone(nsIURI **_retval); \
+  NS_IMETHOD Resolve(const nsACString & relative_path, nsACString & _retval); \
+  NS_IMETHOD GetAsciiSpec(nsACString & aAsciiSpec); \
+  NS_IMETHOD GetAsciiHost(nsACString & aAsciiHost); \
+  NS_IMETHOD GetOriginCharset(nsACString & aOriginCharset); 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object. */
+#define NS_FORWARD_NSIURI(_to) \
+  NS_IMETHOD GetSpec(nsACString & aSpec) { return _to GetSpec(aSpec); } \
+  NS_IMETHOD SetSpec(const nsACString & aSpec) { return _to SetSpec(aSpec); } \
+  NS_IMETHOD GetPrePath(nsACString & aPrePath) { return _to GetPrePath(aPrePath); } \
+  NS_IMETHOD GetScheme(nsACString & aScheme) { return _to GetScheme(aScheme); } \
+  NS_IMETHOD SetScheme(const nsACString & aScheme) { return _to SetScheme(aScheme); } \
+  NS_IMETHOD GetUserPass(nsACString & aUserPass) { return _to GetUserPass(aUserPass); } \
+  NS_IMETHOD SetUserPass(const nsACString & aUserPass) { return _to SetUserPass(aUserPass); } \
+  NS_IMETHOD GetUsername(nsACString & aUsername) { return _to GetUsername(aUsername); } \
+  NS_IMETHOD SetUsername(const nsACString & aUsername) { return _to SetUsername(aUsername); } \
+  NS_IMETHOD GetPassword(nsACString & aPassword) { return _to GetPassword(aPassword); } \
+  NS_IMETHOD SetPassword(const nsACString & aPassword) { return _to SetPassword(aPassword); } \
+  NS_IMETHOD GetHostPort(nsACString & aHostPort) { return _to GetHostPort(aHostPort); } \
+  NS_IMETHOD SetHostPort(const nsACString & aHostPort) { return _to SetHostPort(aHostPort); } \
+  NS_IMETHOD GetHost(nsACString & aHost) { return _to GetHost(aHost); } \
+  NS_IMETHOD SetHost(const nsACString & aHost) { return _to SetHost(aHost); } \
+  NS_IMETHOD GetPort(PRInt32 *aPort) { return _to GetPort(aPort); } \
+  NS_IMETHOD SetPort(PRInt32 aPort) { return _to SetPort(aPort); } \
+  NS_IMETHOD GetPath(nsACString & aPath) { return _to GetPath(aPath); } \
+  NS_IMETHOD SetPath(const nsACString & aPath) { return _to SetPath(aPath); } \
+  NS_IMETHOD Equals(nsIURI *other, PRBool *_retval) { return _to Equals(other, _retval); } \
+  NS_IMETHOD SchemeIs(const char *scheme, PRBool *_retval) { return _to SchemeIs(scheme, _retval); } \
+  NS_IMETHOD Clone(nsIURI **_retval) { return _to Clone(_retval); } \
+  NS_IMETHOD Resolve(const nsACString & relative_path, nsACString & _retval) { return _to Resolve(relative_path, _retval); } \
+  NS_IMETHOD GetAsciiSpec(nsACString & aAsciiSpec) { return _to GetAsciiSpec(aAsciiSpec); } \
+  NS_IMETHOD GetAsciiHost(nsACString & aAsciiHost) { return _to GetAsciiHost(aAsciiHost); } \
+  NS_IMETHOD GetOriginCharset(nsACString & aOriginCharset) { return _to GetOriginCharset(aOriginCharset); } 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
+#define NS_FORWARD_SAFE_NSIURI(_to) \
+  NS_IMETHOD GetSpec(nsACString & aSpec) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetSpec(aSpec); } \
+  NS_IMETHOD SetSpec(const nsACString & aSpec) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetSpec(aSpec); } \
+  NS_IMETHOD GetPrePath(nsACString & aPrePath) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPrePath(aPrePath); } \
+  NS_IMETHOD GetScheme(nsACString & aScheme) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetScheme(aScheme); } \
+  NS_IMETHOD SetScheme(const nsACString & aScheme) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetScheme(aScheme); } \
+  NS_IMETHOD GetUserPass(nsACString & aUserPass) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetUserPass(aUserPass); } \
+  NS_IMETHOD SetUserPass(const nsACString & aUserPass) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetUserPass(aUserPass); } \
+  NS_IMETHOD GetUsername(nsACString & aUsername) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetUsername(aUsername); } \
+  NS_IMETHOD SetUsername(const nsACString & aUsername) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetUsername(aUsername); } \
+  NS_IMETHOD GetPassword(nsACString & aPassword) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPassword(aPassword); } \
+  NS_IMETHOD SetPassword(const nsACString & aPassword) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPassword(aPassword); } \
+  NS_IMETHOD GetHostPort(nsACString & aHostPort) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetHostPort(aHostPort); } \
+  NS_IMETHOD SetHostPort(const nsACString & aHostPort) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetHostPort(aHostPort); } \
+  NS_IMETHOD GetHost(nsACString & aHost) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetHost(aHost); } \
+  NS_IMETHOD SetHost(const nsACString & aHost) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetHost(aHost); } \
+  NS_IMETHOD GetPort(PRInt32 *aPort) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPort(aPort); } \
+  NS_IMETHOD SetPort(PRInt32 aPort) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPort(aPort); } \
+  NS_IMETHOD GetPath(nsACString & aPath) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPath(aPath); } \
+  NS_IMETHOD SetPath(const nsACString & aPath) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPath(aPath); } \
+  NS_IMETHOD Equals(nsIURI *other, PRBool *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->Equals(other, _retval); } \
+  NS_IMETHOD SchemeIs(const char *scheme, PRBool *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->SchemeIs(scheme, _retval); } \
+  NS_IMETHOD Clone(nsIURI **_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->Clone(_retval); } \
+  NS_IMETHOD Resolve(const nsACString & relative_path, nsACString & _retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->Resolve(relative_path, _retval); } \
+  NS_IMETHOD GetAsciiSpec(nsACString & aAsciiSpec) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetAsciiSpec(aAsciiSpec); } \
+  NS_IMETHOD GetAsciiHost(nsACString & aAsciiHost) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetAsciiHost(aAsciiHost); } \
+  NS_IMETHOD GetOriginCharset(nsACString & aOriginCharset) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetOriginCharset(aOriginCharset); } 
+
+#if 0
+/* Use the code below as a template for the implementation class for this interface. */
+
+/* Header file */
+class nsURI : public nsIURI
+{
+public:
+  NS_DECL_ISUPPORTS
+  NS_DECL_NSIURI
+
+  nsURI();
+
+private:
+  ~nsURI();
+
+protected:
+  /* additional members */
+};
+
+/* Implementation file */
+NS_IMPL_ISUPPORTS1(nsURI, nsIURI)
+
+nsURI::nsURI()
+{
+  /* member initializers and constructor code */
+}
+
+nsURI::~nsURI()
+{
+  /* destructor code */
+}
+
+/* attribute AUTF8String spec; */
+NS_IMETHODIMP nsURI::GetSpec(nsACString & aSpec)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsURI::SetSpec(const nsACString & aSpec)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute AUTF8String prePath; */
+NS_IMETHODIMP nsURI::GetPrePath(nsACString & aPrePath)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute ACString scheme; */
+NS_IMETHODIMP nsURI::GetScheme(nsACString & aScheme)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsURI::SetScheme(const nsACString & aScheme)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute AUTF8String userPass; */
+NS_IMETHODIMP nsURI::GetUserPass(nsACString & aUserPass)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsURI::SetUserPass(const nsACString & aUserPass)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute AUTF8String username; */
+NS_IMETHODIMP nsURI::GetUsername(nsACString & aUsername)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsURI::SetUsername(const nsACString & aUsername)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute AUTF8String password; */
+NS_IMETHODIMP nsURI::GetPassword(nsACString & aPassword)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsURI::SetPassword(const nsACString & aPassword)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute AUTF8String hostPort; */
+NS_IMETHODIMP nsURI::GetHostPort(nsACString & aHostPort)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsURI::SetHostPort(const nsACString & aHostPort)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute AUTF8String host; */
+NS_IMETHODIMP nsURI::GetHost(nsACString & aHost)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsURI::SetHost(const nsACString & aHost)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute long port; */
+NS_IMETHODIMP nsURI::GetPort(PRInt32 *aPort)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsURI::SetPort(PRInt32 aPort)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute AUTF8String path; */
+NS_IMETHODIMP nsURI::GetPath(nsACString & aPath)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsURI::SetPath(const nsACString & aPath)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* boolean equals (in nsIURI other); */
+NS_IMETHODIMP nsURI::Equals(nsIURI *other, PRBool *_retval)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* boolean schemeIs (in string scheme); */
+NS_IMETHODIMP nsURI::SchemeIs(const char *scheme, PRBool *_retval)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* nsIURI clone (); */
+NS_IMETHODIMP nsURI::Clone(nsIURI **_retval)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* AUTF8String resolve (in AUTF8String relative_path); */
+NS_IMETHODIMP nsURI::Resolve(const nsACString & relative_path, nsACString & _retval)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute ACString asciiSpec; */
+NS_IMETHODIMP nsURI::GetAsciiSpec(nsACString & aAsciiSpec)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute ACString asciiHost; */
+NS_IMETHODIMP nsURI::GetAsciiHost(nsACString & aAsciiHost)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute ACString originCharset; */
+NS_IMETHODIMP nsURI::GetOriginCharset(nsACString & aOriginCharset)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* End of implementation class template. */
+#endif
+
+
+/* starting interface:    nsIURIFixup */
+#define NS_IURIFIXUP_IID_STR "773081ac-9f81-4bdb-9e7a-5e87b4361f09"
+
+#define NS_IURIFIXUP_IID \
+  {0x773081ac, 0x9f81, 0x4bdb, \
+    { 0x9e, 0x7a, 0x5e, 0x87, 0xb4, 0x36, 0x1f, 0x09 }}
+
+class NS_NO_VTABLE nsIURIFixup : public nsISupports {
+ public: 
+
+  NS_DEFINE_STATIC_IID_ACCESSOR(NS_IURIFIXUP_IID)
+
+  enum { FIXUP_FLAG_NONE = 0U };
+
+  enum { FIXUP_FLAG_ALLOW_KEYWORD_LOOKUP = 1U };
+
+  enum { FIXUP_FLAGS_MAKE_ALTERNATE_URI = 2U };
+
+  /* nsIURI createExposableURI (in nsIURI uri); */
+  NS_IMETHOD CreateExposableURI(nsIURI *uri, nsIURI **_retval) = 0;
+
+  /* nsIURI createFixupURI (in AUTF8String aURIText, in unsigned long fixup_flags); */
+  NS_IMETHOD CreateFixupURI(const nsACString & aURIText, PRUint32 fixup_flags, nsIURI **_retval) = 0;
+
+  /* nsIURI keywordToURI (in AUTF8String keyword); */
+  NS_IMETHOD KeywordToURI(const nsACString & keyword, nsIURI **_retval) = 0;
+
+};
+
+/* Use this macro when declaring classes that implement this interface. */
+#define NS_DECL_NSIURIFIXUP \
+  NS_IMETHOD CreateExposableURI(nsIURI *uri, nsIURI **_retval); \
+  NS_IMETHOD CreateFixupURI(const nsACString & aURIText, PRUint32 fixup_flags, nsIURI **_retval); \
+  NS_IMETHOD KeywordToURI(const nsACString & keyword, nsIURI **_retval); 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object. */
+#define NS_FORWARD_NSIURIFIXUP(_to) \
+  NS_IMETHOD CreateExposableURI(nsIURI *uri, nsIURI **_retval) { return _to CreateExposableURI(uri, _retval); } \
+  NS_IMETHOD CreateFixupURI(const nsACString & aURIText, PRUint32 fixup_flags, nsIURI **_retval) { return _to CreateFixupURI(aURIText, fixup_flags, _retval); } \
+  NS_IMETHOD KeywordToURI(const nsACString & keyword, nsIURI **_retval) { return _to KeywordToURI(keyword, _retval); } 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
+#define NS_FORWARD_SAFE_NSIURIFIXUP(_to) \
+  NS_IMETHOD CreateExposableURI(nsIURI *uri, nsIURI **_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->CreateExposableURI(uri, _retval); } \
+  NS_IMETHOD CreateFixupURI(const nsACString & aURIText, PRUint32 fixup_flags, nsIURI **_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->CreateFixupURI(aURIText, fixup_flags, _retval); } \
+  NS_IMETHOD KeywordToURI(const nsACString & keyword, nsIURI **_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->KeywordToURI(keyword, _retval); } 
+
+#if 0
+/* Use the code below as a template for the implementation class for this interface. */
+
+/* Header file */
+class nsURIFixup : public nsIURIFixup
+{
+public:
+  NS_DECL_ISUPPORTS
+  NS_DECL_NSIURIFIXUP
+
+  nsURIFixup();
+
+private:
+  ~nsURIFixup();
+
+protected:
+  /* additional members */
+};
+
+/* Implementation file */
+NS_IMPL_ISUPPORTS1(nsURIFixup, nsIURIFixup)
+
+nsURIFixup::nsURIFixup()
+{
+  /* member initializers and constructor code */
+}
+
+nsURIFixup::~nsURIFixup()
+{
+  /* destructor code */
+}
+
+/* nsIURI createExposableURI (in nsIURI uri); */
+NS_IMETHODIMP nsURIFixup::CreateExposableURI(nsIURI *uri, nsIURI **_retval)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* nsIURI createFixupURI (in AUTF8String aURIText, in unsigned long fixup_flags); */
+NS_IMETHODIMP nsURIFixup::CreateFixupURI(const nsACString & aURIText, PRUint32 fixup_flags, nsIURI **_retval)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* nsIURI keywordToURI (in AUTF8String keyword); */
+NS_IMETHODIMP nsURIFixup::KeywordToURI(const nsACString & keyword, nsIURI **_retval)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* End of implementation class template. */
+#endif
 
 class nsIInterfaceRequestor; /* forward declaration */
 
@@ -2866,8 +3796,6 @@ class nsIFactory; /* forward declaration */
 
 class nsISimpleEnumerator; /* forward declaration */
 
-class nsIFile; /* forward declaration */
-
 
 /* starting interface:    nsIComponentRegistrar */
 #define NS_ICOMPONENTREGISTRAR_IID_STR "2417cbfe-65ad-48a6-b4b6-eb84db174392"
@@ -3076,8 +4004,6 @@ class nsIContextMenuInfo; /* forward declaration */
 class nsIDOMEvent; /* forward declaration */
 
 class nsIDOMNode; /* forward declaration */
-
-class nsIURI; /* forward declaration */
 
 class imgIContainer; /* forward declaration */
 
@@ -3294,8 +4220,6 @@ NS_IMETHODIMP nsContextMenuInfo::GetBackgroundImageSrc(nsIURI * *aBackgroundImag
 
 /* End of implementation class template. */
 #endif
-
-class nsIFile; /* forward declaration */
 
 class nsISimpleEnumerator; /* forward declaration */
 
@@ -10013,19 +10937,184 @@ NS_IMETHODIMP nsEmbeddingSiteWindow2::Blur()
 
 class nsIWebProgressListener2; /* forward declaration */
 
-class nsIFile; /* forward declaration */
-
-class nsIURI; /* forward declaration */
+class nsIMIMEInfo18; /* forward declaration */
 
 class nsIMIMEInfo; /* forward declaration */
 
 
-/* starting interface:    nsIHelperAppLauncher */
-#define NS_IHELPERAPPLAUNCHER_IID_STR "99a0882d-2ff9-4659-9952-9ac531ba5592"
+/* starting interface:    nsIHelperAppLauncher18 */
+#define NS_IHELPERAPPLAUNCHER18_IID_STR "99a0882d-2ff9-4659-9952-9ac531ba5592"
 
-#define NS_IHELPERAPPLAUNCHER_IID \
+#define NS_IHELPERAPPLAUNCHER18_IID \
   {0x99a0882d, 0x2ff9, 0x4659, \
     { 0x99, 0x52, 0x9a, 0xc5, 0x31, 0xba, 0x55, 0x92 }}
+
+class NS_NO_VTABLE nsIHelperAppLauncher18 : public nsICancelable {
+ public: 
+
+  NS_DEFINE_STATIC_IID_ACCESSOR(NS_IHELPERAPPLAUNCHER18_IID)
+
+  /* readonly attribute nsIMIMEInfo18 MIMEInfo; */
+  NS_IMETHOD GetMIMEInfo(nsIMIMEInfo18 * *aMIMEInfo) = 0;
+
+  /* readonly attribute nsIURI source; */
+  NS_IMETHOD GetSource(nsIURI * *aSource) = 0;
+
+  /* readonly attribute AString suggestedFileName; */
+  NS_IMETHOD GetSuggestedFileName(nsAString & aSuggestedFileName) = 0;
+
+  /* void saveToDisk (in nsIFile new_file_location, in boolean remember_this_preference); */
+  NS_IMETHOD SaveToDisk(nsIFile *new_file_location, PRBool remember_this_preference) = 0;
+
+  /* void launchWithApplication (in nsIFile application, in boolean remember_this_preference); */
+  NS_IMETHOD LaunchWithApplication(nsIFile *application, PRBool remember_this_preference) = 0;
+
+  /* void setWebProgressListener (in nsIWebProgressListener2 web_progress_listener); */
+  NS_IMETHOD SetWebProgressListener(nsIWebProgressListener2 *web_progress_listener) = 0;
+
+  /* void closeProgressWindow (); */
+  NS_IMETHOD CloseProgressWindow(void) = 0;
+
+  /* readonly attribute nsIFile targetFile; */
+  NS_IMETHOD GetTargetFile(nsIFile * *aTargetFile) = 0;
+
+  /* readonly attribute PRTime timeDownloadStarted; */
+  NS_IMETHOD GetTimeDownloadStarted(PRTime *aTimeDownloadStarted) = 0;
+
+};
+
+/* Use this macro when declaring classes that implement this interface. */
+#define NS_DECL_NSIHELPERAPPLAUNCHER18 \
+  NS_IMETHOD GetMIMEInfo(nsIMIMEInfo18 * *aMIMEInfo); \
+  NS_IMETHOD GetSource(nsIURI * *aSource); \
+  NS_IMETHOD GetSuggestedFileName(nsAString & aSuggestedFileName); \
+  NS_IMETHOD SaveToDisk(nsIFile *new_file_location, PRBool remember_this_preference); \
+  NS_IMETHOD LaunchWithApplication(nsIFile *application, PRBool remember_this_preference); \
+  NS_IMETHOD SetWebProgressListener(nsIWebProgressListener2 *web_progress_listener); \
+  NS_IMETHOD CloseProgressWindow(void); \
+  NS_IMETHOD GetTargetFile(nsIFile * *aTargetFile); \
+  NS_IMETHOD GetTimeDownloadStarted(PRTime *aTimeDownloadStarted); 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object. */
+#define NS_FORWARD_NSIHELPERAPPLAUNCHER18(_to) \
+  NS_IMETHOD GetMIMEInfo(nsIMIMEInfo18 * *aMIMEInfo) { return _to GetMIMEInfo(aMIMEInfo); } \
+  NS_IMETHOD GetSource(nsIURI * *aSource) { return _to GetSource(aSource); } \
+  NS_IMETHOD GetSuggestedFileName(nsAString & aSuggestedFileName) { return _to GetSuggestedFileName(aSuggestedFileName); } \
+  NS_IMETHOD SaveToDisk(nsIFile *new_file_location, PRBool remember_this_preference) { return _to SaveToDisk(new_file_location, remember_this_preference); } \
+  NS_IMETHOD LaunchWithApplication(nsIFile *application, PRBool remember_this_preference) { return _to LaunchWithApplication(application, remember_this_preference); } \
+  NS_IMETHOD SetWebProgressListener(nsIWebProgressListener2 *web_progress_listener) { return _to SetWebProgressListener(web_progress_listener); } \
+  NS_IMETHOD CloseProgressWindow(void) { return _to CloseProgressWindow(); } \
+  NS_IMETHOD GetTargetFile(nsIFile * *aTargetFile) { return _to GetTargetFile(aTargetFile); } \
+  NS_IMETHOD GetTimeDownloadStarted(PRTime *aTimeDownloadStarted) { return _to GetTimeDownloadStarted(aTimeDownloadStarted); } 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
+#define NS_FORWARD_SAFE_NSIHELPERAPPLAUNCHER18(_to) \
+  NS_IMETHOD GetMIMEInfo(nsIMIMEInfo18 * *aMIMEInfo) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetMIMEInfo(aMIMEInfo); } \
+  NS_IMETHOD GetSource(nsIURI * *aSource) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetSource(aSource); } \
+  NS_IMETHOD GetSuggestedFileName(nsAString & aSuggestedFileName) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetSuggestedFileName(aSuggestedFileName); } \
+  NS_IMETHOD SaveToDisk(nsIFile *new_file_location, PRBool remember_this_preference) { return !_to ? NS_ERROR_NULL_POINTER : _to->SaveToDisk(new_file_location, remember_this_preference); } \
+  NS_IMETHOD LaunchWithApplication(nsIFile *application, PRBool remember_this_preference) { return !_to ? NS_ERROR_NULL_POINTER : _to->LaunchWithApplication(application, remember_this_preference); } \
+  NS_IMETHOD SetWebProgressListener(nsIWebProgressListener2 *web_progress_listener) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetWebProgressListener(web_progress_listener); } \
+  NS_IMETHOD CloseProgressWindow(void) { return !_to ? NS_ERROR_NULL_POINTER : _to->CloseProgressWindow(); } \
+  NS_IMETHOD GetTargetFile(nsIFile * *aTargetFile) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetTargetFile(aTargetFile); } \
+  NS_IMETHOD GetTimeDownloadStarted(PRTime *aTimeDownloadStarted) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetTimeDownloadStarted(aTimeDownloadStarted); } 
+
+#if 0
+/* Use the code below as a template for the implementation class for this interface. */
+
+/* Header file */
+class nsHelperAppLauncher18 : public nsIHelperAppLauncher18
+{
+public:
+  NS_DECL_ISUPPORTS
+  NS_DECL_NSIHELPERAPPLAUNCHER18
+
+  nsHelperAppLauncher18();
+
+private:
+  ~nsHelperAppLauncher18();
+
+protected:
+  /* additional members */
+};
+
+/* Implementation file */
+NS_IMPL_ISUPPORTS1(nsHelperAppLauncher18, nsIHelperAppLauncher18)
+
+nsHelperAppLauncher18::nsHelperAppLauncher18()
+{
+  /* member initializers and constructor code */
+}
+
+nsHelperAppLauncher18::~nsHelperAppLauncher18()
+{
+  /* destructor code */
+}
+
+/* readonly attribute nsIMIMEInfo18 MIMEInfo; */
+NS_IMETHODIMP nsHelperAppLauncher18::GetMIMEInfo(nsIMIMEInfo18 * *aMIMEInfo)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute nsIURI source; */
+NS_IMETHODIMP nsHelperAppLauncher18::GetSource(nsIURI * *aSource)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute AString suggestedFileName; */
+NS_IMETHODIMP nsHelperAppLauncher18::GetSuggestedFileName(nsAString & aSuggestedFileName)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void saveToDisk (in nsIFile new_file_location, in boolean remember_this_preference); */
+NS_IMETHODIMP nsHelperAppLauncher18::SaveToDisk(nsIFile *new_file_location, PRBool remember_this_preference)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void launchWithApplication (in nsIFile application, in boolean remember_this_preference); */
+NS_IMETHODIMP nsHelperAppLauncher18::LaunchWithApplication(nsIFile *application, PRBool remember_this_preference)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void setWebProgressListener (in nsIWebProgressListener2 web_progress_listener); */
+NS_IMETHODIMP nsHelperAppLauncher18::SetWebProgressListener(nsIWebProgressListener2 *web_progress_listener)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void closeProgressWindow (); */
+NS_IMETHODIMP nsHelperAppLauncher18::CloseProgressWindow()
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute nsIFile targetFile; */
+NS_IMETHODIMP nsHelperAppLauncher18::GetTargetFile(nsIFile * *aTargetFile)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute PRTime timeDownloadStarted; */
+NS_IMETHODIMP nsHelperAppLauncher18::GetTimeDownloadStarted(PRTime *aTimeDownloadStarted)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* End of implementation class template. */
+#endif
+
+
+/* starting interface:    nsIHelperAppLauncher */
+#define NS_IHELPERAPPLAUNCHER_IID_STR "d9a19faf-497b-408c-b995-777d956b72c0"
+
+#define NS_IHELPERAPPLAUNCHER_IID \
+  {0xd9a19faf, 0x497b, 0x408c, \
+    { 0xb9, 0x95, 0x77, 0x7d, 0x95, 0x6b, 0x72, 0xc0 }}
 
 class NS_NO_VTABLE nsIHelperAppLauncher : public nsICancelable {
  public: 
@@ -10056,8 +11145,14 @@ class NS_NO_VTABLE nsIHelperAppLauncher : public nsICancelable {
   /* readonly attribute nsIFile targetFile; */
   NS_IMETHOD GetTargetFile(nsIFile * *aTargetFile) = 0;
 
+  /* readonly attribute boolean targetFileIsExecutable; */
+  NS_IMETHOD GetTargetFileIsExecutable(PRBool *aTargetFileIsExecutable) = 0;
+
   /* readonly attribute PRTime timeDownloadStarted; */
   NS_IMETHOD GetTimeDownloadStarted(PRTime *aTimeDownloadStarted) = 0;
+
+  /* readonly attribute PRInt64 contentLength; */
+  NS_IMETHOD GetContentLength(PRInt64 *aContentLength) = 0;
 
 };
 
@@ -10071,7 +11166,9 @@ class NS_NO_VTABLE nsIHelperAppLauncher : public nsICancelable {
   NS_IMETHOD SetWebProgressListener(nsIWebProgressListener2 *web_progress_listener); \
   NS_IMETHOD CloseProgressWindow(void); \
   NS_IMETHOD GetTargetFile(nsIFile * *aTargetFile); \
-  NS_IMETHOD GetTimeDownloadStarted(PRTime *aTimeDownloadStarted); 
+  NS_IMETHOD GetTargetFileIsExecutable(PRBool *aTargetFileIsExecutable); \
+  NS_IMETHOD GetTimeDownloadStarted(PRTime *aTimeDownloadStarted); \
+  NS_IMETHOD GetContentLength(PRInt64 *aContentLength); 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object. */
 #define NS_FORWARD_NSIHELPERAPPLAUNCHER(_to) \
@@ -10083,7 +11180,9 @@ class NS_NO_VTABLE nsIHelperAppLauncher : public nsICancelable {
   NS_IMETHOD SetWebProgressListener(nsIWebProgressListener2 *web_progress_listener) { return _to SetWebProgressListener(web_progress_listener); } \
   NS_IMETHOD CloseProgressWindow(void) { return _to CloseProgressWindow(); } \
   NS_IMETHOD GetTargetFile(nsIFile * *aTargetFile) { return _to GetTargetFile(aTargetFile); } \
-  NS_IMETHOD GetTimeDownloadStarted(PRTime *aTimeDownloadStarted) { return _to GetTimeDownloadStarted(aTimeDownloadStarted); } 
+  NS_IMETHOD GetTargetFileIsExecutable(PRBool *aTargetFileIsExecutable) { return _to GetTargetFileIsExecutable(aTargetFileIsExecutable); } \
+  NS_IMETHOD GetTimeDownloadStarted(PRTime *aTimeDownloadStarted) { return _to GetTimeDownloadStarted(aTimeDownloadStarted); } \
+  NS_IMETHOD GetContentLength(PRInt64 *aContentLength) { return _to GetContentLength(aContentLength); } 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
 #define NS_FORWARD_SAFE_NSIHELPERAPPLAUNCHER(_to) \
@@ -10095,7 +11194,9 @@ class NS_NO_VTABLE nsIHelperAppLauncher : public nsICancelable {
   NS_IMETHOD SetWebProgressListener(nsIWebProgressListener2 *web_progress_listener) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetWebProgressListener(web_progress_listener); } \
   NS_IMETHOD CloseProgressWindow(void) { return !_to ? NS_ERROR_NULL_POINTER : _to->CloseProgressWindow(); } \
   NS_IMETHOD GetTargetFile(nsIFile * *aTargetFile) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetTargetFile(aTargetFile); } \
-  NS_IMETHOD GetTimeDownloadStarted(PRTime *aTimeDownloadStarted) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetTimeDownloadStarted(aTimeDownloadStarted); } 
+  NS_IMETHOD GetTargetFileIsExecutable(PRBool *aTargetFileIsExecutable) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetTargetFileIsExecutable(aTargetFileIsExecutable); } \
+  NS_IMETHOD GetTimeDownloadStarted(PRTime *aTimeDownloadStarted) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetTimeDownloadStarted(aTimeDownloadStarted); } \
+  NS_IMETHOD GetContentLength(PRInt64 *aContentLength) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetContentLength(aContentLength); } 
 
 #if 0
 /* Use the code below as a template for the implementation class for this interface. */
@@ -10177,8 +11278,20 @@ NS_IMETHODIMP nsHelperAppLauncher::GetTargetFile(nsIFile * *aTargetFile)
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
+/* readonly attribute boolean targetFileIsExecutable; */
+NS_IMETHODIMP nsHelperAppLauncher::GetTargetFileIsExecutable(PRBool *aTargetFileIsExecutable)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
 /* readonly attribute PRTime timeDownloadStarted; */
 NS_IMETHODIMP nsHelperAppLauncher::GetTimeDownloadStarted(PRTime *aTimeDownloadStarted)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute PRInt64 contentLength; */
+NS_IMETHODIMP nsHelperAppLauncher::GetContentLength(PRInt64 *aContentLength)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
@@ -10191,17 +11304,17 @@ class nsIHelperAppLauncher; /* forward declaration */
 class nsILocalFile; /* forward declaration */
 
 
-/* starting interface:    nsIHelperAppLauncherDialog */
-#define NS_IHELPERAPPLAUNCHERDIALOG_IID_STR "64355793-988d-40a5-ba8e-fcde78cac631"
+/* starting interface:    nsIHelperAppLauncherDialog18 */
+#define NS_IHELPERAPPLAUNCHERDIALOG18_IID_STR "64355793-988d-40a5-ba8e-fcde78cac631"
 
-#define NS_IHELPERAPPLAUNCHERDIALOG_IID \
+#define NS_IHELPERAPPLAUNCHERDIALOG18_IID \
   {0x64355793, 0x988d, 0x40a5, \
     { 0xba, 0x8e, 0xfc, 0xde, 0x78, 0xca, 0xc6, 0x31 }}
 
-class NS_NO_VTABLE nsIHelperAppLauncherDialog : public nsISupports {
+class NS_NO_VTABLE nsIHelperAppLauncherDialog18 : public nsISupports {
  public: 
 
-  NS_DEFINE_STATIC_IID_ACCESSOR(NS_IHELPERAPPLAUNCHERDIALOG_IID)
+  NS_DEFINE_STATIC_IID_ACCESSOR(NS_IHELPERAPPLAUNCHERDIALOG18_IID)
 
   enum { REASON_CANTHANDLE = 0U };
 
@@ -10218,19 +11331,108 @@ class NS_NO_VTABLE nsIHelperAppLauncherDialog : public nsISupports {
 };
 
 /* Use this macro when declaring classes that implement this interface. */
-#define NS_DECL_NSIHELPERAPPLAUNCHERDIALOG \
+#define NS_DECL_NSIHELPERAPPLAUNCHERDIALOG18 \
   NS_IMETHOD Show(nsIHelperAppLauncher *launcher, nsISupports *windowContext, PRUint32 reason); \
   NS_IMETHOD PromptForSaveToFile(nsIHelperAppLauncher *launcher, nsISupports *windowContext, const PRUnichar *defaultFile, const PRUnichar *suggestedFileExtension, nsILocalFile **_retval); 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object. */
-#define NS_FORWARD_NSIHELPERAPPLAUNCHERDIALOG(_to) \
+#define NS_FORWARD_NSIHELPERAPPLAUNCHERDIALOG18(_to) \
   NS_IMETHOD Show(nsIHelperAppLauncher *launcher, nsISupports *windowContext, PRUint32 reason) { return _to Show(launcher, windowContext, reason); } \
   NS_IMETHOD PromptForSaveToFile(nsIHelperAppLauncher *launcher, nsISupports *windowContext, const PRUnichar *defaultFile, const PRUnichar *suggestedFileExtension, nsILocalFile **_retval) { return _to PromptForSaveToFile(launcher, windowContext, defaultFile, suggestedFileExtension, _retval); } 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
-#define NS_FORWARD_SAFE_NSIHELPERAPPLAUNCHERDIALOG(_to) \
+#define NS_FORWARD_SAFE_NSIHELPERAPPLAUNCHERDIALOG18(_to) \
   NS_IMETHOD Show(nsIHelperAppLauncher *launcher, nsISupports *windowContext, PRUint32 reason) { return !_to ? NS_ERROR_NULL_POINTER : _to->Show(launcher, windowContext, reason); } \
   NS_IMETHOD PromptForSaveToFile(nsIHelperAppLauncher *launcher, nsISupports *windowContext, const PRUnichar *defaultFile, const PRUnichar *suggestedFileExtension, nsILocalFile **_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->PromptForSaveToFile(launcher, windowContext, defaultFile, suggestedFileExtension, _retval); } 
+
+#if 0
+/* Use the code below as a template for the implementation class for this interface. */
+
+/* Header file */
+class nsHelperAppLauncherDialog18 : public nsIHelperAppLauncherDialog18
+{
+public:
+  NS_DECL_ISUPPORTS
+  NS_DECL_NSIHELPERAPPLAUNCHERDIALOG18
+
+  nsHelperAppLauncherDialog18();
+
+private:
+  ~nsHelperAppLauncherDialog18();
+
+protected:
+  /* additional members */
+};
+
+/* Implementation file */
+NS_IMPL_ISUPPORTS1(nsHelperAppLauncherDialog18, nsIHelperAppLauncherDialog18)
+
+nsHelperAppLauncherDialog18::nsHelperAppLauncherDialog18()
+{
+  /* member initializers and constructor code */
+}
+
+nsHelperAppLauncherDialog18::~nsHelperAppLauncherDialog18()
+{
+  /* destructor code */
+}
+
+/* void show (in nsIHelperAppLauncher launcher, in nsISupports windowContext, in unsigned long reason); */
+NS_IMETHODIMP nsHelperAppLauncherDialog18::Show(nsIHelperAppLauncher *launcher, nsISupports *windowContext, PRUint32 reason)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* nsILocalFile promptForSaveToFile (in nsIHelperAppLauncher launcher, in nsISupports windowContext, in wstring defaultFile, in wstring suggestedFileExtension); */
+NS_IMETHODIMP nsHelperAppLauncherDialog18::PromptForSaveToFile(nsIHelperAppLauncher *launcher, nsISupports *windowContext, const PRUnichar *defaultFile, const PRUnichar *suggestedFileExtension, nsILocalFile **_retval)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* End of implementation class template. */
+#endif
+
+
+/* starting interface:    nsIHelperAppLauncherDialog */
+#define NS_IHELPERAPPLAUNCHERDIALOG_IID_STR "f3704fdc-8ae6-4eba-a3c3-f02958ac0649"
+
+#define NS_IHELPERAPPLAUNCHERDIALOG_IID \
+  {0xf3704fdc, 0x8ae6, 0x4eba, \
+    { 0xa3, 0xc3, 0xf0, 0x29, 0x58, 0xac, 0x06, 0x49 }}
+
+class NS_NO_VTABLE nsIHelperAppLauncherDialog : public nsISupports {
+ public: 
+
+  NS_DEFINE_STATIC_IID_ACCESSOR(NS_IHELPERAPPLAUNCHERDIALOG_IID)
+
+  enum { REASON_CANTHANDLE = 0U };
+
+  enum { REASON_SERVERREQUEST = 1U };
+
+  enum { REASON_TYPESNIFFED = 2U };
+
+  /* void show (in nsIHelperAppLauncher launcher, in nsISupports windowContext, in unsigned long reason); */
+  NS_IMETHOD Show(nsIHelperAppLauncher *launcher, nsISupports *windowContext, PRUint32 reason) = 0;
+
+  /* nsILocalFile promptForSaveToFile (in nsIHelperAppLauncher launcher, in nsISupports windowContext, in wstring defaultFile, in wstring suggestedFileExtension, in boolean force_prompt); */
+  NS_IMETHOD PromptForSaveToFile(nsIHelperAppLauncher *launcher, nsISupports *windowContext, const PRUnichar *defaultFile, const PRUnichar *suggestedFileExtension, PRBool force_prompt, nsILocalFile **_retval) = 0;
+
+};
+
+/* Use this macro when declaring classes that implement this interface. */
+#define NS_DECL_NSIHELPERAPPLAUNCHERDIALOG \
+  NS_IMETHOD Show(nsIHelperAppLauncher *launcher, nsISupports *windowContext, PRUint32 reason); \
+  NS_IMETHOD PromptForSaveToFile(nsIHelperAppLauncher *launcher, nsISupports *windowContext, const PRUnichar *defaultFile, const PRUnichar *suggestedFileExtension, PRBool force_prompt, nsILocalFile **_retval); 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object. */
+#define NS_FORWARD_NSIHELPERAPPLAUNCHERDIALOG(_to) \
+  NS_IMETHOD Show(nsIHelperAppLauncher *launcher, nsISupports *windowContext, PRUint32 reason) { return _to Show(launcher, windowContext, reason); } \
+  NS_IMETHOD PromptForSaveToFile(nsIHelperAppLauncher *launcher, nsISupports *windowContext, const PRUnichar *defaultFile, const PRUnichar *suggestedFileExtension, PRBool force_prompt, nsILocalFile **_retval) { return _to PromptForSaveToFile(launcher, windowContext, defaultFile, suggestedFileExtension, force_prompt, _retval); } 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
+#define NS_FORWARD_SAFE_NSIHELPERAPPLAUNCHERDIALOG(_to) \
+  NS_IMETHOD Show(nsIHelperAppLauncher *launcher, nsISupports *windowContext, PRUint32 reason) { return !_to ? NS_ERROR_NULL_POINTER : _to->Show(launcher, windowContext, reason); } \
+  NS_IMETHOD PromptForSaveToFile(nsIHelperAppLauncher *launcher, nsISupports *windowContext, const PRUnichar *defaultFile, const PRUnichar *suggestedFileExtension, PRBool force_prompt, nsILocalFile **_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->PromptForSaveToFile(launcher, windowContext, defaultFile, suggestedFileExtension, force_prompt, _retval); } 
 
 #if 0
 /* Use the code below as a template for the implementation class for this interface. */
@@ -10270,8 +11472,8 @@ NS_IMETHODIMP nsHelperAppLauncherDialog::Show(nsIHelperAppLauncher *launcher, ns
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* nsILocalFile promptForSaveToFile (in nsIHelperAppLauncher launcher, in nsISupports windowContext, in wstring defaultFile, in wstring suggestedFileExtension); */
-NS_IMETHODIMP nsHelperAppLauncherDialog::PromptForSaveToFile(nsIHelperAppLauncher *launcher, nsISupports *windowContext, const PRUnichar *defaultFile, const PRUnichar *suggestedFileExtension, nsILocalFile **_retval)
+/* nsILocalFile promptForSaveToFile (in nsIHelperAppLauncher launcher, in nsISupports windowContext, in wstring defaultFile, in wstring suggestedFileExtension, in boolean force_prompt); */
+NS_IMETHODIMP nsHelperAppLauncherDialog::PromptForSaveToFile(nsIHelperAppLauncher *launcher, nsISupports *windowContext, const PRUnichar *defaultFile, const PRUnichar *suggestedFileExtension, PRBool force_prompt, nsILocalFile **_retval)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
@@ -10522,10 +11724,6 @@ NS_IMETHODIMP nsInputStreamChannel::SetContentStream(nsIInputStream * aContentSt
 #endif
 
 class nsIProtocolHandler; /* forward declaration */
-
-class nsIURI; /* forward declaration */
-
-class nsIFile; /* forward declaration */
 
 class nsIChannel; /* forward declaration */
 
@@ -10814,22 +12012,28 @@ NS_IMETHODIMP nsJSContextStack::Push(JSContext * contxt)
 
 class nsIUTF8StringEnumerator; /* forward declaration */
 
-class nsIFile; /* forward declaration */
-
 class nsMIMEInfoHandleAction; /* forward declaration */
 
+class nsIHandlerApp; /* forward declaration */
 
-/* starting interface:    nsIMIMEInfo */
-#define NS_IMIMEINFO_IID_STR "cd7083f8-5fe9-4248-bb09-0b0e2982fde8"
+class nsIMutableArray; /* forward declaration */
 
-#define NS_IMIMEINFO_IID \
-  {0xcd7083f8, 0x5fe9, 0x4248, \
-    { 0xbb, 0x09, 0x0b, 0x0e, 0x29, 0x82, 0xfd, 0xe8 }}
+class nsIArray; /* forward declaration */
 
-class NS_NO_VTABLE nsIMIMEInfo : public nsISupports {
+typedef PRInt32 nsHandlerInfoAction;
+
+
+/* starting interface:    nsIMIMEInfo18 */
+#define NS_IMIMEINFO18_IID_STR "1448b42f-cf0d-466e-9a15-64e876ebe857"
+
+#define NS_IMIMEINFO18_IID \
+  {0x1448b42f, 0xcf0d, 0x466e, \
+    { 0x9a, 0x15, 0x64, 0xe8, 0x76, 0xeb, 0xe8, 0x57 }}
+
+class NS_NO_VTABLE nsIMIMEInfo18 : public nsISupports {
  public: 
 
-  NS_DEFINE_STATIC_IID_ACCESSOR(NS_IMIMEINFO_IID)
+  NS_DEFINE_STATIC_IID_ACCESSOR(NS_IMIMEINFO18_IID)
 
   /* nsIUTF8StringEnumerator getFileExtensions (); */
   NS_IMETHOD GetFileExtensions(nsIUTF8StringEnumerator **_retval) = 0;
@@ -10903,7 +12107,7 @@ class NS_NO_VTABLE nsIMIMEInfo : public nsISupports {
 };
 
 /* Use this macro when declaring classes that implement this interface. */
-#define NS_DECL_NSIMIMEINFO \
+#define NS_DECL_NSIMIMEINFO18 \
   NS_IMETHOD GetFileExtensions(nsIUTF8StringEnumerator **_retval); \
   NS_IMETHOD SetFileExtensions(const nsACString & extensions); \
   NS_IMETHOD ExtensionExists(const nsACString & extension, PRBool *_retval); \
@@ -10931,7 +12135,7 @@ class NS_NO_VTABLE nsIMIMEInfo : public nsISupports {
   NS_IMETHOD SetAlwaysAskBeforeHandling(PRBool aAlwaysAskBeforeHandling); 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object. */
-#define NS_FORWARD_NSIMIMEINFO(_to) \
+#define NS_FORWARD_NSIMIMEINFO18(_to) \
   NS_IMETHOD GetFileExtensions(nsIUTF8StringEnumerator **_retval) { return _to GetFileExtensions(_retval); } \
   NS_IMETHOD SetFileExtensions(const nsACString & extensions) { return _to SetFileExtensions(extensions); } \
   NS_IMETHOD ExtensionExists(const nsACString & extension, PRBool *_retval) { return _to ExtensionExists(extension, _retval); } \
@@ -10959,7 +12163,7 @@ class NS_NO_VTABLE nsIMIMEInfo : public nsISupports {
   NS_IMETHOD SetAlwaysAskBeforeHandling(PRBool aAlwaysAskBeforeHandling) { return _to SetAlwaysAskBeforeHandling(aAlwaysAskBeforeHandling); } 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
-#define NS_FORWARD_SAFE_NSIMIMEINFO(_to) \
+#define NS_FORWARD_SAFE_NSIMIMEINFO18(_to) \
   NS_IMETHOD GetFileExtensions(nsIUTF8StringEnumerator **_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetFileExtensions(_retval); } \
   NS_IMETHOD SetFileExtensions(const nsACString & extensions) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetFileExtensions(extensions); } \
   NS_IMETHOD ExtensionExists(const nsACString & extension, PRBool *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->ExtensionExists(extension, _retval); } \
@@ -10985,6 +12189,486 @@ class NS_NO_VTABLE nsIMIMEInfo : public nsISupports {
   NS_IMETHOD SetPreferredAction(nsMIMEInfoHandleAction * aPreferredAction) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPreferredAction(aPreferredAction); } \
   NS_IMETHOD GetAlwaysAskBeforeHandling(PRBool *aAlwaysAskBeforeHandling) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetAlwaysAskBeforeHandling(aAlwaysAskBeforeHandling); } \
   NS_IMETHOD SetAlwaysAskBeforeHandling(PRBool aAlwaysAskBeforeHandling) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetAlwaysAskBeforeHandling(aAlwaysAskBeforeHandling); } 
+
+#if 0
+/* Use the code below as a template for the implementation class for this interface. */
+
+/* Header file */
+class nsMIMEInfo18 : public nsIMIMEInfo18
+{
+public:
+  NS_DECL_ISUPPORTS
+  NS_DECL_NSIMIMEINFO18
+
+  nsMIMEInfo18();
+
+private:
+  ~nsMIMEInfo18();
+
+protected:
+  /* additional members */
+};
+
+/* Implementation file */
+NS_IMPL_ISUPPORTS1(nsMIMEInfo18, nsIMIMEInfo18)
+
+nsMIMEInfo18::nsMIMEInfo18()
+{
+  /* member initializers and constructor code */
+}
+
+nsMIMEInfo18::~nsMIMEInfo18()
+{
+  /* destructor code */
+}
+
+/* nsIUTF8StringEnumerator getFileExtensions (); */
+NS_IMETHODIMP nsMIMEInfo18::GetFileExtensions(nsIUTF8StringEnumerator **_retval)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void setFileExtensions (in AUTF8String extensions); */
+NS_IMETHODIMP nsMIMEInfo18::SetFileExtensions(const nsACString & extensions)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* boolean extensionExists (in AUTF8String extension); */
+NS_IMETHODIMP nsMIMEInfo18::ExtensionExists(const nsACString & extension, PRBool *_retval)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void appendExtension (in AUTF8String extension); */
+NS_IMETHODIMP nsMIMEInfo18::AppendExtension(const nsACString & extension)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute AUTF8String primaryExtension; */
+NS_IMETHODIMP nsMIMEInfo18::GetPrimaryExtension(nsACString & aPrimaryExtension)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsMIMEInfo18::SetPrimaryExtension(const nsACString & aPrimaryExtension)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute ACString MIMEType; */
+NS_IMETHODIMP nsMIMEInfo18::GetMIMEType(nsACString & aMIMEType)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute AString description; */
+NS_IMETHODIMP nsMIMEInfo18::GetDescription(nsAString & aDescription)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsMIMEInfo18::SetDescription(const nsAString & aDescription)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute PRUint32 macType; */
+NS_IMETHODIMP nsMIMEInfo18::GetMacType(PRUint32 *aMacType)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsMIMEInfo18::SetMacType(PRUint32 aMacType)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute PRUint32 macCreator; */
+NS_IMETHODIMP nsMIMEInfo18::GetMacCreator(PRUint32 *aMacCreator)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsMIMEInfo18::SetMacCreator(PRUint32 aMacCreator)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* boolean equals (in nsIMIMEInfo mime_info); */
+NS_IMETHODIMP nsMIMEInfo18::Equals(nsIMIMEInfo *mime_info, PRBool *_retval)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute nsIFile preferredApplicationHandler; */
+NS_IMETHODIMP nsMIMEInfo18::GetPreferredApplicationHandler(nsIFile * *aPreferredApplicationHandler)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsMIMEInfo18::SetPreferredApplicationHandler(nsIFile * aPreferredApplicationHandler)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute AString applicationDescription; */
+NS_IMETHODIMP nsMIMEInfo18::GetApplicationDescription(nsAString & aApplicationDescription)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsMIMEInfo18::SetApplicationDescription(const nsAString & aApplicationDescription)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute boolean hasDefaultHandler; */
+NS_IMETHODIMP nsMIMEInfo18::GetHasDefaultHandler(PRBool *aHasDefaultHandler)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute AString defaultDescription; */
+NS_IMETHODIMP nsMIMEInfo18::GetDefaultDescription(nsAString & aDefaultDescription)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void launchWithFile (in nsIFile file); */
+NS_IMETHODIMP nsMIMEInfo18::LaunchWithFile(nsIFile *file)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute nsMIMEInfoHandleAction preferredAction; */
+NS_IMETHODIMP nsMIMEInfo18::GetPreferredAction(nsMIMEInfoHandleAction * *aPreferredAction)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsMIMEInfo18::SetPreferredAction(nsMIMEInfoHandleAction * aPreferredAction)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute boolean alwaysAskBeforeHandling; */
+NS_IMETHODIMP nsMIMEInfo18::GetAlwaysAskBeforeHandling(PRBool *aAlwaysAskBeforeHandling)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsMIMEInfo18::SetAlwaysAskBeforeHandling(PRBool aAlwaysAskBeforeHandling)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* End of implementation class template. */
+#endif
+
+
+/* starting interface:    nsIHandlerInfo */
+#define NS_IHANDLERINFO_IID_STR "325e56a7-3762-4312-aec7-f1fcf84b4145"
+
+#define NS_IHANDLERINFO_IID \
+  {0x325e56a7, 0x3762, 0x4312, \
+    { 0xae, 0xc7, 0xf1, 0xfc, 0xf8, 0x4b, 0x41, 0x45 }}
+
+class NS_NO_VTABLE nsIHandlerInfo : public nsISupports {
+ public: 
+
+  NS_DEFINE_STATIC_IID_ACCESSOR(NS_IHANDLERINFO_IID)
+
+  enum { saveToDisk = 0 };
+
+  enum { alwaysAsk = 1 };
+
+  enum { useHelperApp = 2 };
+
+  enum { handleInternally = 3 };
+
+  enum { useSystemDefault = 4 };
+
+  /* readonly attribute ACString type; */
+  NS_IMETHOD GetType(nsACString & aType) = 0;
+
+  /* attribute AString description; */
+  NS_IMETHOD GetDescription(nsAString & aDescription) = 0;
+  NS_IMETHOD SetDescription(const nsAString & aDescription) = 0;
+
+  /* attribute nsIHandlerApp preferredApplicationHandler; */
+  NS_IMETHOD GetPreferredApplicationHandler(nsIHandlerApp * *aPreferredApplicationHandler) = 0;
+  NS_IMETHOD SetPreferredApplicationHandler(nsIHandlerApp * aPreferredApplicationHandler) = 0;
+
+  /* readonly attribute nsIMutableArray possibleApplicationHandlers; */
+  NS_IMETHOD GetPossibleApplicationHandlers(nsIMutableArray * *aPossibleApplicationHandlers) = 0;
+
+  /* readonly attribute boolean hasDefaultHandler; */
+  NS_IMETHOD GetHasDefaultHandler(PRBool *aHasDefaultHandler) = 0;
+
+  /* readonly attribute AString defaultDescription; */
+  NS_IMETHOD GetDefaultDescription(nsAString & aDefaultDescription) = 0;
+
+  /* void launchWithURI (in nsIURI uri, [optional] in nsIInterfaceRequestor window_context); */
+  NS_IMETHOD LaunchWithURI(nsIURI *uri, nsIInterfaceRequestor *window_context) = 0;
+
+  /* attribute nsHandlerInfoAction preferredAction; */
+  NS_IMETHOD GetPreferredAction(nsHandlerInfoAction *aPreferredAction) = 0;
+  NS_IMETHOD SetPreferredAction(nsHandlerInfoAction aPreferredAction) = 0;
+
+  /* attribute boolean alwaysAskBeforeHandling; */
+  NS_IMETHOD GetAlwaysAskBeforeHandling(PRBool *aAlwaysAskBeforeHandling) = 0;
+  NS_IMETHOD SetAlwaysAskBeforeHandling(PRBool aAlwaysAskBeforeHandling) = 0;
+
+};
+
+/* Use this macro when declaring classes that implement this interface. */
+#define NS_DECL_NSIHANDLERINFO \
+  NS_IMETHOD GetType(nsACString & aType); \
+  NS_IMETHOD GetDescription(nsAString & aDescription); \
+  NS_IMETHOD SetDescription(const nsAString & aDescription); \
+  NS_IMETHOD GetPreferredApplicationHandler(nsIHandlerApp * *aPreferredApplicationHandler); \
+  NS_IMETHOD SetPreferredApplicationHandler(nsIHandlerApp * aPreferredApplicationHandler); \
+  NS_IMETHOD GetPossibleApplicationHandlers(nsIMutableArray * *aPossibleApplicationHandlers); \
+  NS_IMETHOD GetHasDefaultHandler(PRBool *aHasDefaultHandler); \
+  NS_IMETHOD GetDefaultDescription(nsAString & aDefaultDescription); \
+  NS_IMETHOD LaunchWithURI(nsIURI *uri, nsIInterfaceRequestor *window_context); \
+  NS_IMETHOD GetPreferredAction(nsHandlerInfoAction *aPreferredAction); \
+  NS_IMETHOD SetPreferredAction(nsHandlerInfoAction aPreferredAction); \
+  NS_IMETHOD GetAlwaysAskBeforeHandling(PRBool *aAlwaysAskBeforeHandling); \
+  NS_IMETHOD SetAlwaysAskBeforeHandling(PRBool aAlwaysAskBeforeHandling); 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object. */
+#define NS_FORWARD_NSIHANDLERINFO(_to) \
+  NS_IMETHOD GetType(nsACString & aType) { return _to GetType(aType); } \
+  NS_IMETHOD GetDescription(nsAString & aDescription) { return _to GetDescription(aDescription); } \
+  NS_IMETHOD SetDescription(const nsAString & aDescription) { return _to SetDescription(aDescription); } \
+  NS_IMETHOD GetPreferredApplicationHandler(nsIHandlerApp * *aPreferredApplicationHandler) { return _to GetPreferredApplicationHandler(aPreferredApplicationHandler); } \
+  NS_IMETHOD SetPreferredApplicationHandler(nsIHandlerApp * aPreferredApplicationHandler) { return _to SetPreferredApplicationHandler(aPreferredApplicationHandler); } \
+  NS_IMETHOD GetPossibleApplicationHandlers(nsIMutableArray * *aPossibleApplicationHandlers) { return _to GetPossibleApplicationHandlers(aPossibleApplicationHandlers); } \
+  NS_IMETHOD GetHasDefaultHandler(PRBool *aHasDefaultHandler) { return _to GetHasDefaultHandler(aHasDefaultHandler); } \
+  NS_IMETHOD GetDefaultDescription(nsAString & aDefaultDescription) { return _to GetDefaultDescription(aDefaultDescription); } \
+  NS_IMETHOD LaunchWithURI(nsIURI *uri, nsIInterfaceRequestor *window_context) { return _to LaunchWithURI(uri, window_context); } \
+  NS_IMETHOD GetPreferredAction(nsHandlerInfoAction *aPreferredAction) { return _to GetPreferredAction(aPreferredAction); } \
+  NS_IMETHOD SetPreferredAction(nsHandlerInfoAction aPreferredAction) { return _to SetPreferredAction(aPreferredAction); } \
+  NS_IMETHOD GetAlwaysAskBeforeHandling(PRBool *aAlwaysAskBeforeHandling) { return _to GetAlwaysAskBeforeHandling(aAlwaysAskBeforeHandling); } \
+  NS_IMETHOD SetAlwaysAskBeforeHandling(PRBool aAlwaysAskBeforeHandling) { return _to SetAlwaysAskBeforeHandling(aAlwaysAskBeforeHandling); } 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
+#define NS_FORWARD_SAFE_NSIHANDLERINFO(_to) \
+  NS_IMETHOD GetType(nsACString & aType) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetType(aType); } \
+  NS_IMETHOD GetDescription(nsAString & aDescription) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetDescription(aDescription); } \
+  NS_IMETHOD SetDescription(const nsAString & aDescription) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetDescription(aDescription); } \
+  NS_IMETHOD GetPreferredApplicationHandler(nsIHandlerApp * *aPreferredApplicationHandler) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPreferredApplicationHandler(aPreferredApplicationHandler); } \
+  NS_IMETHOD SetPreferredApplicationHandler(nsIHandlerApp * aPreferredApplicationHandler) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPreferredApplicationHandler(aPreferredApplicationHandler); } \
+  NS_IMETHOD GetPossibleApplicationHandlers(nsIMutableArray * *aPossibleApplicationHandlers) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPossibleApplicationHandlers(aPossibleApplicationHandlers); } \
+  NS_IMETHOD GetHasDefaultHandler(PRBool *aHasDefaultHandler) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetHasDefaultHandler(aHasDefaultHandler); } \
+  NS_IMETHOD GetDefaultDescription(nsAString & aDefaultDescription) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetDefaultDescription(aDefaultDescription); } \
+  NS_IMETHOD LaunchWithURI(nsIURI *uri, nsIInterfaceRequestor *window_context) { return !_to ? NS_ERROR_NULL_POINTER : _to->LaunchWithURI(uri, window_context); } \
+  NS_IMETHOD GetPreferredAction(nsHandlerInfoAction *aPreferredAction) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPreferredAction(aPreferredAction); } \
+  NS_IMETHOD SetPreferredAction(nsHandlerInfoAction aPreferredAction) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPreferredAction(aPreferredAction); } \
+  NS_IMETHOD GetAlwaysAskBeforeHandling(PRBool *aAlwaysAskBeforeHandling) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetAlwaysAskBeforeHandling(aAlwaysAskBeforeHandling); } \
+  NS_IMETHOD SetAlwaysAskBeforeHandling(PRBool aAlwaysAskBeforeHandling) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetAlwaysAskBeforeHandling(aAlwaysAskBeforeHandling); } 
+
+#if 0
+/* Use the code below as a template for the implementation class for this interface. */
+
+/* Header file */
+class nsHandlerInfo : public nsIHandlerInfo
+{
+public:
+  NS_DECL_ISUPPORTS
+  NS_DECL_NSIHANDLERINFO
+
+  nsHandlerInfo();
+
+private:
+  ~nsHandlerInfo();
+
+protected:
+  /* additional members */
+};
+
+/* Implementation file */
+NS_IMPL_ISUPPORTS1(nsHandlerInfo, nsIHandlerInfo)
+
+nsHandlerInfo::nsHandlerInfo()
+{
+  /* member initializers and constructor code */
+}
+
+nsHandlerInfo::~nsHandlerInfo()
+{
+  /* destructor code */
+}
+
+/* readonly attribute ACString type; */
+NS_IMETHODIMP nsHandlerInfo::GetType(nsACString & aType)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute AString description; */
+NS_IMETHODIMP nsHandlerInfo::GetDescription(nsAString & aDescription)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsHandlerInfo::SetDescription(const nsAString & aDescription)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute nsIHandlerApp preferredApplicationHandler; */
+NS_IMETHODIMP nsHandlerInfo::GetPreferredApplicationHandler(nsIHandlerApp * *aPreferredApplicationHandler)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsHandlerInfo::SetPreferredApplicationHandler(nsIHandlerApp * aPreferredApplicationHandler)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute nsIMutableArray possibleApplicationHandlers; */
+NS_IMETHODIMP nsHandlerInfo::GetPossibleApplicationHandlers(nsIMutableArray * *aPossibleApplicationHandlers)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute boolean hasDefaultHandler; */
+NS_IMETHODIMP nsHandlerInfo::GetHasDefaultHandler(PRBool *aHasDefaultHandler)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute AString defaultDescription; */
+NS_IMETHODIMP nsHandlerInfo::GetDefaultDescription(nsAString & aDefaultDescription)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void launchWithURI (in nsIURI uri, [optional] in nsIInterfaceRequestor window_context); */
+NS_IMETHODIMP nsHandlerInfo::LaunchWithURI(nsIURI *uri, nsIInterfaceRequestor *window_context)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute nsHandlerInfoAction preferredAction; */
+NS_IMETHODIMP nsHandlerInfo::GetPreferredAction(nsHandlerInfoAction *aPreferredAction)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsHandlerInfo::SetPreferredAction(nsHandlerInfoAction aPreferredAction)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute boolean alwaysAskBeforeHandling; */
+NS_IMETHODIMP nsHandlerInfo::GetAlwaysAskBeforeHandling(PRBool *aAlwaysAskBeforeHandling)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsHandlerInfo::SetAlwaysAskBeforeHandling(PRBool aAlwaysAskBeforeHandling)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* End of implementation class template. */
+#endif
+
+
+/* starting interface:    nsIMIMEInfo */
+#define NS_IMIMEINFO_IID_STR "cd7083f8-5fe9-4248-bb09-0b0e2982fde8"
+
+#define NS_IMIMEINFO_IID \
+  {0xcd7083f8, 0x5fe9, 0x4248, \
+    { 0xbb, 0x09, 0x0b, 0x0e, 0x29, 0x82, 0xfd, 0xe8 }}
+
+class NS_NO_VTABLE nsIMIMEInfo : public nsIHandlerInfo {
+ public: 
+
+  NS_DEFINE_STATIC_IID_ACCESSOR(NS_IMIMEINFO_IID)
+
+  /* nsIUTF8StringEnumerator getFileExtensions (); */
+  NS_IMETHOD GetFileExtensions(nsIUTF8StringEnumerator **_retval) = 0;
+
+  /* void setFileExtensions (in AUTF8String extensions); */
+  NS_IMETHOD SetFileExtensions(const nsACString & extensions) = 0;
+
+  /* boolean extensionExists (in AUTF8String extension); */
+  NS_IMETHOD ExtensionExists(const nsACString & extension, PRBool *_retval) = 0;
+
+  /* void appendExtension (in AUTF8String extension); */
+  NS_IMETHOD AppendExtension(const nsACString & extension) = 0;
+
+  /* attribute AUTF8String primaryExtension; */
+  NS_IMETHOD GetPrimaryExtension(nsACString & aPrimaryExtension) = 0;
+  NS_IMETHOD SetPrimaryExtension(const nsACString & aPrimaryExtension) = 0;
+
+  /* readonly attribute ACString MIMEType; */
+  NS_IMETHOD GetMIMEType(nsACString & aMIMEType) = 0;
+
+  /* attribute PRUint32 macType; */
+  NS_IMETHOD GetMacType(PRUint32 *aMacType) = 0;
+  NS_IMETHOD SetMacType(PRUint32 aMacType) = 0;
+
+  /* attribute PRUint32 macCreator; */
+  NS_IMETHOD GetMacCreator(PRUint32 *aMacCreator) = 0;
+  NS_IMETHOD SetMacCreator(PRUint32 aMacCreator) = 0;
+
+  /* boolean equals (in nsIMIMEInfo mime_info); */
+  NS_IMETHOD Equals(nsIMIMEInfo *mime_info, PRBool *_retval) = 0;
+
+  /* readonly attribute nsIArray possibleLocalHandlers; */
+  NS_IMETHOD GetPossibleLocalHandlers(nsIArray * *aPossibleLocalHandlers) = 0;
+
+  /* void launchWithFile (in nsIFile file); */
+  NS_IMETHOD LaunchWithFile(nsIFile *file) = 0;
+
+};
+
+/* Use this macro when declaring classes that implement this interface. */
+#define NS_DECL_NSIMIMEINFO \
+  NS_IMETHOD GetFileExtensions(nsIUTF8StringEnumerator **_retval); \
+  NS_IMETHOD SetFileExtensions(const nsACString & extensions); \
+  NS_IMETHOD ExtensionExists(const nsACString & extension, PRBool *_retval); \
+  NS_IMETHOD AppendExtension(const nsACString & extension); \
+  NS_IMETHOD GetPrimaryExtension(nsACString & aPrimaryExtension); \
+  NS_IMETHOD SetPrimaryExtension(const nsACString & aPrimaryExtension); \
+  NS_IMETHOD GetMIMEType(nsACString & aMIMEType); \
+  NS_IMETHOD GetMacType(PRUint32 *aMacType); \
+  NS_IMETHOD SetMacType(PRUint32 aMacType); \
+  NS_IMETHOD GetMacCreator(PRUint32 *aMacCreator); \
+  NS_IMETHOD SetMacCreator(PRUint32 aMacCreator); \
+  NS_IMETHOD Equals(nsIMIMEInfo *mime_info, PRBool *_retval); \
+  NS_IMETHOD GetPossibleLocalHandlers(nsIArray * *aPossibleLocalHandlers); \
+  NS_IMETHOD LaunchWithFile(nsIFile *file); 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object. */
+#define NS_FORWARD_NSIMIMEINFO(_to) \
+  NS_IMETHOD GetFileExtensions(nsIUTF8StringEnumerator **_retval) { return _to GetFileExtensions(_retval); } \
+  NS_IMETHOD SetFileExtensions(const nsACString & extensions) { return _to SetFileExtensions(extensions); } \
+  NS_IMETHOD ExtensionExists(const nsACString & extension, PRBool *_retval) { return _to ExtensionExists(extension, _retval); } \
+  NS_IMETHOD AppendExtension(const nsACString & extension) { return _to AppendExtension(extension); } \
+  NS_IMETHOD GetPrimaryExtension(nsACString & aPrimaryExtension) { return _to GetPrimaryExtension(aPrimaryExtension); } \
+  NS_IMETHOD SetPrimaryExtension(const nsACString & aPrimaryExtension) { return _to SetPrimaryExtension(aPrimaryExtension); } \
+  NS_IMETHOD GetMIMEType(nsACString & aMIMEType) { return _to GetMIMEType(aMIMEType); } \
+  NS_IMETHOD GetMacType(PRUint32 *aMacType) { return _to GetMacType(aMacType); } \
+  NS_IMETHOD SetMacType(PRUint32 aMacType) { return _to SetMacType(aMacType); } \
+  NS_IMETHOD GetMacCreator(PRUint32 *aMacCreator) { return _to GetMacCreator(aMacCreator); } \
+  NS_IMETHOD SetMacCreator(PRUint32 aMacCreator) { return _to SetMacCreator(aMacCreator); } \
+  NS_IMETHOD Equals(nsIMIMEInfo *mime_info, PRBool *_retval) { return _to Equals(mime_info, _retval); } \
+  NS_IMETHOD GetPossibleLocalHandlers(nsIArray * *aPossibleLocalHandlers) { return _to GetPossibleLocalHandlers(aPossibleLocalHandlers); } \
+  NS_IMETHOD LaunchWithFile(nsIFile *file) { return _to LaunchWithFile(file); } 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
+#define NS_FORWARD_SAFE_NSIMIMEINFO(_to) \
+  NS_IMETHOD GetFileExtensions(nsIUTF8StringEnumerator **_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetFileExtensions(_retval); } \
+  NS_IMETHOD SetFileExtensions(const nsACString & extensions) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetFileExtensions(extensions); } \
+  NS_IMETHOD ExtensionExists(const nsACString & extension, PRBool *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->ExtensionExists(extension, _retval); } \
+  NS_IMETHOD AppendExtension(const nsACString & extension) { return !_to ? NS_ERROR_NULL_POINTER : _to->AppendExtension(extension); } \
+  NS_IMETHOD GetPrimaryExtension(nsACString & aPrimaryExtension) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPrimaryExtension(aPrimaryExtension); } \
+  NS_IMETHOD SetPrimaryExtension(const nsACString & aPrimaryExtension) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPrimaryExtension(aPrimaryExtension); } \
+  NS_IMETHOD GetMIMEType(nsACString & aMIMEType) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetMIMEType(aMIMEType); } \
+  NS_IMETHOD GetMacType(PRUint32 *aMacType) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetMacType(aMacType); } \
+  NS_IMETHOD SetMacType(PRUint32 aMacType) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetMacType(aMacType); } \
+  NS_IMETHOD GetMacCreator(PRUint32 *aMacCreator) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetMacCreator(aMacCreator); } \
+  NS_IMETHOD SetMacCreator(PRUint32 aMacCreator) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetMacCreator(aMacCreator); } \
+  NS_IMETHOD Equals(nsIMIMEInfo *mime_info, PRBool *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->Equals(mime_info, _retval); } \
+  NS_IMETHOD GetPossibleLocalHandlers(nsIArray * *aPossibleLocalHandlers) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPossibleLocalHandlers(aPossibleLocalHandlers); } \
+  NS_IMETHOD LaunchWithFile(nsIFile *file) { return !_to ? NS_ERROR_NULL_POINTER : _to->LaunchWithFile(file); } 
 
 #if 0
 /* Use the code below as a template for the implementation class for this interface. */
@@ -11058,16 +12742,6 @@ NS_IMETHODIMP nsMIMEInfo::GetMIMEType(nsACString & aMIMEType)
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* attribute AString description; */
-NS_IMETHODIMP nsMIMEInfo::GetDescription(nsAString & aDescription)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-NS_IMETHODIMP nsMIMEInfo::SetDescription(const nsAString & aDescription)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
 /* attribute PRUint32 macType; */
 NS_IMETHODIMP nsMIMEInfo::GetMacType(PRUint32 *aMacType)
 {
@@ -11094,34 +12768,8 @@ NS_IMETHODIMP nsMIMEInfo::Equals(nsIMIMEInfo *mime_info, PRBool *_retval)
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* attribute nsIFile preferredApplicationHandler; */
-NS_IMETHODIMP nsMIMEInfo::GetPreferredApplicationHandler(nsIFile * *aPreferredApplicationHandler)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-NS_IMETHODIMP nsMIMEInfo::SetPreferredApplicationHandler(nsIFile * aPreferredApplicationHandler)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* attribute AString applicationDescription; */
-NS_IMETHODIMP nsMIMEInfo::GetApplicationDescription(nsAString & aApplicationDescription)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-NS_IMETHODIMP nsMIMEInfo::SetApplicationDescription(const nsAString & aApplicationDescription)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* readonly attribute boolean hasDefaultHandler; */
-NS_IMETHODIMP nsMIMEInfo::GetHasDefaultHandler(PRBool *aHasDefaultHandler)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* readonly attribute AString defaultDescription; */
-NS_IMETHODIMP nsMIMEInfo::GetDefaultDescription(nsAString & aDefaultDescription)
+/* readonly attribute nsIArray possibleLocalHandlers; */
+NS_IMETHODIMP nsMIMEInfo::GetPossibleLocalHandlers(nsIArray * *aPossibleLocalHandlers)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
@@ -11132,32 +12780,10 @@ NS_IMETHODIMP nsMIMEInfo::LaunchWithFile(nsIFile *file)
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* attribute nsMIMEInfoHandleAction preferredAction; */
-NS_IMETHODIMP nsMIMEInfo::GetPreferredAction(nsMIMEInfoHandleAction * *aPreferredAction)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-NS_IMETHODIMP nsMIMEInfo::SetPreferredAction(nsMIMEInfoHandleAction * aPreferredAction)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* attribute boolean alwaysAskBeforeHandling; */
-NS_IMETHODIMP nsMIMEInfo::GetAlwaysAskBeforeHandling(PRBool *aAlwaysAskBeforeHandling)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-NS_IMETHODIMP nsMIMEInfo::SetAlwaysAskBeforeHandling(PRBool aAlwaysAskBeforeHandling)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
 /* End of implementation class template. */
 #endif
 
 class nsIFileSpec; /* forward declaration */
-
-class nsIFile; /* forward declaration */
 
 class nsILocalFile; /* forward declaration */
 
@@ -11786,11 +13412,274 @@ NS_IMETHODIMP nsPref::EnumerateChildren(const char *parent, PrefEnumerationFunc 
 /* End of implementation class template. */
 #endif
 
+class nsIPrintSettings18; /* forward declaration */
+
 class nsIPrintSettings; /* forward declaration */
 
 class nsIDOMWindow; /* forward declaration */
 
 class nsIWebProgressListener; /* forward declaration */
+
+
+/* starting interface:    nsIWebBrowserPrint18 */
+#define NS_IWEBBROWSERPRINT18_IID_STR "9a7ca4b0-fbba-11d4-a869-00105a183419"
+
+#define NS_IWEBBROWSERPRINT18_IID \
+  {0x9a7ca4b0, 0xfbba, 0x11d4, \
+    { 0xa8, 0x69, 0x00, 0x10, 0x5a, 0x18, 0x34, 0x19 }}
+
+class NS_NO_VTABLE nsIWebBrowserPrint18 : public nsISupports {
+ public: 
+
+  NS_DEFINE_STATIC_IID_ACCESSOR(NS_IWEBBROWSERPRINT18_IID)
+
+  enum { PRINTPREVIEW_GOTO_PAGENUM = 0 };
+
+  enum { PRINTPREVIEW_PREV_PAGE = 1 };
+
+  enum { PRINTPREVIEW_NEXT_PAGE = 2 };
+
+  enum { PRINTPREVIEW_HOME = 3 };
+
+  enum { PRINTPREVIEW_END = 4 };
+
+  /* readonly attribute nsIPrintSettings18 globalPrintSettings; */
+  NS_IMETHOD GetGlobalPrintSettings(nsIPrintSettings18 * *aGlobalPrintSettings) = 0;
+
+  /* readonly attribute nsIPrintSettings18 currentPrintSettings; */
+  NS_IMETHOD GetCurrentPrintSettings(nsIPrintSettings18 * *aCurrentPrintSettings) = 0;
+
+  /* readonly attribute nsIDOMWindow currentChildDOMWindow; */
+  NS_IMETHOD GetCurrentChildDOMWindow(nsIDOMWindow * *aCurrentChildDOMWindow) = 0;
+
+  /* readonly attribute boolean doingPrint; */
+  NS_IMETHOD GetDoingPrint(PRBool *aDoingPrint) = 0;
+
+  /* readonly attribute boolean doingPrintPreview; */
+  NS_IMETHOD GetDoingPrintPreview(PRBool *aDoingPrintPreview) = 0;
+
+  /* readonly attribute boolean isFramesetDocument; */
+  NS_IMETHOD GetIsFramesetDocument(PRBool *aIsFramesetDocument) = 0;
+
+  /* readonly attribute boolean isFramesetFrameSelected; */
+  NS_IMETHOD GetIsFramesetFrameSelected(PRBool *aIsFramesetFrameSelected) = 0;
+
+  /* readonly attribute boolean isIFrameSelected; */
+  NS_IMETHOD GetIsIFrameSelected(PRBool *aIsIFrameSelected) = 0;
+
+  /* readonly attribute boolean isRangeSelection; */
+  NS_IMETHOD GetIsRangeSelection(PRBool *aIsRangeSelection) = 0;
+
+  /* readonly attribute long printPreviewNumPages; */
+  NS_IMETHOD GetPrintPreviewNumPages(PRInt32 *aPrintPreviewNumPages) = 0;
+
+  /* void print (in nsIPrintSettings18 thePrintSettings, in nsIWebProgressListener WPListener); */
+  NS_IMETHOD Print(nsIPrintSettings18 *thePrintSettings, nsIWebProgressListener *WPListener) = 0;
+
+  /* void printPreview (in nsIPrintSettings18 thePrintSettings, in nsIDOMWindow childDOMWin, in nsIWebProgressListener WPListener); */
+  NS_IMETHOD PrintPreview(nsIPrintSettings18 *thePrintSettings, nsIDOMWindow *childDOMWin, nsIWebProgressListener *WPListener) = 0;
+
+  /* void printPreviewNavigate (in short navType, in long pageNum); */
+  NS_IMETHOD PrintPreviewNavigate(PRInt16 navType, PRInt32 pageNum) = 0;
+
+  /* void cancel (); */
+  NS_IMETHOD Cancel(void) = 0;
+
+  /* void enumerateDocumentNames (out PRUint32 count, [array, size_is (count), retval] out wstring result); */
+  NS_IMETHOD EnumerateDocumentNames(PRUint32 *count, PRUnichar ***result) = 0;
+
+  /* void exitPrintPreview (); */
+  NS_IMETHOD ExitPrintPreview(void) = 0;
+
+};
+
+/* Use this macro when declaring classes that implement this interface. */
+#define NS_DECL_NSIWEBBROWSERPRINT18 \
+  NS_IMETHOD GetGlobalPrintSettings(nsIPrintSettings18 * *aGlobalPrintSettings); \
+  NS_IMETHOD GetCurrentPrintSettings(nsIPrintSettings18 * *aCurrentPrintSettings); \
+  NS_IMETHOD GetCurrentChildDOMWindow(nsIDOMWindow * *aCurrentChildDOMWindow); \
+  NS_IMETHOD GetDoingPrint(PRBool *aDoingPrint); \
+  NS_IMETHOD GetDoingPrintPreview(PRBool *aDoingPrintPreview); \
+  NS_IMETHOD GetIsFramesetDocument(PRBool *aIsFramesetDocument); \
+  NS_IMETHOD GetIsFramesetFrameSelected(PRBool *aIsFramesetFrameSelected); \
+  NS_IMETHOD GetIsIFrameSelected(PRBool *aIsIFrameSelected); \
+  NS_IMETHOD GetIsRangeSelection(PRBool *aIsRangeSelection); \
+  NS_IMETHOD GetPrintPreviewNumPages(PRInt32 *aPrintPreviewNumPages); \
+  NS_IMETHOD Print(nsIPrintSettings18 *thePrintSettings, nsIWebProgressListener *WPListener); \
+  NS_IMETHOD PrintPreview(nsIPrintSettings18 *thePrintSettings, nsIDOMWindow *childDOMWin, nsIWebProgressListener *WPListener); \
+  NS_IMETHOD PrintPreviewNavigate(PRInt16 navType, PRInt32 pageNum); \
+  NS_IMETHOD Cancel(void); \
+  NS_IMETHOD EnumerateDocumentNames(PRUint32 *count, PRUnichar ***result); \
+  NS_IMETHOD ExitPrintPreview(void); 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object. */
+#define NS_FORWARD_NSIWEBBROWSERPRINT18(_to) \
+  NS_IMETHOD GetGlobalPrintSettings(nsIPrintSettings18 * *aGlobalPrintSettings) { return _to GetGlobalPrintSettings(aGlobalPrintSettings); } \
+  NS_IMETHOD GetCurrentPrintSettings(nsIPrintSettings18 * *aCurrentPrintSettings) { return _to GetCurrentPrintSettings(aCurrentPrintSettings); } \
+  NS_IMETHOD GetCurrentChildDOMWindow(nsIDOMWindow * *aCurrentChildDOMWindow) { return _to GetCurrentChildDOMWindow(aCurrentChildDOMWindow); } \
+  NS_IMETHOD GetDoingPrint(PRBool *aDoingPrint) { return _to GetDoingPrint(aDoingPrint); } \
+  NS_IMETHOD GetDoingPrintPreview(PRBool *aDoingPrintPreview) { return _to GetDoingPrintPreview(aDoingPrintPreview); } \
+  NS_IMETHOD GetIsFramesetDocument(PRBool *aIsFramesetDocument) { return _to GetIsFramesetDocument(aIsFramesetDocument); } \
+  NS_IMETHOD GetIsFramesetFrameSelected(PRBool *aIsFramesetFrameSelected) { return _to GetIsFramesetFrameSelected(aIsFramesetFrameSelected); } \
+  NS_IMETHOD GetIsIFrameSelected(PRBool *aIsIFrameSelected) { return _to GetIsIFrameSelected(aIsIFrameSelected); } \
+  NS_IMETHOD GetIsRangeSelection(PRBool *aIsRangeSelection) { return _to GetIsRangeSelection(aIsRangeSelection); } \
+  NS_IMETHOD GetPrintPreviewNumPages(PRInt32 *aPrintPreviewNumPages) { return _to GetPrintPreviewNumPages(aPrintPreviewNumPages); } \
+  NS_IMETHOD Print(nsIPrintSettings18 *thePrintSettings, nsIWebProgressListener *WPListener) { return _to Print(thePrintSettings, WPListener); } \
+  NS_IMETHOD PrintPreview(nsIPrintSettings18 *thePrintSettings, nsIDOMWindow *childDOMWin, nsIWebProgressListener *WPListener) { return _to PrintPreview(thePrintSettings, childDOMWin, WPListener); } \
+  NS_IMETHOD PrintPreviewNavigate(PRInt16 navType, PRInt32 pageNum) { return _to PrintPreviewNavigate(navType, pageNum); } \
+  NS_IMETHOD Cancel(void) { return _to Cancel(); } \
+  NS_IMETHOD EnumerateDocumentNames(PRUint32 *count, PRUnichar ***result) { return _to EnumerateDocumentNames(count, result); } \
+  NS_IMETHOD ExitPrintPreview(void) { return _to ExitPrintPreview(); } 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
+#define NS_FORWARD_SAFE_NSIWEBBROWSERPRINT18(_to) \
+  NS_IMETHOD GetGlobalPrintSettings(nsIPrintSettings18 * *aGlobalPrintSettings) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetGlobalPrintSettings(aGlobalPrintSettings); } \
+  NS_IMETHOD GetCurrentPrintSettings(nsIPrintSettings18 * *aCurrentPrintSettings) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetCurrentPrintSettings(aCurrentPrintSettings); } \
+  NS_IMETHOD GetCurrentChildDOMWindow(nsIDOMWindow * *aCurrentChildDOMWindow) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetCurrentChildDOMWindow(aCurrentChildDOMWindow); } \
+  NS_IMETHOD GetDoingPrint(PRBool *aDoingPrint) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetDoingPrint(aDoingPrint); } \
+  NS_IMETHOD GetDoingPrintPreview(PRBool *aDoingPrintPreview) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetDoingPrintPreview(aDoingPrintPreview); } \
+  NS_IMETHOD GetIsFramesetDocument(PRBool *aIsFramesetDocument) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetIsFramesetDocument(aIsFramesetDocument); } \
+  NS_IMETHOD GetIsFramesetFrameSelected(PRBool *aIsFramesetFrameSelected) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetIsFramesetFrameSelected(aIsFramesetFrameSelected); } \
+  NS_IMETHOD GetIsIFrameSelected(PRBool *aIsIFrameSelected) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetIsIFrameSelected(aIsIFrameSelected); } \
+  NS_IMETHOD GetIsRangeSelection(PRBool *aIsRangeSelection) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetIsRangeSelection(aIsRangeSelection); } \
+  NS_IMETHOD GetPrintPreviewNumPages(PRInt32 *aPrintPreviewNumPages) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPrintPreviewNumPages(aPrintPreviewNumPages); } \
+  NS_IMETHOD Print(nsIPrintSettings18 *thePrintSettings, nsIWebProgressListener *WPListener) { return !_to ? NS_ERROR_NULL_POINTER : _to->Print(thePrintSettings, WPListener); } \
+  NS_IMETHOD PrintPreview(nsIPrintSettings18 *thePrintSettings, nsIDOMWindow *childDOMWin, nsIWebProgressListener *WPListener) { return !_to ? NS_ERROR_NULL_POINTER : _to->PrintPreview(thePrintSettings, childDOMWin, WPListener); } \
+  NS_IMETHOD PrintPreviewNavigate(PRInt16 navType, PRInt32 pageNum) { return !_to ? NS_ERROR_NULL_POINTER : _to->PrintPreviewNavigate(navType, pageNum); } \
+  NS_IMETHOD Cancel(void) { return !_to ? NS_ERROR_NULL_POINTER : _to->Cancel(); } \
+  NS_IMETHOD EnumerateDocumentNames(PRUint32 *count, PRUnichar ***result) { return !_to ? NS_ERROR_NULL_POINTER : _to->EnumerateDocumentNames(count, result); } \
+  NS_IMETHOD ExitPrintPreview(void) { return !_to ? NS_ERROR_NULL_POINTER : _to->ExitPrintPreview(); } 
+
+#if 0
+/* Use the code below as a template for the implementation class for this interface. */
+
+/* Header file */
+class nsWebBrowserPrint18 : public nsIWebBrowserPrint18
+{
+public:
+  NS_DECL_ISUPPORTS
+  NS_DECL_NSIWEBBROWSERPRINT18
+
+  nsWebBrowserPrint18();
+
+private:
+  ~nsWebBrowserPrint18();
+
+protected:
+  /* additional members */
+};
+
+/* Implementation file */
+NS_IMPL_ISUPPORTS1(nsWebBrowserPrint18, nsIWebBrowserPrint18)
+
+nsWebBrowserPrint18::nsWebBrowserPrint18()
+{
+  /* member initializers and constructor code */
+}
+
+nsWebBrowserPrint18::~nsWebBrowserPrint18()
+{
+  /* destructor code */
+}
+
+/* readonly attribute nsIPrintSettings18 globalPrintSettings; */
+NS_IMETHODIMP nsWebBrowserPrint18::GetGlobalPrintSettings(nsIPrintSettings18 * *aGlobalPrintSettings)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute nsIPrintSettings18 currentPrintSettings; */
+NS_IMETHODIMP nsWebBrowserPrint18::GetCurrentPrintSettings(nsIPrintSettings18 * *aCurrentPrintSettings)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute nsIDOMWindow currentChildDOMWindow; */
+NS_IMETHODIMP nsWebBrowserPrint18::GetCurrentChildDOMWindow(nsIDOMWindow * *aCurrentChildDOMWindow)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute boolean doingPrint; */
+NS_IMETHODIMP nsWebBrowserPrint18::GetDoingPrint(PRBool *aDoingPrint)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute boolean doingPrintPreview; */
+NS_IMETHODIMP nsWebBrowserPrint18::GetDoingPrintPreview(PRBool *aDoingPrintPreview)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute boolean isFramesetDocument; */
+NS_IMETHODIMP nsWebBrowserPrint18::GetIsFramesetDocument(PRBool *aIsFramesetDocument)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute boolean isFramesetFrameSelected; */
+NS_IMETHODIMP nsWebBrowserPrint18::GetIsFramesetFrameSelected(PRBool *aIsFramesetFrameSelected)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute boolean isIFrameSelected; */
+NS_IMETHODIMP nsWebBrowserPrint18::GetIsIFrameSelected(PRBool *aIsIFrameSelected)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute boolean isRangeSelection; */
+NS_IMETHODIMP nsWebBrowserPrint18::GetIsRangeSelection(PRBool *aIsRangeSelection)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute long printPreviewNumPages; */
+NS_IMETHODIMP nsWebBrowserPrint18::GetPrintPreviewNumPages(PRInt32 *aPrintPreviewNumPages)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void print (in nsIPrintSettings18 thePrintSettings, in nsIWebProgressListener WPListener); */
+NS_IMETHODIMP nsWebBrowserPrint18::Print(nsIPrintSettings18 *thePrintSettings, nsIWebProgressListener *WPListener)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void printPreview (in nsIPrintSettings18 thePrintSettings, in nsIDOMWindow childDOMWin, in nsIWebProgressListener WPListener); */
+NS_IMETHODIMP nsWebBrowserPrint18::PrintPreview(nsIPrintSettings18 *thePrintSettings, nsIDOMWindow *childDOMWin, nsIWebProgressListener *WPListener)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void printPreviewNavigate (in short navType, in long pageNum); */
+NS_IMETHODIMP nsWebBrowserPrint18::PrintPreviewNavigate(PRInt16 navType, PRInt32 pageNum)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void cancel (); */
+NS_IMETHODIMP nsWebBrowserPrint18::Cancel()
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void enumerateDocumentNames (out PRUint32 count, [array, size_is (count), retval] out wstring result); */
+NS_IMETHODIMP nsWebBrowserPrint18::EnumerateDocumentNames(PRUint32 *count, PRUnichar ***result)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void exitPrintPreview (); */
+NS_IMETHODIMP nsWebBrowserPrint18::ExitPrintPreview()
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* End of implementation class template. */
+#endif
 
 
 /* starting interface:    nsIWebBrowserPrint */
@@ -12053,20 +13942,151 @@ NS_IMETHODIMP nsWebBrowserPrint::ExitPrintPreview()
 /* End of implementation class template. */
 #endif
 
+
+/* starting interface:    nsIPrintSettingsService */
+#define NS_IPRINTSETTINGSSERVICE_IID_STR "841387c8-72e6-484b-9296-bf6eea80d58a"
+
+#define NS_IPRINTSETTINGSSERVICE_IID \
+  {0x841387c8, 0x72e6, 0x484b, \
+    { 0x92, 0x96, 0xbf, 0x6e, 0xea, 0x80, 0xd5, 0x8a }}
+
+class NS_NO_VTABLE nsIPrintSettingsService : public nsISupports {
+ public: 
+
+  NS_DEFINE_STATIC_IID_ACCESSOR(NS_IPRINTSETTINGSSERVICE_IID)
+
+  /* readonly attribute nsIPrintSettings globalPrintSettings; */
+  NS_IMETHOD GetGlobalPrintSettings(nsIPrintSettings * *aGlobalPrintSettings) = 0;
+
+  /* readonly attribute nsIPrintSettings newPrintSettings; */
+  NS_IMETHOD GetNewPrintSettings(nsIPrintSettings * *aNewPrintSettings) = 0;
+
+  /* readonly attribute wstring defaultPrinterName; */
+  NS_IMETHOD GetDefaultPrinterName(PRUnichar * *aDefaultPrinterName) = 0;
+
+  /* void initPrintSettingsFromPrinter (in wstring printer_name, in nsIPrintSettings print_settings); */
+  NS_IMETHOD InitPrintSettingsFromPrinter(const PRUnichar *printer_name, nsIPrintSettings *print_settings) = 0;
+
+  /* void initPrintSettingsFromPrefs (in nsIPrintSettings print_settings, in boolean use_printer_name_prefix, in unsigned long flags); */
+  NS_IMETHOD InitPrintSettingsFromPrefs(nsIPrintSettings *print_settings, PRBool use_printer_name_prefix, PRUint32 flags) = 0;
+
+  /* void savePrintSettingsToPrefs (in nsIPrintSettings print_settings, in boolean user_printer_name_prefix, in unsigned long flags); */
+  NS_IMETHOD SavePrintSettingsToPrefs(nsIPrintSettings *print_settings, PRBool user_printer_name_prefix, PRUint32 flags) = 0;
+
+};
+
+/* Use this macro when declaring classes that implement this interface. */
+#define NS_DECL_NSIPRINTSETTINGSSERVICE \
+  NS_IMETHOD GetGlobalPrintSettings(nsIPrintSettings * *aGlobalPrintSettings); \
+  NS_IMETHOD GetNewPrintSettings(nsIPrintSettings * *aNewPrintSettings); \
+  NS_IMETHOD GetDefaultPrinterName(PRUnichar * *aDefaultPrinterName); \
+  NS_IMETHOD InitPrintSettingsFromPrinter(const PRUnichar *printer_name, nsIPrintSettings *print_settings); \
+  NS_IMETHOD InitPrintSettingsFromPrefs(nsIPrintSettings *print_settings, PRBool use_printer_name_prefix, PRUint32 flags); \
+  NS_IMETHOD SavePrintSettingsToPrefs(nsIPrintSettings *print_settings, PRBool user_printer_name_prefix, PRUint32 flags); 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object. */
+#define NS_FORWARD_NSIPRINTSETTINGSSERVICE(_to) \
+  NS_IMETHOD GetGlobalPrintSettings(nsIPrintSettings * *aGlobalPrintSettings) { return _to GetGlobalPrintSettings(aGlobalPrintSettings); } \
+  NS_IMETHOD GetNewPrintSettings(nsIPrintSettings * *aNewPrintSettings) { return _to GetNewPrintSettings(aNewPrintSettings); } \
+  NS_IMETHOD GetDefaultPrinterName(PRUnichar * *aDefaultPrinterName) { return _to GetDefaultPrinterName(aDefaultPrinterName); } \
+  NS_IMETHOD InitPrintSettingsFromPrinter(const PRUnichar *printer_name, nsIPrintSettings *print_settings) { return _to InitPrintSettingsFromPrinter(printer_name, print_settings); } \
+  NS_IMETHOD InitPrintSettingsFromPrefs(nsIPrintSettings *print_settings, PRBool use_printer_name_prefix, PRUint32 flags) { return _to InitPrintSettingsFromPrefs(print_settings, use_printer_name_prefix, flags); } \
+  NS_IMETHOD SavePrintSettingsToPrefs(nsIPrintSettings *print_settings, PRBool user_printer_name_prefix, PRUint32 flags) { return _to SavePrintSettingsToPrefs(print_settings, user_printer_name_prefix, flags); } 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
+#define NS_FORWARD_SAFE_NSIPRINTSETTINGSSERVICE(_to) \
+  NS_IMETHOD GetGlobalPrintSettings(nsIPrintSettings * *aGlobalPrintSettings) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetGlobalPrintSettings(aGlobalPrintSettings); } \
+  NS_IMETHOD GetNewPrintSettings(nsIPrintSettings * *aNewPrintSettings) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetNewPrintSettings(aNewPrintSettings); } \
+  NS_IMETHOD GetDefaultPrinterName(PRUnichar * *aDefaultPrinterName) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetDefaultPrinterName(aDefaultPrinterName); } \
+  NS_IMETHOD InitPrintSettingsFromPrinter(const PRUnichar *printer_name, nsIPrintSettings *print_settings) { return !_to ? NS_ERROR_NULL_POINTER : _to->InitPrintSettingsFromPrinter(printer_name, print_settings); } \
+  NS_IMETHOD InitPrintSettingsFromPrefs(nsIPrintSettings *print_settings, PRBool use_printer_name_prefix, PRUint32 flags) { return !_to ? NS_ERROR_NULL_POINTER : _to->InitPrintSettingsFromPrefs(print_settings, use_printer_name_prefix, flags); } \
+  NS_IMETHOD SavePrintSettingsToPrefs(nsIPrintSettings *print_settings, PRBool user_printer_name_prefix, PRUint32 flags) { return !_to ? NS_ERROR_NULL_POINTER : _to->SavePrintSettingsToPrefs(print_settings, user_printer_name_prefix, flags); } 
+
+#if 0
+/* Use the code below as a template for the implementation class for this interface. */
+
+/* Header file */
+class nsPrintSettingsService : public nsIPrintSettingsService
+{
+public:
+  NS_DECL_ISUPPORTS
+  NS_DECL_NSIPRINTSETTINGSSERVICE
+
+  nsPrintSettingsService();
+
+private:
+  ~nsPrintSettingsService();
+
+protected:
+  /* additional members */
+};
+
+/* Implementation file */
+NS_IMPL_ISUPPORTS1(nsPrintSettingsService, nsIPrintSettingsService)
+
+nsPrintSettingsService::nsPrintSettingsService()
+{
+  /* member initializers and constructor code */
+}
+
+nsPrintSettingsService::~nsPrintSettingsService()
+{
+  /* destructor code */
+}
+
+/* readonly attribute nsIPrintSettings globalPrintSettings; */
+NS_IMETHODIMP nsPrintSettingsService::GetGlobalPrintSettings(nsIPrintSettings * *aGlobalPrintSettings)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute nsIPrintSettings newPrintSettings; */
+NS_IMETHODIMP nsPrintSettingsService::GetNewPrintSettings(nsIPrintSettings * *aNewPrintSettings)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute wstring defaultPrinterName; */
+NS_IMETHODIMP nsPrintSettingsService::GetDefaultPrinterName(PRUnichar * *aDefaultPrinterName)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void initPrintSettingsFromPrinter (in wstring printer_name, in nsIPrintSettings print_settings); */
+NS_IMETHODIMP nsPrintSettingsService::InitPrintSettingsFromPrinter(const PRUnichar *printer_name, nsIPrintSettings *print_settings)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void initPrintSettingsFromPrefs (in nsIPrintSettings print_settings, in boolean use_printer_name_prefix, in unsigned long flags); */
+NS_IMETHODIMP nsPrintSettingsService::InitPrintSettingsFromPrefs(nsIPrintSettings *print_settings, PRBool use_printer_name_prefix, PRUint32 flags)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void savePrintSettingsToPrefs (in nsIPrintSettings print_settings, in boolean user_printer_name_prefix, in unsigned long flags); */
+NS_IMETHODIMP nsPrintSettingsService::SavePrintSettingsToPrefs(nsIPrintSettings *print_settings, PRBool user_printer_name_prefix, PRUint32 flags)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* End of implementation class template. */
+#endif
+
 class nsIPrintSession; /* forward declaration */
 
 
-/* starting interface:    nsIPrintSettings */
-#define NS_IPRINTSETTINGS_IID_STR "f1094df6-ce0e-42c9-9847-2f663172c38d"
+/* starting interface:    nsIPrintSettings18 */
+#define NS_IPRINTSETTINGS18_IID_STR "f1094df6-ce0e-42c9-9847-2f663172c38d"
 
-#define NS_IPRINTSETTINGS_IID \
+#define NS_IPRINTSETTINGS18_IID \
   {0xf1094df6, 0xce0e, 0x42c9, \
     { 0x98, 0x47, 0x2f, 0x66, 0x31, 0x72, 0xc3, 0x8d }}
 
-class NS_NO_VTABLE nsIPrintSettings : public nsISupports {
+class NS_NO_VTABLE nsIPrintSettings18 : public nsISupports {
  public: 
 
-  NS_DEFINE_STATIC_IID_ACCESSOR(NS_IPRINTSETTINGS_IID)
+  NS_DEFINE_STATIC_IID_ACCESSOR(NS_IPRINTSETTINGS18_IID)
 
   enum { kInitSaveOddEvenPages = 1U };
 
@@ -12397,7 +14417,7 @@ class NS_NO_VTABLE nsIPrintSettings : public nsISupports {
 };
 
 /* Use this macro when declaring classes that implement this interface. */
-#define NS_DECL_NSIPRINTSETTINGS \
+#define NS_DECL_NSIPRINTSETTINGS18 \
   NS_IMETHOD SetPrintOptions(PRInt32 type, PRBool turnOnOff); \
   NS_IMETHOD GetPrintOptions(PRInt32 type, PRBool *_retval); \
   NS_IMETHOD GetPrintOptionsBits(PRInt32 *_retval); \
@@ -12502,7 +14522,7 @@ class NS_NO_VTABLE nsIPrintSettings : public nsISupports {
   NS_IMETHOD SetIsInitializedFromPrefs(PRBool aIsInitializedFromPrefs); 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object. */
-#define NS_FORWARD_NSIPRINTSETTINGS(_to) \
+#define NS_FORWARD_NSIPRINTSETTINGS18(_to) \
   NS_IMETHOD SetPrintOptions(PRInt32 type, PRBool turnOnOff) { return _to SetPrintOptions(type, turnOnOff); } \
   NS_IMETHOD GetPrintOptions(PRInt32 type, PRBool *_retval) { return _to GetPrintOptions(type, _retval); } \
   NS_IMETHOD GetPrintOptionsBits(PRInt32 *_retval) { return _to GetPrintOptionsBits(_retval); } \
@@ -12607,7 +14627,7 @@ class NS_NO_VTABLE nsIPrintSettings : public nsISupports {
   NS_IMETHOD SetIsInitializedFromPrefs(PRBool aIsInitializedFromPrefs) { return _to SetIsInitializedFromPrefs(aIsInitializedFromPrefs); } 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
-#define NS_FORWARD_SAFE_NSIPRINTSETTINGS(_to) \
+#define NS_FORWARD_SAFE_NSIPRINTSETTINGS18(_to) \
   NS_IMETHOD SetPrintOptions(PRInt32 type, PRBool turnOnOff) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPrintOptions(type, turnOnOff); } \
   NS_IMETHOD GetPrintOptions(PRInt32 type, PRBool *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPrintOptions(type, _retval); } \
   NS_IMETHOD GetPrintOptionsBits(PRInt32 *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPrintOptionsBits(_retval); } \
@@ -12715,6 +14735,1293 @@ class NS_NO_VTABLE nsIPrintSettings : public nsISupports {
 /* Use the code below as a template for the implementation class for this interface. */
 
 /* Header file */
+class nsPrintSettings18 : public nsIPrintSettings18
+{
+public:
+  NS_DECL_ISUPPORTS
+  NS_DECL_NSIPRINTSETTINGS18
+
+  nsPrintSettings18();
+
+private:
+  ~nsPrintSettings18();
+
+protected:
+  /* additional members */
+};
+
+/* Implementation file */
+NS_IMPL_ISUPPORTS1(nsPrintSettings18, nsIPrintSettings18)
+
+nsPrintSettings18::nsPrintSettings18()
+{
+  /* member initializers and constructor code */
+}
+
+nsPrintSettings18::~nsPrintSettings18()
+{
+  /* destructor code */
+}
+
+/* void SetPrintOptions (in long type, in boolean turnOnOff); */
+NS_IMETHODIMP nsPrintSettings18::SetPrintOptions(PRInt32 type, PRBool turnOnOff)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* boolean GetPrintOptions (in long type); */
+NS_IMETHODIMP nsPrintSettings18::GetPrintOptions(PRInt32 type, PRBool *_retval)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* long GetPrintOptionsBits (); */
+NS_IMETHODIMP nsPrintSettings18::GetPrintOptionsBits(PRInt32 *_retval)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void GetPageSizeInTwips (out long width, out long height); */
+NS_IMETHODIMP nsPrintSettings18::GetPageSizeInTwips(PRInt32 *width, PRInt32 *height)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* nsIPrintSettings clone (); */
+NS_IMETHODIMP nsPrintSettings18::Clone(nsIPrintSettings **_retval)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void assign (in nsIPrintSettings ps); */
+NS_IMETHODIMP nsPrintSettings18::Assign(nsIPrintSettings *ps)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* [noscript] attribute nsIPrintSession printSession; */
+NS_IMETHODIMP nsPrintSettings18::GetPrintSession(nsIPrintSession * *aPrintSession)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetPrintSession(nsIPrintSession * aPrintSession)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute long startPageRange; */
+NS_IMETHODIMP nsPrintSettings18::GetStartPageRange(PRInt32 *aStartPageRange)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetStartPageRange(PRInt32 aStartPageRange)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute long endPageRange; */
+NS_IMETHODIMP nsPrintSettings18::GetEndPageRange(PRInt32 *aEndPageRange)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetEndPageRange(PRInt32 aEndPageRange)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute double marginTop; */
+NS_IMETHODIMP nsPrintSettings18::GetMarginTop(double *aMarginTop)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetMarginTop(double aMarginTop)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute double marginLeft; */
+NS_IMETHODIMP nsPrintSettings18::GetMarginLeft(double *aMarginLeft)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetMarginLeft(double aMarginLeft)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute double marginBottom; */
+NS_IMETHODIMP nsPrintSettings18::GetMarginBottom(double *aMarginBottom)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetMarginBottom(double aMarginBottom)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute double marginRight; */
+NS_IMETHODIMP nsPrintSettings18::GetMarginRight(double *aMarginRight)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetMarginRight(double aMarginRight)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute double scaling; */
+NS_IMETHODIMP nsPrintSettings18::GetScaling(double *aScaling)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetScaling(double aScaling)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute boolean printBGColors; */
+NS_IMETHODIMP nsPrintSettings18::GetPrintBGColors(PRBool *aPrintBGColors)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetPrintBGColors(PRBool aPrintBGColors)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute boolean printBGImages; */
+NS_IMETHODIMP nsPrintSettings18::GetPrintBGImages(PRBool *aPrintBGImages)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetPrintBGImages(PRBool aPrintBGImages)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute short printRange; */
+NS_IMETHODIMP nsPrintSettings18::GetPrintRange(PRInt16 *aPrintRange)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetPrintRange(PRInt16 aPrintRange)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute wstring title; */
+NS_IMETHODIMP nsPrintSettings18::GetTitle(PRUnichar * *aTitle)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetTitle(const PRUnichar * aTitle)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute wstring docURL; */
+NS_IMETHODIMP nsPrintSettings18::GetDocURL(PRUnichar * *aDocURL)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetDocURL(const PRUnichar * aDocURL)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute wstring headerStrLeft; */
+NS_IMETHODIMP nsPrintSettings18::GetHeaderStrLeft(PRUnichar * *aHeaderStrLeft)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetHeaderStrLeft(const PRUnichar * aHeaderStrLeft)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute wstring headerStrCenter; */
+NS_IMETHODIMP nsPrintSettings18::GetHeaderStrCenter(PRUnichar * *aHeaderStrCenter)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetHeaderStrCenter(const PRUnichar * aHeaderStrCenter)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute wstring headerStrRight; */
+NS_IMETHODIMP nsPrintSettings18::GetHeaderStrRight(PRUnichar * *aHeaderStrRight)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetHeaderStrRight(const PRUnichar * aHeaderStrRight)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute wstring footerStrLeft; */
+NS_IMETHODIMP nsPrintSettings18::GetFooterStrLeft(PRUnichar * *aFooterStrLeft)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetFooterStrLeft(const PRUnichar * aFooterStrLeft)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute wstring footerStrCenter; */
+NS_IMETHODIMP nsPrintSettings18::GetFooterStrCenter(PRUnichar * *aFooterStrCenter)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetFooterStrCenter(const PRUnichar * aFooterStrCenter)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute wstring footerStrRight; */
+NS_IMETHODIMP nsPrintSettings18::GetFooterStrRight(PRUnichar * *aFooterStrRight)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetFooterStrRight(const PRUnichar * aFooterStrRight)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute short howToEnableFrameUI; */
+NS_IMETHODIMP nsPrintSettings18::GetHowToEnableFrameUI(PRInt16 *aHowToEnableFrameUI)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetHowToEnableFrameUI(PRInt16 aHowToEnableFrameUI)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute boolean isCancelled; */
+NS_IMETHODIMP nsPrintSettings18::GetIsCancelled(PRBool *aIsCancelled)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetIsCancelled(PRBool aIsCancelled)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute short printFrameTypeUsage; */
+NS_IMETHODIMP nsPrintSettings18::GetPrintFrameTypeUsage(PRInt16 *aPrintFrameTypeUsage)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetPrintFrameTypeUsage(PRInt16 aPrintFrameTypeUsage)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute short printFrameType; */
+NS_IMETHODIMP nsPrintSettings18::GetPrintFrameType(PRInt16 *aPrintFrameType)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetPrintFrameType(PRInt16 aPrintFrameType)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute boolean printSilent; */
+NS_IMETHODIMP nsPrintSettings18::GetPrintSilent(PRBool *aPrintSilent)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetPrintSilent(PRBool aPrintSilent)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute boolean shrinkToFit; */
+NS_IMETHODIMP nsPrintSettings18::GetShrinkToFit(PRBool *aShrinkToFit)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetShrinkToFit(PRBool aShrinkToFit)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute boolean showPrintProgress; */
+NS_IMETHODIMP nsPrintSettings18::GetShowPrintProgress(PRBool *aShowPrintProgress)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetShowPrintProgress(PRBool aShowPrintProgress)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute wstring paperName; */
+NS_IMETHODIMP nsPrintSettings18::GetPaperName(PRUnichar * *aPaperName)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetPaperName(const PRUnichar * aPaperName)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute short paperSizeType; */
+NS_IMETHODIMP nsPrintSettings18::GetPaperSizeType(PRInt16 *aPaperSizeType)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetPaperSizeType(PRInt16 aPaperSizeType)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute short paperData; */
+NS_IMETHODIMP nsPrintSettings18::GetPaperData(PRInt16 *aPaperData)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetPaperData(PRInt16 aPaperData)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute double paperWidth; */
+NS_IMETHODIMP nsPrintSettings18::GetPaperWidth(double *aPaperWidth)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetPaperWidth(double aPaperWidth)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute double paperHeight; */
+NS_IMETHODIMP nsPrintSettings18::GetPaperHeight(double *aPaperHeight)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetPaperHeight(double aPaperHeight)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute short paperSizeUnit; */
+NS_IMETHODIMP nsPrintSettings18::GetPaperSizeUnit(PRInt16 *aPaperSizeUnit)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetPaperSizeUnit(PRInt16 aPaperSizeUnit)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute wstring plexName; */
+NS_IMETHODIMP nsPrintSettings18::GetPlexName(PRUnichar * *aPlexName)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetPlexName(const PRUnichar * aPlexName)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute wstring colorspace; */
+NS_IMETHODIMP nsPrintSettings18::GetColorspace(PRUnichar * *aColorspace)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetColorspace(const PRUnichar * aColorspace)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute wstring resolutionName; */
+NS_IMETHODIMP nsPrintSettings18::GetResolutionName(PRUnichar * *aResolutionName)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetResolutionName(const PRUnichar * aResolutionName)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute boolean downloadFonts; */
+NS_IMETHODIMP nsPrintSettings18::GetDownloadFonts(PRBool *aDownloadFonts)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetDownloadFonts(PRBool aDownloadFonts)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute boolean printReversed; */
+NS_IMETHODIMP nsPrintSettings18::GetPrintReversed(PRBool *aPrintReversed)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetPrintReversed(PRBool aPrintReversed)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute boolean printInColor; */
+NS_IMETHODIMP nsPrintSettings18::GetPrintInColor(PRBool *aPrintInColor)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetPrintInColor(PRBool aPrintInColor)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute long paperSize; */
+NS_IMETHODIMP nsPrintSettings18::GetPaperSize(PRInt32 *aPaperSize)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetPaperSize(PRInt32 aPaperSize)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute long orientation; */
+NS_IMETHODIMP nsPrintSettings18::GetOrientation(PRInt32 *aOrientation)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetOrientation(PRInt32 aOrientation)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute wstring printCommand; */
+NS_IMETHODIMP nsPrintSettings18::GetPrintCommand(PRUnichar * *aPrintCommand)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetPrintCommand(const PRUnichar * aPrintCommand)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute long numCopies; */
+NS_IMETHODIMP nsPrintSettings18::GetNumCopies(PRInt32 *aNumCopies)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetNumCopies(PRInt32 aNumCopies)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute wstring printerName; */
+NS_IMETHODIMP nsPrintSettings18::GetPrinterName(PRUnichar * *aPrinterName)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetPrinterName(const PRUnichar * aPrinterName)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute boolean printToFile; */
+NS_IMETHODIMP nsPrintSettings18::GetPrintToFile(PRBool *aPrintToFile)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetPrintToFile(PRBool aPrintToFile)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute wstring toFileName; */
+NS_IMETHODIMP nsPrintSettings18::GetToFileName(PRUnichar * *aToFileName)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetToFileName(const PRUnichar * aToFileName)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute long printPageDelay; */
+NS_IMETHODIMP nsPrintSettings18::GetPrintPageDelay(PRInt32 *aPrintPageDelay)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetPrintPageDelay(PRInt32 aPrintPageDelay)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute boolean isInitializedFromPrinter; */
+NS_IMETHODIMP nsPrintSettings18::GetIsInitializedFromPrinter(PRBool *aIsInitializedFromPrinter)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetIsInitializedFromPrinter(PRBool aIsInitializedFromPrinter)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute boolean isInitializedFromPrefs; */
+NS_IMETHODIMP nsPrintSettings18::GetIsInitializedFromPrefs(PRBool *aIsInitializedFromPrefs)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings18::SetIsInitializedFromPrefs(PRBool aIsInitializedFromPrefs)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* End of implementation class template. */
+#endif
+
+
+/* starting interface:    nsIPrintSettings */
+#define NS_IPRINTSETTINGS_IID_STR "5af07661-6477-4235-8814-4a45215855b8"
+
+#define NS_IPRINTSETTINGS_IID \
+  {0x5af07661, 0x6477, 0x4235, \
+    { 0x88, 0x14, 0x4a, 0x45, 0x21, 0x58, 0x55, 0xb8 }}
+
+class NS_NO_VTABLE nsIPrintSettings : public nsISupports {
+ public: 
+
+  NS_DEFINE_STATIC_IID_ACCESSOR(NS_IPRINTSETTINGS_IID)
+
+  enum { kInitSaveOddEvenPages = 1U };
+
+  enum { kInitSaveHeaderLeft = 2U };
+
+  enum { kInitSaveHeaderCenter = 4U };
+
+  enum { kInitSaveHeaderRight = 8U };
+
+  enum { kInitSaveFooterLeft = 16U };
+
+  enum { kInitSaveFooterCenter = 32U };
+
+  enum { kInitSaveFooterRight = 64U };
+
+  enum { kInitSaveBGColors = 128U };
+
+  enum { kInitSaveBGImages = 256U };
+
+  enum { kInitSavePaperSize = 512U };
+
+  enum { kInitSavePaperData = 8192U };
+
+  enum { kInitSaveUnwriteableMargins = 16384U };
+
+  enum { kInitSaveEdges = 32768U };
+
+  enum { kInitSaveReversed = 65536U };
+
+  enum { kInitSaveInColor = 131072U };
+
+  enum { kInitSaveOrientation = 262144U };
+
+  enum { kInitSavePrintCommand = 524288U };
+
+  enum { kInitSavePrinterName = 1048576U };
+
+  enum { kInitSavePrintToFile = 2097152U };
+
+  enum { kInitSaveToFileName = 4194304U };
+
+  enum { kInitSavePageDelay = 8388608U };
+
+  enum { kInitSaveMargins = 16777216U };
+
+  enum { kInitSaveNativeData = 33554432U };
+
+  enum { kInitSavePlexName = 67108864U };
+
+  enum { kInitSaveShrinkToFit = 134217728U };
+
+  enum { kInitSaveScaling = 268435456U };
+
+  enum { kInitSaveColorspace = 536870912U };
+
+  enum { kInitSaveResolutionName = 1073741824U };
+
+  enum { kInitSaveDownloadFonts = 2147483648U };
+
+  enum { kInitSaveAll = 4294967295U };
+
+  enum { kPrintOddPages = 1 };
+
+  enum { kPrintEvenPages = 2 };
+
+  enum { kEnableSelectionRB = 4 };
+
+  enum { kRangeAllPages = 0 };
+
+  enum { kRangeSpecifiedPageRange = 1 };
+
+  enum { kRangeSelection = 2 };
+
+  enum { kRangeFocusFrame = 3 };
+
+  enum { kJustLeft = 0 };
+
+  enum { kJustCenter = 1 };
+
+  enum { kJustRight = 2 };
+
+  enum { kUseInternalDefault = 0 };
+
+  enum { kUseSettingWhenPossible = 1 };
+
+  enum { kPaperSizeNativeData = 0 };
+
+  enum { kPaperSizeDefined = 1 };
+
+  enum { kPaperSizeInches = 0 };
+
+  enum { kPaperSizeMillimeters = 1 };
+
+  enum { kPortraitOrientation = 0 };
+
+  enum { kLandscapeOrientation = 1 };
+
+  enum { kNoFrames = 0 };
+
+  enum { kFramesAsIs = 1 };
+
+  enum { kSelectedFrame = 2 };
+
+  enum { kEachFrameSep = 3 };
+
+  enum { kFrameEnableNone = 0 };
+
+  enum { kFrameEnableAll = 1 };
+
+  enum { kFrameEnableAsIsAndEach = 2 };
+
+  enum { kOutputFormatNative = 0 };
+
+  enum { kOutputFormatPS = 1 };
+
+  enum { kOutputFormatPDF = 2 };
+
+  /* void SetPrintOptions (in PRInt32 type, in boolean turn_on_off); */
+  NS_IMETHOD SetPrintOptions(PRInt32 type, PRBool turn_on_off) = 0;
+
+  /* boolean GetPrintOptions (in PRInt32 type); */
+  NS_IMETHOD GetPrintOptions(PRInt32 type, PRBool *_retval) = 0;
+
+  /* PRInt32 GetPrintOptionsBits (); */
+  NS_IMETHOD GetPrintOptionsBits(PRInt32 *_retval) = 0;
+
+  /* void GetEffectivePageSize (out double width, out double height); */
+  NS_IMETHOD GetEffectivePageSize(double *width, double *height) = 0;
+
+  /* nsIPrintSettings clone (); */
+  NS_IMETHOD Clone(nsIPrintSettings **_retval) = 0;
+
+  /* void assign (in nsIPrintSettings print_settings); */
+  NS_IMETHOD Assign(nsIPrintSettings *print_settings) = 0;
+
+  /* [noscript] attribute nsIPrintSession printSession; */
+  NS_IMETHOD GetPrintSession(nsIPrintSession * *aPrintSession) = 0;
+  NS_IMETHOD SetPrintSession(nsIPrintSession * aPrintSession) = 0;
+
+  /* attribute long startPageRange; */
+  NS_IMETHOD GetStartPageRange(PRInt32 *aStartPageRange) = 0;
+  NS_IMETHOD SetStartPageRange(PRInt32 aStartPageRange) = 0;
+
+  /* attribute long endPageRange; */
+  NS_IMETHOD GetEndPageRange(PRInt32 *aEndPageRange) = 0;
+  NS_IMETHOD SetEndPageRange(PRInt32 aEndPageRange) = 0;
+
+  /* attribute double edgeTop; */
+  NS_IMETHOD GetEdgeTop(double *aEdgeTop) = 0;
+  NS_IMETHOD SetEdgeTop(double aEdgeTop) = 0;
+
+  /* attribute double edgeLeft; */
+  NS_IMETHOD GetEdgeLeft(double *aEdgeLeft) = 0;
+  NS_IMETHOD SetEdgeLeft(double aEdgeLeft) = 0;
+
+  /* attribute double edgeBottom; */
+  NS_IMETHOD GetEdgeBottom(double *aEdgeBottom) = 0;
+  NS_IMETHOD SetEdgeBottom(double aEdgeBottom) = 0;
+
+  /* attribute double edgeRight; */
+  NS_IMETHOD GetEdgeRight(double *aEdgeRight) = 0;
+  NS_IMETHOD SetEdgeRight(double aEdgeRight) = 0;
+
+  /* attribute double marginTop; */
+  NS_IMETHOD GetMarginTop(double *aMarginTop) = 0;
+  NS_IMETHOD SetMarginTop(double aMarginTop) = 0;
+
+  /* attribute double marginLeft; */
+  NS_IMETHOD GetMarginLeft(double *aMarginLeft) = 0;
+  NS_IMETHOD SetMarginLeft(double aMarginLeft) = 0;
+
+  /* attribute double marginBottom; */
+  NS_IMETHOD GetMarginBottom(double *aMarginBottom) = 0;
+  NS_IMETHOD SetMarginBottom(double aMarginBottom) = 0;
+
+  /* attribute double marginRight; */
+  NS_IMETHOD GetMarginRight(double *aMarginRight) = 0;
+  NS_IMETHOD SetMarginRight(double aMarginRight) = 0;
+
+  /* attribute double unwriteableMarginTop; */
+  NS_IMETHOD GetUnwriteableMarginTop(double *aUnwriteableMarginTop) = 0;
+  NS_IMETHOD SetUnwriteableMarginTop(double aUnwriteableMarginTop) = 0;
+
+  /* attribute double unwriteableMarginLeft; */
+  NS_IMETHOD GetUnwriteableMarginLeft(double *aUnwriteableMarginLeft) = 0;
+  NS_IMETHOD SetUnwriteableMarginLeft(double aUnwriteableMarginLeft) = 0;
+
+  /* attribute double unwriteableMarginBottom; */
+  NS_IMETHOD GetUnwriteableMarginBottom(double *aUnwriteableMarginBottom) = 0;
+  NS_IMETHOD SetUnwriteableMarginBottom(double aUnwriteableMarginBottom) = 0;
+
+  /* attribute double unwriteableMarginRight; */
+  NS_IMETHOD GetUnwriteableMarginRight(double *aUnwriteableMarginRight) = 0;
+  NS_IMETHOD SetUnwriteableMarginRight(double aUnwriteableMarginRight) = 0;
+
+  /* attribute double scaling; */
+  NS_IMETHOD GetScaling(double *aScaling) = 0;
+  NS_IMETHOD SetScaling(double aScaling) = 0;
+
+  /* attribute boolean printBGColors; */
+  NS_IMETHOD GetPrintBGColors(PRBool *aPrintBGColors) = 0;
+  NS_IMETHOD SetPrintBGColors(PRBool aPrintBGColors) = 0;
+
+  /* attribute boolean printBGImages; */
+  NS_IMETHOD GetPrintBGImages(PRBool *aPrintBGImages) = 0;
+  NS_IMETHOD SetPrintBGImages(PRBool aPrintBGImages) = 0;
+
+  /* attribute short printRange; */
+  NS_IMETHOD GetPrintRange(PRInt16 *aPrintRange) = 0;
+  NS_IMETHOD SetPrintRange(PRInt16 aPrintRange) = 0;
+
+  /* attribute wstring title; */
+  NS_IMETHOD GetTitle(PRUnichar * *aTitle) = 0;
+  NS_IMETHOD SetTitle(const PRUnichar * aTitle) = 0;
+
+  /* attribute wstring docURL; */
+  NS_IMETHOD GetDocURL(PRUnichar * *aDocURL) = 0;
+  NS_IMETHOD SetDocURL(const PRUnichar * aDocURL) = 0;
+
+  /* attribute wstring headerStrLeft; */
+  NS_IMETHOD GetHeaderStrLeft(PRUnichar * *aHeaderStrLeft) = 0;
+  NS_IMETHOD SetHeaderStrLeft(const PRUnichar * aHeaderStrLeft) = 0;
+
+  /* attribute wstring headerStrCenter; */
+  NS_IMETHOD GetHeaderStrCenter(PRUnichar * *aHeaderStrCenter) = 0;
+  NS_IMETHOD SetHeaderStrCenter(const PRUnichar * aHeaderStrCenter) = 0;
+
+  /* attribute wstring headerStrRight; */
+  NS_IMETHOD GetHeaderStrRight(PRUnichar * *aHeaderStrRight) = 0;
+  NS_IMETHOD SetHeaderStrRight(const PRUnichar * aHeaderStrRight) = 0;
+
+  /* attribute wstring footerStrLeft; */
+  NS_IMETHOD GetFooterStrLeft(PRUnichar * *aFooterStrLeft) = 0;
+  NS_IMETHOD SetFooterStrLeft(const PRUnichar * aFooterStrLeft) = 0;
+
+  /* attribute wstring footerStrCenter; */
+  NS_IMETHOD GetFooterStrCenter(PRUnichar * *aFooterStrCenter) = 0;
+  NS_IMETHOD SetFooterStrCenter(const PRUnichar * aFooterStrCenter) = 0;
+
+  /* attribute wstring footerStrRight; */
+  NS_IMETHOD GetFooterStrRight(PRUnichar * *aFooterStrRight) = 0;
+  NS_IMETHOD SetFooterStrRight(const PRUnichar * aFooterStrRight) = 0;
+
+  /* attribute short howToEnableFrameUI; */
+  NS_IMETHOD GetHowToEnableFrameUI(PRInt16 *aHowToEnableFrameUI) = 0;
+  NS_IMETHOD SetHowToEnableFrameUI(PRInt16 aHowToEnableFrameUI) = 0;
+
+  /* attribute boolean isCancelled; */
+  NS_IMETHOD GetIsCancelled(PRBool *aIsCancelled) = 0;
+  NS_IMETHOD SetIsCancelled(PRBool aIsCancelled) = 0;
+
+  /* attribute short printFrameTypeUsage; */
+  NS_IMETHOD GetPrintFrameTypeUsage(PRInt16 *aPrintFrameTypeUsage) = 0;
+  NS_IMETHOD SetPrintFrameTypeUsage(PRInt16 aPrintFrameTypeUsage) = 0;
+
+  /* attribute short printFrameType; */
+  NS_IMETHOD GetPrintFrameType(PRInt16 *aPrintFrameType) = 0;
+  NS_IMETHOD SetPrintFrameType(PRInt16 aPrintFrameType) = 0;
+
+  /* attribute boolean printSilent; */
+  NS_IMETHOD GetPrintSilent(PRBool *aPrintSilent) = 0;
+  NS_IMETHOD SetPrintSilent(PRBool aPrintSilent) = 0;
+
+  /* attribute boolean shrinkToFit; */
+  NS_IMETHOD GetShrinkToFit(PRBool *aShrinkToFit) = 0;
+  NS_IMETHOD SetShrinkToFit(PRBool aShrinkToFit) = 0;
+
+  /* attribute boolean showPrintProgress; */
+  NS_IMETHOD GetShowPrintProgress(PRBool *aShowPrintProgress) = 0;
+  NS_IMETHOD SetShowPrintProgress(PRBool aShowPrintProgress) = 0;
+
+  /* attribute wstring paperName; */
+  NS_IMETHOD GetPaperName(PRUnichar * *aPaperName) = 0;
+  NS_IMETHOD SetPaperName(const PRUnichar * aPaperName) = 0;
+
+  /* attribute short paperSizeType; */
+  NS_IMETHOD GetPaperSizeType(PRInt16 *aPaperSizeType) = 0;
+  NS_IMETHOD SetPaperSizeType(PRInt16 aPaperSizeType) = 0;
+
+  /* attribute short paperData; */
+  NS_IMETHOD GetPaperData(PRInt16 *aPaperData) = 0;
+  NS_IMETHOD SetPaperData(PRInt16 aPaperData) = 0;
+
+  /* attribute double paperWidth; */
+  NS_IMETHOD GetPaperWidth(double *aPaperWidth) = 0;
+  NS_IMETHOD SetPaperWidth(double aPaperWidth) = 0;
+
+  /* attribute double paperHeight; */
+  NS_IMETHOD GetPaperHeight(double *aPaperHeight) = 0;
+  NS_IMETHOD SetPaperHeight(double aPaperHeight) = 0;
+
+  /* attribute short paperSizeUnit; */
+  NS_IMETHOD GetPaperSizeUnit(PRInt16 *aPaperSizeUnit) = 0;
+  NS_IMETHOD SetPaperSizeUnit(PRInt16 aPaperSizeUnit) = 0;
+
+  /* attribute wstring plexName; */
+  NS_IMETHOD GetPlexName(PRUnichar * *aPlexName) = 0;
+  NS_IMETHOD SetPlexName(const PRUnichar * aPlexName) = 0;
+
+  /* attribute wstring colorspace; */
+  NS_IMETHOD GetColorspace(PRUnichar * *aColorspace) = 0;
+  NS_IMETHOD SetColorspace(const PRUnichar * aColorspace) = 0;
+
+  /* attribute wstring resolutionName; */
+  NS_IMETHOD GetResolutionName(PRUnichar * *aResolutionName) = 0;
+  NS_IMETHOD SetResolutionName(const PRUnichar * aResolutionName) = 0;
+
+  /* attribute boolean downloadFonts; */
+  NS_IMETHOD GetDownloadFonts(PRBool *aDownloadFonts) = 0;
+  NS_IMETHOD SetDownloadFonts(PRBool aDownloadFonts) = 0;
+
+  /* attribute boolean printReversed; */
+  NS_IMETHOD GetPrintReversed(PRBool *aPrintReversed) = 0;
+  NS_IMETHOD SetPrintReversed(PRBool aPrintReversed) = 0;
+
+  /* attribute boolean printInColor; */
+  NS_IMETHOD GetPrintInColor(PRBool *aPrintInColor) = 0;
+  NS_IMETHOD SetPrintInColor(PRBool aPrintInColor) = 0;
+
+  /* attribute long orientation; */
+  NS_IMETHOD GetOrientation(PRInt32 *aOrientation) = 0;
+  NS_IMETHOD SetOrientation(PRInt32 aOrientation) = 0;
+
+  /* attribute wstring printCommand; */
+  NS_IMETHOD GetPrintCommand(PRUnichar * *aPrintCommand) = 0;
+  NS_IMETHOD SetPrintCommand(const PRUnichar * aPrintCommand) = 0;
+
+  /* attribute long numCopies; */
+  NS_IMETHOD GetNumCopies(PRInt32 *aNumCopies) = 0;
+  NS_IMETHOD SetNumCopies(PRInt32 aNumCopies) = 0;
+
+  /* attribute wstring printerName; */
+  NS_IMETHOD GetPrinterName(PRUnichar * *aPrinterName) = 0;
+  NS_IMETHOD SetPrinterName(const PRUnichar * aPrinterName) = 0;
+
+  /* attribute boolean printToFile; */
+  NS_IMETHOD GetPrintToFile(PRBool *aPrintToFile) = 0;
+  NS_IMETHOD SetPrintToFile(PRBool aPrintToFile) = 0;
+
+  /* attribute wstring toFileName; */
+  NS_IMETHOD GetToFileName(PRUnichar * *aToFileName) = 0;
+  NS_IMETHOD SetToFileName(const PRUnichar * aToFileName) = 0;
+
+  /* attribute short outputFormat; */
+  NS_IMETHOD GetOutputFormat(PRInt16 *aOutputFormat) = 0;
+  NS_IMETHOD SetOutputFormat(PRInt16 aOutputFormat) = 0;
+
+  /* attribute long printPageDelay; */
+  NS_IMETHOD GetPrintPageDelay(PRInt32 *aPrintPageDelay) = 0;
+  NS_IMETHOD SetPrintPageDelay(PRInt32 aPrintPageDelay) = 0;
+
+  /* attribute boolean isInitializedFromPrinter; */
+  NS_IMETHOD GetIsInitializedFromPrinter(PRBool *aIsInitializedFromPrinter) = 0;
+  NS_IMETHOD SetIsInitializedFromPrinter(PRBool aIsInitializedFromPrinter) = 0;
+
+  /* attribute boolean isInitializedFromPrefs; */
+  NS_IMETHOD GetIsInitializedFromPrefs(PRBool *aIsInitializedFromPrefs) = 0;
+  NS_IMETHOD SetIsInitializedFromPrefs(PRBool aIsInitializedFromPrefs) = 0;
+
+};
+
+/* Use this macro when declaring classes that implement this interface. */
+#define NS_DECL_NSIPRINTSETTINGS \
+  NS_IMETHOD SetPrintOptions(PRInt32 type, PRBool turn_on_off); \
+  NS_IMETHOD GetPrintOptions(PRInt32 type, PRBool *_retval); \
+  NS_IMETHOD GetPrintOptionsBits(PRInt32 *_retval); \
+  NS_IMETHOD GetEffectivePageSize(double *width, double *height); \
+  NS_IMETHOD Clone(nsIPrintSettings **_retval); \
+  NS_IMETHOD Assign(nsIPrintSettings *print_settings); \
+  NS_IMETHOD GetPrintSession(nsIPrintSession * *aPrintSession); \
+  NS_IMETHOD SetPrintSession(nsIPrintSession * aPrintSession); \
+  NS_IMETHOD GetStartPageRange(PRInt32 *aStartPageRange); \
+  NS_IMETHOD SetStartPageRange(PRInt32 aStartPageRange); \
+  NS_IMETHOD GetEndPageRange(PRInt32 *aEndPageRange); \
+  NS_IMETHOD SetEndPageRange(PRInt32 aEndPageRange); \
+  NS_IMETHOD GetEdgeTop(double *aEdgeTop); \
+  NS_IMETHOD SetEdgeTop(double aEdgeTop); \
+  NS_IMETHOD GetEdgeLeft(double *aEdgeLeft); \
+  NS_IMETHOD SetEdgeLeft(double aEdgeLeft); \
+  NS_IMETHOD GetEdgeBottom(double *aEdgeBottom); \
+  NS_IMETHOD SetEdgeBottom(double aEdgeBottom); \
+  NS_IMETHOD GetEdgeRight(double *aEdgeRight); \
+  NS_IMETHOD SetEdgeRight(double aEdgeRight); \
+  NS_IMETHOD GetMarginTop(double *aMarginTop); \
+  NS_IMETHOD SetMarginTop(double aMarginTop); \
+  NS_IMETHOD GetMarginLeft(double *aMarginLeft); \
+  NS_IMETHOD SetMarginLeft(double aMarginLeft); \
+  NS_IMETHOD GetMarginBottom(double *aMarginBottom); \
+  NS_IMETHOD SetMarginBottom(double aMarginBottom); \
+  NS_IMETHOD GetMarginRight(double *aMarginRight); \
+  NS_IMETHOD SetMarginRight(double aMarginRight); \
+  NS_IMETHOD GetUnwriteableMarginTop(double *aUnwriteableMarginTop); \
+  NS_IMETHOD SetUnwriteableMarginTop(double aUnwriteableMarginTop); \
+  NS_IMETHOD GetUnwriteableMarginLeft(double *aUnwriteableMarginLeft); \
+  NS_IMETHOD SetUnwriteableMarginLeft(double aUnwriteableMarginLeft); \
+  NS_IMETHOD GetUnwriteableMarginBottom(double *aUnwriteableMarginBottom); \
+  NS_IMETHOD SetUnwriteableMarginBottom(double aUnwriteableMarginBottom); \
+  NS_IMETHOD GetUnwriteableMarginRight(double *aUnwriteableMarginRight); \
+  NS_IMETHOD SetUnwriteableMarginRight(double aUnwriteableMarginRight); \
+  NS_IMETHOD GetScaling(double *aScaling); \
+  NS_IMETHOD SetScaling(double aScaling); \
+  NS_IMETHOD GetPrintBGColors(PRBool *aPrintBGColors); \
+  NS_IMETHOD SetPrintBGColors(PRBool aPrintBGColors); \
+  NS_IMETHOD GetPrintBGImages(PRBool *aPrintBGImages); \
+  NS_IMETHOD SetPrintBGImages(PRBool aPrintBGImages); \
+  NS_IMETHOD GetPrintRange(PRInt16 *aPrintRange); \
+  NS_IMETHOD SetPrintRange(PRInt16 aPrintRange); \
+  NS_IMETHOD GetTitle(PRUnichar * *aTitle); \
+  NS_IMETHOD SetTitle(const PRUnichar * aTitle); \
+  NS_IMETHOD GetDocURL(PRUnichar * *aDocURL); \
+  NS_IMETHOD SetDocURL(const PRUnichar * aDocURL); \
+  NS_IMETHOD GetHeaderStrLeft(PRUnichar * *aHeaderStrLeft); \
+  NS_IMETHOD SetHeaderStrLeft(const PRUnichar * aHeaderStrLeft); \
+  NS_IMETHOD GetHeaderStrCenter(PRUnichar * *aHeaderStrCenter); \
+  NS_IMETHOD SetHeaderStrCenter(const PRUnichar * aHeaderStrCenter); \
+  NS_IMETHOD GetHeaderStrRight(PRUnichar * *aHeaderStrRight); \
+  NS_IMETHOD SetHeaderStrRight(const PRUnichar * aHeaderStrRight); \
+  NS_IMETHOD GetFooterStrLeft(PRUnichar * *aFooterStrLeft); \
+  NS_IMETHOD SetFooterStrLeft(const PRUnichar * aFooterStrLeft); \
+  NS_IMETHOD GetFooterStrCenter(PRUnichar * *aFooterStrCenter); \
+  NS_IMETHOD SetFooterStrCenter(const PRUnichar * aFooterStrCenter); \
+  NS_IMETHOD GetFooterStrRight(PRUnichar * *aFooterStrRight); \
+  NS_IMETHOD SetFooterStrRight(const PRUnichar * aFooterStrRight); \
+  NS_IMETHOD GetHowToEnableFrameUI(PRInt16 *aHowToEnableFrameUI); \
+  NS_IMETHOD SetHowToEnableFrameUI(PRInt16 aHowToEnableFrameUI); \
+  NS_IMETHOD GetIsCancelled(PRBool *aIsCancelled); \
+  NS_IMETHOD SetIsCancelled(PRBool aIsCancelled); \
+  NS_IMETHOD GetPrintFrameTypeUsage(PRInt16 *aPrintFrameTypeUsage); \
+  NS_IMETHOD SetPrintFrameTypeUsage(PRInt16 aPrintFrameTypeUsage); \
+  NS_IMETHOD GetPrintFrameType(PRInt16 *aPrintFrameType); \
+  NS_IMETHOD SetPrintFrameType(PRInt16 aPrintFrameType); \
+  NS_IMETHOD GetPrintSilent(PRBool *aPrintSilent); \
+  NS_IMETHOD SetPrintSilent(PRBool aPrintSilent); \
+  NS_IMETHOD GetShrinkToFit(PRBool *aShrinkToFit); \
+  NS_IMETHOD SetShrinkToFit(PRBool aShrinkToFit); \
+  NS_IMETHOD GetShowPrintProgress(PRBool *aShowPrintProgress); \
+  NS_IMETHOD SetShowPrintProgress(PRBool aShowPrintProgress); \
+  NS_IMETHOD GetPaperName(PRUnichar * *aPaperName); \
+  NS_IMETHOD SetPaperName(const PRUnichar * aPaperName); \
+  NS_IMETHOD GetPaperSizeType(PRInt16 *aPaperSizeType); \
+  NS_IMETHOD SetPaperSizeType(PRInt16 aPaperSizeType); \
+  NS_IMETHOD GetPaperData(PRInt16 *aPaperData); \
+  NS_IMETHOD SetPaperData(PRInt16 aPaperData); \
+  NS_IMETHOD GetPaperWidth(double *aPaperWidth); \
+  NS_IMETHOD SetPaperWidth(double aPaperWidth); \
+  NS_IMETHOD GetPaperHeight(double *aPaperHeight); \
+  NS_IMETHOD SetPaperHeight(double aPaperHeight); \
+  NS_IMETHOD GetPaperSizeUnit(PRInt16 *aPaperSizeUnit); \
+  NS_IMETHOD SetPaperSizeUnit(PRInt16 aPaperSizeUnit); \
+  NS_IMETHOD GetPlexName(PRUnichar * *aPlexName); \
+  NS_IMETHOD SetPlexName(const PRUnichar * aPlexName); \
+  NS_IMETHOD GetColorspace(PRUnichar * *aColorspace); \
+  NS_IMETHOD SetColorspace(const PRUnichar * aColorspace); \
+  NS_IMETHOD GetResolutionName(PRUnichar * *aResolutionName); \
+  NS_IMETHOD SetResolutionName(const PRUnichar * aResolutionName); \
+  NS_IMETHOD GetDownloadFonts(PRBool *aDownloadFonts); \
+  NS_IMETHOD SetDownloadFonts(PRBool aDownloadFonts); \
+  NS_IMETHOD GetPrintReversed(PRBool *aPrintReversed); \
+  NS_IMETHOD SetPrintReversed(PRBool aPrintReversed); \
+  NS_IMETHOD GetPrintInColor(PRBool *aPrintInColor); \
+  NS_IMETHOD SetPrintInColor(PRBool aPrintInColor); \
+  NS_IMETHOD GetOrientation(PRInt32 *aOrientation); \
+  NS_IMETHOD SetOrientation(PRInt32 aOrientation); \
+  NS_IMETHOD GetPrintCommand(PRUnichar * *aPrintCommand); \
+  NS_IMETHOD SetPrintCommand(const PRUnichar * aPrintCommand); \
+  NS_IMETHOD GetNumCopies(PRInt32 *aNumCopies); \
+  NS_IMETHOD SetNumCopies(PRInt32 aNumCopies); \
+  NS_IMETHOD GetPrinterName(PRUnichar * *aPrinterName); \
+  NS_IMETHOD SetPrinterName(const PRUnichar * aPrinterName); \
+  NS_IMETHOD GetPrintToFile(PRBool *aPrintToFile); \
+  NS_IMETHOD SetPrintToFile(PRBool aPrintToFile); \
+  NS_IMETHOD GetToFileName(PRUnichar * *aToFileName); \
+  NS_IMETHOD SetToFileName(const PRUnichar * aToFileName); \
+  NS_IMETHOD GetOutputFormat(PRInt16 *aOutputFormat); \
+  NS_IMETHOD SetOutputFormat(PRInt16 aOutputFormat); \
+  NS_IMETHOD GetPrintPageDelay(PRInt32 *aPrintPageDelay); \
+  NS_IMETHOD SetPrintPageDelay(PRInt32 aPrintPageDelay); \
+  NS_IMETHOD GetIsInitializedFromPrinter(PRBool *aIsInitializedFromPrinter); \
+  NS_IMETHOD SetIsInitializedFromPrinter(PRBool aIsInitializedFromPrinter); \
+  NS_IMETHOD GetIsInitializedFromPrefs(PRBool *aIsInitializedFromPrefs); \
+  NS_IMETHOD SetIsInitializedFromPrefs(PRBool aIsInitializedFromPrefs); 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object. */
+#define NS_FORWARD_NSIPRINTSETTINGS(_to) \
+  NS_IMETHOD SetPrintOptions(PRInt32 type, PRBool turn_on_off) { return _to SetPrintOptions(type, turn_on_off); } \
+  NS_IMETHOD GetPrintOptions(PRInt32 type, PRBool *_retval) { return _to GetPrintOptions(type, _retval); } \
+  NS_IMETHOD GetPrintOptionsBits(PRInt32 *_retval) { return _to GetPrintOptionsBits(_retval); } \
+  NS_IMETHOD GetEffectivePageSize(double *width, double *height) { return _to GetEffectivePageSize(width, height); } \
+  NS_IMETHOD Clone(nsIPrintSettings **_retval) { return _to Clone(_retval); } \
+  NS_IMETHOD Assign(nsIPrintSettings *print_settings) { return _to Assign(print_settings); } \
+  NS_IMETHOD GetPrintSession(nsIPrintSession * *aPrintSession) { return _to GetPrintSession(aPrintSession); } \
+  NS_IMETHOD SetPrintSession(nsIPrintSession * aPrintSession) { return _to SetPrintSession(aPrintSession); } \
+  NS_IMETHOD GetStartPageRange(PRInt32 *aStartPageRange) { return _to GetStartPageRange(aStartPageRange); } \
+  NS_IMETHOD SetStartPageRange(PRInt32 aStartPageRange) { return _to SetStartPageRange(aStartPageRange); } \
+  NS_IMETHOD GetEndPageRange(PRInt32 *aEndPageRange) { return _to GetEndPageRange(aEndPageRange); } \
+  NS_IMETHOD SetEndPageRange(PRInt32 aEndPageRange) { return _to SetEndPageRange(aEndPageRange); } \
+  NS_IMETHOD GetEdgeTop(double *aEdgeTop) { return _to GetEdgeTop(aEdgeTop); } \
+  NS_IMETHOD SetEdgeTop(double aEdgeTop) { return _to SetEdgeTop(aEdgeTop); } \
+  NS_IMETHOD GetEdgeLeft(double *aEdgeLeft) { return _to GetEdgeLeft(aEdgeLeft); } \
+  NS_IMETHOD SetEdgeLeft(double aEdgeLeft) { return _to SetEdgeLeft(aEdgeLeft); } \
+  NS_IMETHOD GetEdgeBottom(double *aEdgeBottom) { return _to GetEdgeBottom(aEdgeBottom); } \
+  NS_IMETHOD SetEdgeBottom(double aEdgeBottom) { return _to SetEdgeBottom(aEdgeBottom); } \
+  NS_IMETHOD GetEdgeRight(double *aEdgeRight) { return _to GetEdgeRight(aEdgeRight); } \
+  NS_IMETHOD SetEdgeRight(double aEdgeRight) { return _to SetEdgeRight(aEdgeRight); } \
+  NS_IMETHOD GetMarginTop(double *aMarginTop) { return _to GetMarginTop(aMarginTop); } \
+  NS_IMETHOD SetMarginTop(double aMarginTop) { return _to SetMarginTop(aMarginTop); } \
+  NS_IMETHOD GetMarginLeft(double *aMarginLeft) { return _to GetMarginLeft(aMarginLeft); } \
+  NS_IMETHOD SetMarginLeft(double aMarginLeft) { return _to SetMarginLeft(aMarginLeft); } \
+  NS_IMETHOD GetMarginBottom(double *aMarginBottom) { return _to GetMarginBottom(aMarginBottom); } \
+  NS_IMETHOD SetMarginBottom(double aMarginBottom) { return _to SetMarginBottom(aMarginBottom); } \
+  NS_IMETHOD GetMarginRight(double *aMarginRight) { return _to GetMarginRight(aMarginRight); } \
+  NS_IMETHOD SetMarginRight(double aMarginRight) { return _to SetMarginRight(aMarginRight); } \
+  NS_IMETHOD GetUnwriteableMarginTop(double *aUnwriteableMarginTop) { return _to GetUnwriteableMarginTop(aUnwriteableMarginTop); } \
+  NS_IMETHOD SetUnwriteableMarginTop(double aUnwriteableMarginTop) { return _to SetUnwriteableMarginTop(aUnwriteableMarginTop); } \
+  NS_IMETHOD GetUnwriteableMarginLeft(double *aUnwriteableMarginLeft) { return _to GetUnwriteableMarginLeft(aUnwriteableMarginLeft); } \
+  NS_IMETHOD SetUnwriteableMarginLeft(double aUnwriteableMarginLeft) { return _to SetUnwriteableMarginLeft(aUnwriteableMarginLeft); } \
+  NS_IMETHOD GetUnwriteableMarginBottom(double *aUnwriteableMarginBottom) { return _to GetUnwriteableMarginBottom(aUnwriteableMarginBottom); } \
+  NS_IMETHOD SetUnwriteableMarginBottom(double aUnwriteableMarginBottom) { return _to SetUnwriteableMarginBottom(aUnwriteableMarginBottom); } \
+  NS_IMETHOD GetUnwriteableMarginRight(double *aUnwriteableMarginRight) { return _to GetUnwriteableMarginRight(aUnwriteableMarginRight); } \
+  NS_IMETHOD SetUnwriteableMarginRight(double aUnwriteableMarginRight) { return _to SetUnwriteableMarginRight(aUnwriteableMarginRight); } \
+  NS_IMETHOD GetScaling(double *aScaling) { return _to GetScaling(aScaling); } \
+  NS_IMETHOD SetScaling(double aScaling) { return _to SetScaling(aScaling); } \
+  NS_IMETHOD GetPrintBGColors(PRBool *aPrintBGColors) { return _to GetPrintBGColors(aPrintBGColors); } \
+  NS_IMETHOD SetPrintBGColors(PRBool aPrintBGColors) { return _to SetPrintBGColors(aPrintBGColors); } \
+  NS_IMETHOD GetPrintBGImages(PRBool *aPrintBGImages) { return _to GetPrintBGImages(aPrintBGImages); } \
+  NS_IMETHOD SetPrintBGImages(PRBool aPrintBGImages) { return _to SetPrintBGImages(aPrintBGImages); } \
+  NS_IMETHOD GetPrintRange(PRInt16 *aPrintRange) { return _to GetPrintRange(aPrintRange); } \
+  NS_IMETHOD SetPrintRange(PRInt16 aPrintRange) { return _to SetPrintRange(aPrintRange); } \
+  NS_IMETHOD GetTitle(PRUnichar * *aTitle) { return _to GetTitle(aTitle); } \
+  NS_IMETHOD SetTitle(const PRUnichar * aTitle) { return _to SetTitle(aTitle); } \
+  NS_IMETHOD GetDocURL(PRUnichar * *aDocURL) { return _to GetDocURL(aDocURL); } \
+  NS_IMETHOD SetDocURL(const PRUnichar * aDocURL) { return _to SetDocURL(aDocURL); } \
+  NS_IMETHOD GetHeaderStrLeft(PRUnichar * *aHeaderStrLeft) { return _to GetHeaderStrLeft(aHeaderStrLeft); } \
+  NS_IMETHOD SetHeaderStrLeft(const PRUnichar * aHeaderStrLeft) { return _to SetHeaderStrLeft(aHeaderStrLeft); } \
+  NS_IMETHOD GetHeaderStrCenter(PRUnichar * *aHeaderStrCenter) { return _to GetHeaderStrCenter(aHeaderStrCenter); } \
+  NS_IMETHOD SetHeaderStrCenter(const PRUnichar * aHeaderStrCenter) { return _to SetHeaderStrCenter(aHeaderStrCenter); } \
+  NS_IMETHOD GetHeaderStrRight(PRUnichar * *aHeaderStrRight) { return _to GetHeaderStrRight(aHeaderStrRight); } \
+  NS_IMETHOD SetHeaderStrRight(const PRUnichar * aHeaderStrRight) { return _to SetHeaderStrRight(aHeaderStrRight); } \
+  NS_IMETHOD GetFooterStrLeft(PRUnichar * *aFooterStrLeft) { return _to GetFooterStrLeft(aFooterStrLeft); } \
+  NS_IMETHOD SetFooterStrLeft(const PRUnichar * aFooterStrLeft) { return _to SetFooterStrLeft(aFooterStrLeft); } \
+  NS_IMETHOD GetFooterStrCenter(PRUnichar * *aFooterStrCenter) { return _to GetFooterStrCenter(aFooterStrCenter); } \
+  NS_IMETHOD SetFooterStrCenter(const PRUnichar * aFooterStrCenter) { return _to SetFooterStrCenter(aFooterStrCenter); } \
+  NS_IMETHOD GetFooterStrRight(PRUnichar * *aFooterStrRight) { return _to GetFooterStrRight(aFooterStrRight); } \
+  NS_IMETHOD SetFooterStrRight(const PRUnichar * aFooterStrRight) { return _to SetFooterStrRight(aFooterStrRight); } \
+  NS_IMETHOD GetHowToEnableFrameUI(PRInt16 *aHowToEnableFrameUI) { return _to GetHowToEnableFrameUI(aHowToEnableFrameUI); } \
+  NS_IMETHOD SetHowToEnableFrameUI(PRInt16 aHowToEnableFrameUI) { return _to SetHowToEnableFrameUI(aHowToEnableFrameUI); } \
+  NS_IMETHOD GetIsCancelled(PRBool *aIsCancelled) { return _to GetIsCancelled(aIsCancelled); } \
+  NS_IMETHOD SetIsCancelled(PRBool aIsCancelled) { return _to SetIsCancelled(aIsCancelled); } \
+  NS_IMETHOD GetPrintFrameTypeUsage(PRInt16 *aPrintFrameTypeUsage) { return _to GetPrintFrameTypeUsage(aPrintFrameTypeUsage); } \
+  NS_IMETHOD SetPrintFrameTypeUsage(PRInt16 aPrintFrameTypeUsage) { return _to SetPrintFrameTypeUsage(aPrintFrameTypeUsage); } \
+  NS_IMETHOD GetPrintFrameType(PRInt16 *aPrintFrameType) { return _to GetPrintFrameType(aPrintFrameType); } \
+  NS_IMETHOD SetPrintFrameType(PRInt16 aPrintFrameType) { return _to SetPrintFrameType(aPrintFrameType); } \
+  NS_IMETHOD GetPrintSilent(PRBool *aPrintSilent) { return _to GetPrintSilent(aPrintSilent); } \
+  NS_IMETHOD SetPrintSilent(PRBool aPrintSilent) { return _to SetPrintSilent(aPrintSilent); } \
+  NS_IMETHOD GetShrinkToFit(PRBool *aShrinkToFit) { return _to GetShrinkToFit(aShrinkToFit); } \
+  NS_IMETHOD SetShrinkToFit(PRBool aShrinkToFit) { return _to SetShrinkToFit(aShrinkToFit); } \
+  NS_IMETHOD GetShowPrintProgress(PRBool *aShowPrintProgress) { return _to GetShowPrintProgress(aShowPrintProgress); } \
+  NS_IMETHOD SetShowPrintProgress(PRBool aShowPrintProgress) { return _to SetShowPrintProgress(aShowPrintProgress); } \
+  NS_IMETHOD GetPaperName(PRUnichar * *aPaperName) { return _to GetPaperName(aPaperName); } \
+  NS_IMETHOD SetPaperName(const PRUnichar * aPaperName) { return _to SetPaperName(aPaperName); } \
+  NS_IMETHOD GetPaperSizeType(PRInt16 *aPaperSizeType) { return _to GetPaperSizeType(aPaperSizeType); } \
+  NS_IMETHOD SetPaperSizeType(PRInt16 aPaperSizeType) { return _to SetPaperSizeType(aPaperSizeType); } \
+  NS_IMETHOD GetPaperData(PRInt16 *aPaperData) { return _to GetPaperData(aPaperData); } \
+  NS_IMETHOD SetPaperData(PRInt16 aPaperData) { return _to SetPaperData(aPaperData); } \
+  NS_IMETHOD GetPaperWidth(double *aPaperWidth) { return _to GetPaperWidth(aPaperWidth); } \
+  NS_IMETHOD SetPaperWidth(double aPaperWidth) { return _to SetPaperWidth(aPaperWidth); } \
+  NS_IMETHOD GetPaperHeight(double *aPaperHeight) { return _to GetPaperHeight(aPaperHeight); } \
+  NS_IMETHOD SetPaperHeight(double aPaperHeight) { return _to SetPaperHeight(aPaperHeight); } \
+  NS_IMETHOD GetPaperSizeUnit(PRInt16 *aPaperSizeUnit) { return _to GetPaperSizeUnit(aPaperSizeUnit); } \
+  NS_IMETHOD SetPaperSizeUnit(PRInt16 aPaperSizeUnit) { return _to SetPaperSizeUnit(aPaperSizeUnit); } \
+  NS_IMETHOD GetPlexName(PRUnichar * *aPlexName) { return _to GetPlexName(aPlexName); } \
+  NS_IMETHOD SetPlexName(const PRUnichar * aPlexName) { return _to SetPlexName(aPlexName); } \
+  NS_IMETHOD GetColorspace(PRUnichar * *aColorspace) { return _to GetColorspace(aColorspace); } \
+  NS_IMETHOD SetColorspace(const PRUnichar * aColorspace) { return _to SetColorspace(aColorspace); } \
+  NS_IMETHOD GetResolutionName(PRUnichar * *aResolutionName) { return _to GetResolutionName(aResolutionName); } \
+  NS_IMETHOD SetResolutionName(const PRUnichar * aResolutionName) { return _to SetResolutionName(aResolutionName); } \
+  NS_IMETHOD GetDownloadFonts(PRBool *aDownloadFonts) { return _to GetDownloadFonts(aDownloadFonts); } \
+  NS_IMETHOD SetDownloadFonts(PRBool aDownloadFonts) { return _to SetDownloadFonts(aDownloadFonts); } \
+  NS_IMETHOD GetPrintReversed(PRBool *aPrintReversed) { return _to GetPrintReversed(aPrintReversed); } \
+  NS_IMETHOD SetPrintReversed(PRBool aPrintReversed) { return _to SetPrintReversed(aPrintReversed); } \
+  NS_IMETHOD GetPrintInColor(PRBool *aPrintInColor) { return _to GetPrintInColor(aPrintInColor); } \
+  NS_IMETHOD SetPrintInColor(PRBool aPrintInColor) { return _to SetPrintInColor(aPrintInColor); } \
+  NS_IMETHOD GetOrientation(PRInt32 *aOrientation) { return _to GetOrientation(aOrientation); } \
+  NS_IMETHOD SetOrientation(PRInt32 aOrientation) { return _to SetOrientation(aOrientation); } \
+  NS_IMETHOD GetPrintCommand(PRUnichar * *aPrintCommand) { return _to GetPrintCommand(aPrintCommand); } \
+  NS_IMETHOD SetPrintCommand(const PRUnichar * aPrintCommand) { return _to SetPrintCommand(aPrintCommand); } \
+  NS_IMETHOD GetNumCopies(PRInt32 *aNumCopies) { return _to GetNumCopies(aNumCopies); } \
+  NS_IMETHOD SetNumCopies(PRInt32 aNumCopies) { return _to SetNumCopies(aNumCopies); } \
+  NS_IMETHOD GetPrinterName(PRUnichar * *aPrinterName) { return _to GetPrinterName(aPrinterName); } \
+  NS_IMETHOD SetPrinterName(const PRUnichar * aPrinterName) { return _to SetPrinterName(aPrinterName); } \
+  NS_IMETHOD GetPrintToFile(PRBool *aPrintToFile) { return _to GetPrintToFile(aPrintToFile); } \
+  NS_IMETHOD SetPrintToFile(PRBool aPrintToFile) { return _to SetPrintToFile(aPrintToFile); } \
+  NS_IMETHOD GetToFileName(PRUnichar * *aToFileName) { return _to GetToFileName(aToFileName); } \
+  NS_IMETHOD SetToFileName(const PRUnichar * aToFileName) { return _to SetToFileName(aToFileName); } \
+  NS_IMETHOD GetOutputFormat(PRInt16 *aOutputFormat) { return _to GetOutputFormat(aOutputFormat); } \
+  NS_IMETHOD SetOutputFormat(PRInt16 aOutputFormat) { return _to SetOutputFormat(aOutputFormat); } \
+  NS_IMETHOD GetPrintPageDelay(PRInt32 *aPrintPageDelay) { return _to GetPrintPageDelay(aPrintPageDelay); } \
+  NS_IMETHOD SetPrintPageDelay(PRInt32 aPrintPageDelay) { return _to SetPrintPageDelay(aPrintPageDelay); } \
+  NS_IMETHOD GetIsInitializedFromPrinter(PRBool *aIsInitializedFromPrinter) { return _to GetIsInitializedFromPrinter(aIsInitializedFromPrinter); } \
+  NS_IMETHOD SetIsInitializedFromPrinter(PRBool aIsInitializedFromPrinter) { return _to SetIsInitializedFromPrinter(aIsInitializedFromPrinter); } \
+  NS_IMETHOD GetIsInitializedFromPrefs(PRBool *aIsInitializedFromPrefs) { return _to GetIsInitializedFromPrefs(aIsInitializedFromPrefs); } \
+  NS_IMETHOD SetIsInitializedFromPrefs(PRBool aIsInitializedFromPrefs) { return _to SetIsInitializedFromPrefs(aIsInitializedFromPrefs); } 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
+#define NS_FORWARD_SAFE_NSIPRINTSETTINGS(_to) \
+  NS_IMETHOD SetPrintOptions(PRInt32 type, PRBool turn_on_off) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPrintOptions(type, turn_on_off); } \
+  NS_IMETHOD GetPrintOptions(PRInt32 type, PRBool *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPrintOptions(type, _retval); } \
+  NS_IMETHOD GetPrintOptionsBits(PRInt32 *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPrintOptionsBits(_retval); } \
+  NS_IMETHOD GetEffectivePageSize(double *width, double *height) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetEffectivePageSize(width, height); } \
+  NS_IMETHOD Clone(nsIPrintSettings **_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->Clone(_retval); } \
+  NS_IMETHOD Assign(nsIPrintSettings *print_settings) { return !_to ? NS_ERROR_NULL_POINTER : _to->Assign(print_settings); } \
+  NS_IMETHOD GetPrintSession(nsIPrintSession * *aPrintSession) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPrintSession(aPrintSession); } \
+  NS_IMETHOD SetPrintSession(nsIPrintSession * aPrintSession) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPrintSession(aPrintSession); } \
+  NS_IMETHOD GetStartPageRange(PRInt32 *aStartPageRange) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetStartPageRange(aStartPageRange); } \
+  NS_IMETHOD SetStartPageRange(PRInt32 aStartPageRange) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetStartPageRange(aStartPageRange); } \
+  NS_IMETHOD GetEndPageRange(PRInt32 *aEndPageRange) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetEndPageRange(aEndPageRange); } \
+  NS_IMETHOD SetEndPageRange(PRInt32 aEndPageRange) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetEndPageRange(aEndPageRange); } \
+  NS_IMETHOD GetEdgeTop(double *aEdgeTop) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetEdgeTop(aEdgeTop); } \
+  NS_IMETHOD SetEdgeTop(double aEdgeTop) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetEdgeTop(aEdgeTop); } \
+  NS_IMETHOD GetEdgeLeft(double *aEdgeLeft) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetEdgeLeft(aEdgeLeft); } \
+  NS_IMETHOD SetEdgeLeft(double aEdgeLeft) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetEdgeLeft(aEdgeLeft); } \
+  NS_IMETHOD GetEdgeBottom(double *aEdgeBottom) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetEdgeBottom(aEdgeBottom); } \
+  NS_IMETHOD SetEdgeBottom(double aEdgeBottom) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetEdgeBottom(aEdgeBottom); } \
+  NS_IMETHOD GetEdgeRight(double *aEdgeRight) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetEdgeRight(aEdgeRight); } \
+  NS_IMETHOD SetEdgeRight(double aEdgeRight) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetEdgeRight(aEdgeRight); } \
+  NS_IMETHOD GetMarginTop(double *aMarginTop) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetMarginTop(aMarginTop); } \
+  NS_IMETHOD SetMarginTop(double aMarginTop) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetMarginTop(aMarginTop); } \
+  NS_IMETHOD GetMarginLeft(double *aMarginLeft) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetMarginLeft(aMarginLeft); } \
+  NS_IMETHOD SetMarginLeft(double aMarginLeft) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetMarginLeft(aMarginLeft); } \
+  NS_IMETHOD GetMarginBottom(double *aMarginBottom) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetMarginBottom(aMarginBottom); } \
+  NS_IMETHOD SetMarginBottom(double aMarginBottom) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetMarginBottom(aMarginBottom); } \
+  NS_IMETHOD GetMarginRight(double *aMarginRight) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetMarginRight(aMarginRight); } \
+  NS_IMETHOD SetMarginRight(double aMarginRight) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetMarginRight(aMarginRight); } \
+  NS_IMETHOD GetUnwriteableMarginTop(double *aUnwriteableMarginTop) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetUnwriteableMarginTop(aUnwriteableMarginTop); } \
+  NS_IMETHOD SetUnwriteableMarginTop(double aUnwriteableMarginTop) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetUnwriteableMarginTop(aUnwriteableMarginTop); } \
+  NS_IMETHOD GetUnwriteableMarginLeft(double *aUnwriteableMarginLeft) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetUnwriteableMarginLeft(aUnwriteableMarginLeft); } \
+  NS_IMETHOD SetUnwriteableMarginLeft(double aUnwriteableMarginLeft) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetUnwriteableMarginLeft(aUnwriteableMarginLeft); } \
+  NS_IMETHOD GetUnwriteableMarginBottom(double *aUnwriteableMarginBottom) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetUnwriteableMarginBottom(aUnwriteableMarginBottom); } \
+  NS_IMETHOD SetUnwriteableMarginBottom(double aUnwriteableMarginBottom) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetUnwriteableMarginBottom(aUnwriteableMarginBottom); } \
+  NS_IMETHOD GetUnwriteableMarginRight(double *aUnwriteableMarginRight) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetUnwriteableMarginRight(aUnwriteableMarginRight); } \
+  NS_IMETHOD SetUnwriteableMarginRight(double aUnwriteableMarginRight) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetUnwriteableMarginRight(aUnwriteableMarginRight); } \
+  NS_IMETHOD GetScaling(double *aScaling) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetScaling(aScaling); } \
+  NS_IMETHOD SetScaling(double aScaling) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetScaling(aScaling); } \
+  NS_IMETHOD GetPrintBGColors(PRBool *aPrintBGColors) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPrintBGColors(aPrintBGColors); } \
+  NS_IMETHOD SetPrintBGColors(PRBool aPrintBGColors) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPrintBGColors(aPrintBGColors); } \
+  NS_IMETHOD GetPrintBGImages(PRBool *aPrintBGImages) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPrintBGImages(aPrintBGImages); } \
+  NS_IMETHOD SetPrintBGImages(PRBool aPrintBGImages) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPrintBGImages(aPrintBGImages); } \
+  NS_IMETHOD GetPrintRange(PRInt16 *aPrintRange) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPrintRange(aPrintRange); } \
+  NS_IMETHOD SetPrintRange(PRInt16 aPrintRange) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPrintRange(aPrintRange); } \
+  NS_IMETHOD GetTitle(PRUnichar * *aTitle) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetTitle(aTitle); } \
+  NS_IMETHOD SetTitle(const PRUnichar * aTitle) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetTitle(aTitle); } \
+  NS_IMETHOD GetDocURL(PRUnichar * *aDocURL) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetDocURL(aDocURL); } \
+  NS_IMETHOD SetDocURL(const PRUnichar * aDocURL) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetDocURL(aDocURL); } \
+  NS_IMETHOD GetHeaderStrLeft(PRUnichar * *aHeaderStrLeft) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetHeaderStrLeft(aHeaderStrLeft); } \
+  NS_IMETHOD SetHeaderStrLeft(const PRUnichar * aHeaderStrLeft) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetHeaderStrLeft(aHeaderStrLeft); } \
+  NS_IMETHOD GetHeaderStrCenter(PRUnichar * *aHeaderStrCenter) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetHeaderStrCenter(aHeaderStrCenter); } \
+  NS_IMETHOD SetHeaderStrCenter(const PRUnichar * aHeaderStrCenter) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetHeaderStrCenter(aHeaderStrCenter); } \
+  NS_IMETHOD GetHeaderStrRight(PRUnichar * *aHeaderStrRight) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetHeaderStrRight(aHeaderStrRight); } \
+  NS_IMETHOD SetHeaderStrRight(const PRUnichar * aHeaderStrRight) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetHeaderStrRight(aHeaderStrRight); } \
+  NS_IMETHOD GetFooterStrLeft(PRUnichar * *aFooterStrLeft) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetFooterStrLeft(aFooterStrLeft); } \
+  NS_IMETHOD SetFooterStrLeft(const PRUnichar * aFooterStrLeft) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetFooterStrLeft(aFooterStrLeft); } \
+  NS_IMETHOD GetFooterStrCenter(PRUnichar * *aFooterStrCenter) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetFooterStrCenter(aFooterStrCenter); } \
+  NS_IMETHOD SetFooterStrCenter(const PRUnichar * aFooterStrCenter) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetFooterStrCenter(aFooterStrCenter); } \
+  NS_IMETHOD GetFooterStrRight(PRUnichar * *aFooterStrRight) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetFooterStrRight(aFooterStrRight); } \
+  NS_IMETHOD SetFooterStrRight(const PRUnichar * aFooterStrRight) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetFooterStrRight(aFooterStrRight); } \
+  NS_IMETHOD GetHowToEnableFrameUI(PRInt16 *aHowToEnableFrameUI) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetHowToEnableFrameUI(aHowToEnableFrameUI); } \
+  NS_IMETHOD SetHowToEnableFrameUI(PRInt16 aHowToEnableFrameUI) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetHowToEnableFrameUI(aHowToEnableFrameUI); } \
+  NS_IMETHOD GetIsCancelled(PRBool *aIsCancelled) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetIsCancelled(aIsCancelled); } \
+  NS_IMETHOD SetIsCancelled(PRBool aIsCancelled) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetIsCancelled(aIsCancelled); } \
+  NS_IMETHOD GetPrintFrameTypeUsage(PRInt16 *aPrintFrameTypeUsage) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPrintFrameTypeUsage(aPrintFrameTypeUsage); } \
+  NS_IMETHOD SetPrintFrameTypeUsage(PRInt16 aPrintFrameTypeUsage) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPrintFrameTypeUsage(aPrintFrameTypeUsage); } \
+  NS_IMETHOD GetPrintFrameType(PRInt16 *aPrintFrameType) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPrintFrameType(aPrintFrameType); } \
+  NS_IMETHOD SetPrintFrameType(PRInt16 aPrintFrameType) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPrintFrameType(aPrintFrameType); } \
+  NS_IMETHOD GetPrintSilent(PRBool *aPrintSilent) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPrintSilent(aPrintSilent); } \
+  NS_IMETHOD SetPrintSilent(PRBool aPrintSilent) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPrintSilent(aPrintSilent); } \
+  NS_IMETHOD GetShrinkToFit(PRBool *aShrinkToFit) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetShrinkToFit(aShrinkToFit); } \
+  NS_IMETHOD SetShrinkToFit(PRBool aShrinkToFit) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetShrinkToFit(aShrinkToFit); } \
+  NS_IMETHOD GetShowPrintProgress(PRBool *aShowPrintProgress) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetShowPrintProgress(aShowPrintProgress); } \
+  NS_IMETHOD SetShowPrintProgress(PRBool aShowPrintProgress) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetShowPrintProgress(aShowPrintProgress); } \
+  NS_IMETHOD GetPaperName(PRUnichar * *aPaperName) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPaperName(aPaperName); } \
+  NS_IMETHOD SetPaperName(const PRUnichar * aPaperName) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPaperName(aPaperName); } \
+  NS_IMETHOD GetPaperSizeType(PRInt16 *aPaperSizeType) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPaperSizeType(aPaperSizeType); } \
+  NS_IMETHOD SetPaperSizeType(PRInt16 aPaperSizeType) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPaperSizeType(aPaperSizeType); } \
+  NS_IMETHOD GetPaperData(PRInt16 *aPaperData) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPaperData(aPaperData); } \
+  NS_IMETHOD SetPaperData(PRInt16 aPaperData) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPaperData(aPaperData); } \
+  NS_IMETHOD GetPaperWidth(double *aPaperWidth) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPaperWidth(aPaperWidth); } \
+  NS_IMETHOD SetPaperWidth(double aPaperWidth) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPaperWidth(aPaperWidth); } \
+  NS_IMETHOD GetPaperHeight(double *aPaperHeight) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPaperHeight(aPaperHeight); } \
+  NS_IMETHOD SetPaperHeight(double aPaperHeight) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPaperHeight(aPaperHeight); } \
+  NS_IMETHOD GetPaperSizeUnit(PRInt16 *aPaperSizeUnit) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPaperSizeUnit(aPaperSizeUnit); } \
+  NS_IMETHOD SetPaperSizeUnit(PRInt16 aPaperSizeUnit) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPaperSizeUnit(aPaperSizeUnit); } \
+  NS_IMETHOD GetPlexName(PRUnichar * *aPlexName) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPlexName(aPlexName); } \
+  NS_IMETHOD SetPlexName(const PRUnichar * aPlexName) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPlexName(aPlexName); } \
+  NS_IMETHOD GetColorspace(PRUnichar * *aColorspace) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetColorspace(aColorspace); } \
+  NS_IMETHOD SetColorspace(const PRUnichar * aColorspace) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetColorspace(aColorspace); } \
+  NS_IMETHOD GetResolutionName(PRUnichar * *aResolutionName) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetResolutionName(aResolutionName); } \
+  NS_IMETHOD SetResolutionName(const PRUnichar * aResolutionName) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetResolutionName(aResolutionName); } \
+  NS_IMETHOD GetDownloadFonts(PRBool *aDownloadFonts) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetDownloadFonts(aDownloadFonts); } \
+  NS_IMETHOD SetDownloadFonts(PRBool aDownloadFonts) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetDownloadFonts(aDownloadFonts); } \
+  NS_IMETHOD GetPrintReversed(PRBool *aPrintReversed) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPrintReversed(aPrintReversed); } \
+  NS_IMETHOD SetPrintReversed(PRBool aPrintReversed) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPrintReversed(aPrintReversed); } \
+  NS_IMETHOD GetPrintInColor(PRBool *aPrintInColor) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPrintInColor(aPrintInColor); } \
+  NS_IMETHOD SetPrintInColor(PRBool aPrintInColor) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPrintInColor(aPrintInColor); } \
+  NS_IMETHOD GetOrientation(PRInt32 *aOrientation) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetOrientation(aOrientation); } \
+  NS_IMETHOD SetOrientation(PRInt32 aOrientation) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetOrientation(aOrientation); } \
+  NS_IMETHOD GetPrintCommand(PRUnichar * *aPrintCommand) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPrintCommand(aPrintCommand); } \
+  NS_IMETHOD SetPrintCommand(const PRUnichar * aPrintCommand) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPrintCommand(aPrintCommand); } \
+  NS_IMETHOD GetNumCopies(PRInt32 *aNumCopies) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetNumCopies(aNumCopies); } \
+  NS_IMETHOD SetNumCopies(PRInt32 aNumCopies) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetNumCopies(aNumCopies); } \
+  NS_IMETHOD GetPrinterName(PRUnichar * *aPrinterName) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPrinterName(aPrinterName); } \
+  NS_IMETHOD SetPrinterName(const PRUnichar * aPrinterName) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPrinterName(aPrinterName); } \
+  NS_IMETHOD GetPrintToFile(PRBool *aPrintToFile) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPrintToFile(aPrintToFile); } \
+  NS_IMETHOD SetPrintToFile(PRBool aPrintToFile) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPrintToFile(aPrintToFile); } \
+  NS_IMETHOD GetToFileName(PRUnichar * *aToFileName) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetToFileName(aToFileName); } \
+  NS_IMETHOD SetToFileName(const PRUnichar * aToFileName) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetToFileName(aToFileName); } \
+  NS_IMETHOD GetOutputFormat(PRInt16 *aOutputFormat) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetOutputFormat(aOutputFormat); } \
+  NS_IMETHOD SetOutputFormat(PRInt16 aOutputFormat) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetOutputFormat(aOutputFormat); } \
+  NS_IMETHOD GetPrintPageDelay(PRInt32 *aPrintPageDelay) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPrintPageDelay(aPrintPageDelay); } \
+  NS_IMETHOD SetPrintPageDelay(PRInt32 aPrintPageDelay) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPrintPageDelay(aPrintPageDelay); } \
+  NS_IMETHOD GetIsInitializedFromPrinter(PRBool *aIsInitializedFromPrinter) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetIsInitializedFromPrinter(aIsInitializedFromPrinter); } \
+  NS_IMETHOD SetIsInitializedFromPrinter(PRBool aIsInitializedFromPrinter) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetIsInitializedFromPrinter(aIsInitializedFromPrinter); } \
+  NS_IMETHOD GetIsInitializedFromPrefs(PRBool *aIsInitializedFromPrefs) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetIsInitializedFromPrefs(aIsInitializedFromPrefs); } \
+  NS_IMETHOD SetIsInitializedFromPrefs(PRBool aIsInitializedFromPrefs) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetIsInitializedFromPrefs(aIsInitializedFromPrefs); } 
+
+#if 0
+/* Use the code below as a template for the implementation class for this interface. */
+
+/* Header file */
 class nsPrintSettings : public nsIPrintSettings
 {
 public:
@@ -12743,26 +16050,26 @@ nsPrintSettings::~nsPrintSettings()
   /* destructor code */
 }
 
-/* void SetPrintOptions (in long type, in boolean turnOnOff); */
-NS_IMETHODIMP nsPrintSettings::SetPrintOptions(PRInt32 type, PRBool turnOnOff)
+/* void SetPrintOptions (in PRInt32 type, in boolean turn_on_off); */
+NS_IMETHODIMP nsPrintSettings::SetPrintOptions(PRInt32 type, PRBool turn_on_off)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* boolean GetPrintOptions (in long type); */
+/* boolean GetPrintOptions (in PRInt32 type); */
 NS_IMETHODIMP nsPrintSettings::GetPrintOptions(PRInt32 type, PRBool *_retval)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* long GetPrintOptionsBits (); */
+/* PRInt32 GetPrintOptionsBits (); */
 NS_IMETHODIMP nsPrintSettings::GetPrintOptionsBits(PRInt32 *_retval)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* void GetPageSizeInTwips (out long width, out long height); */
-NS_IMETHODIMP nsPrintSettings::GetPageSizeInTwips(PRInt32 *width, PRInt32 *height)
+/* void GetEffectivePageSize (out double width, out double height); */
+NS_IMETHODIMP nsPrintSettings::GetEffectivePageSize(double *width, double *height)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
@@ -12773,8 +16080,8 @@ NS_IMETHODIMP nsPrintSettings::Clone(nsIPrintSettings **_retval)
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* void assign (in nsIPrintSettings ps); */
-NS_IMETHODIMP nsPrintSettings::Assign(nsIPrintSettings *ps)
+/* void assign (in nsIPrintSettings print_settings); */
+NS_IMETHODIMP nsPrintSettings::Assign(nsIPrintSettings *print_settings)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
@@ -12805,6 +16112,46 @@ NS_IMETHODIMP nsPrintSettings::GetEndPageRange(PRInt32 *aEndPageRange)
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 NS_IMETHODIMP nsPrintSettings::SetEndPageRange(PRInt32 aEndPageRange)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute double edgeTop; */
+NS_IMETHODIMP nsPrintSettings::GetEdgeTop(double *aEdgeTop)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings::SetEdgeTop(double aEdgeTop)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute double edgeLeft; */
+NS_IMETHODIMP nsPrintSettings::GetEdgeLeft(double *aEdgeLeft)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings::SetEdgeLeft(double aEdgeLeft)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute double edgeBottom; */
+NS_IMETHODIMP nsPrintSettings::GetEdgeBottom(double *aEdgeBottom)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings::SetEdgeBottom(double aEdgeBottom)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute double edgeRight; */
+NS_IMETHODIMP nsPrintSettings::GetEdgeRight(double *aEdgeRight)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings::SetEdgeRight(double aEdgeRight)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
@@ -12845,6 +16192,46 @@ NS_IMETHODIMP nsPrintSettings::GetMarginRight(double *aMarginRight)
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 NS_IMETHODIMP nsPrintSettings::SetMarginRight(double aMarginRight)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute double unwriteableMarginTop; */
+NS_IMETHODIMP nsPrintSettings::GetUnwriteableMarginTop(double *aUnwriteableMarginTop)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings::SetUnwriteableMarginTop(double aUnwriteableMarginTop)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute double unwriteableMarginLeft; */
+NS_IMETHODIMP nsPrintSettings::GetUnwriteableMarginLeft(double *aUnwriteableMarginLeft)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings::SetUnwriteableMarginLeft(double aUnwriteableMarginLeft)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute double unwriteableMarginBottom; */
+NS_IMETHODIMP nsPrintSettings::GetUnwriteableMarginBottom(double *aUnwriteableMarginBottom)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings::SetUnwriteableMarginBottom(double aUnwriteableMarginBottom)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute double unwriteableMarginRight; */
+NS_IMETHODIMP nsPrintSettings::GetUnwriteableMarginRight(double *aUnwriteableMarginRight)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings::SetUnwriteableMarginRight(double aUnwriteableMarginRight)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
@@ -13159,16 +16546,6 @@ NS_IMETHODIMP nsPrintSettings::SetPrintInColor(PRBool aPrintInColor)
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* attribute long paperSize; */
-NS_IMETHODIMP nsPrintSettings::GetPaperSize(PRInt32 *aPaperSize)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-NS_IMETHODIMP nsPrintSettings::SetPaperSize(PRInt32 aPaperSize)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
 /* attribute long orientation; */
 NS_IMETHODIMP nsPrintSettings::GetOrientation(PRInt32 *aOrientation)
 {
@@ -13225,6 +16602,16 @@ NS_IMETHODIMP nsPrintSettings::GetToFileName(PRUnichar * *aToFileName)
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 NS_IMETHODIMP nsPrintSettings::SetToFileName(const PRUnichar * aToFileName)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute short outputFormat; */
+NS_IMETHODIMP nsPrintSettings::GetOutputFormat(PRInt16 *aOutputFormat)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsPrintSettings::SetOutputFormat(PRInt16 aOutputFormat)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
@@ -13458,6 +16845,256 @@ NS_IMETHODIMP nsPromptService::PromptPassword(nsIDOMWindow *parent, const PRUnic
 
 /* boolean select (in nsIDOMWindow parent, in wstring dialog_title, in wstring text, in PRUint32 count, [array, size_is (count)] in wstring select_list, out long out_selection); */
 NS_IMETHODIMP nsPromptService::Select(nsIDOMWindow *parent, const PRUnichar *dialog_title, const PRUnichar *text, PRUint32 count, const PRUnichar **select_list, PRInt32 *out_selection, PRBool *_retval)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* End of implementation class template. */
+#endif
+
+class nsIAuthInformation; /* forward declaration */
+
+class nsIAuthPromptCallback; /* forward declaration */
+
+
+/* starting interface:    nsIPromptService2 */
+#define NS_IPROMPTSERVICE2_IID_STR "cf86d196-dbee-4482-9dfa-3477aa128319"
+
+#define NS_IPROMPTSERVICE2_IID \
+  {0xcf86d196, 0xdbee, 0x4482, \
+    { 0x9d, 0xfa, 0x34, 0x77, 0xaa, 0x12, 0x83, 0x19 }}
+
+class NS_NO_VTABLE nsIPromptService2 : public nsIPromptService {
+ public: 
+
+  NS_DEFINE_STATIC_IID_ACCESSOR(NS_IPROMPTSERVICE2_IID)
+
+  /* boolean promptAuth (in nsIDOMWindow parent, in nsIChannel channel, in PRUint32 level, in nsIAuthInformation auth_info, in wstring checkbox_label, inout boolean check_value); */
+  NS_IMETHOD PromptAuth(nsIDOMWindow *parent, nsIChannel *channel, PRUint32 level, nsIAuthInformation *auth_info, const PRUnichar *checkbox_label, PRBool *check_value, PRBool *_retval) = 0;
+
+  /* nsICancelable asyncPromptAuth (in nsIDOMWindow parent, in nsIChannel channel, in nsIAuthPromptCallback callbck, in nsISupports contxt, in PRUint32 level, in nsIAuthInformation auth_info, in wstring checkbox_label, inout boolean check_value); */
+  NS_IMETHOD AsyncPromptAuth(nsIDOMWindow *parent, nsIChannel *channel, nsIAuthPromptCallback *callbck, nsISupports *contxt, PRUint32 level, nsIAuthInformation *auth_info, const PRUnichar *checkbox_label, PRBool *check_value, nsICancelable **_retval) = 0;
+
+};
+
+/* Use this macro when declaring classes that implement this interface. */
+#define NS_DECL_NSIPROMPTSERVICE2 \
+  NS_IMETHOD PromptAuth(nsIDOMWindow *parent, nsIChannel *channel, PRUint32 level, nsIAuthInformation *auth_info, const PRUnichar *checkbox_label, PRBool *check_value, PRBool *_retval); \
+  NS_IMETHOD AsyncPromptAuth(nsIDOMWindow *parent, nsIChannel *channel, nsIAuthPromptCallback *callbck, nsISupports *contxt, PRUint32 level, nsIAuthInformation *auth_info, const PRUnichar *checkbox_label, PRBool *check_value, nsICancelable **_retval); 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object. */
+#define NS_FORWARD_NSIPROMPTSERVICE2(_to) \
+  NS_IMETHOD PromptAuth(nsIDOMWindow *parent, nsIChannel *channel, PRUint32 level, nsIAuthInformation *auth_info, const PRUnichar *checkbox_label, PRBool *check_value, PRBool *_retval) { return _to PromptAuth(parent, channel, level, auth_info, checkbox_label, check_value, _retval); } \
+  NS_IMETHOD AsyncPromptAuth(nsIDOMWindow *parent, nsIChannel *channel, nsIAuthPromptCallback *callbck, nsISupports *contxt, PRUint32 level, nsIAuthInformation *auth_info, const PRUnichar *checkbox_label, PRBool *check_value, nsICancelable **_retval) { return _to AsyncPromptAuth(parent, channel, callbck, contxt, level, auth_info, checkbox_label, check_value, _retval); } 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
+#define NS_FORWARD_SAFE_NSIPROMPTSERVICE2(_to) \
+  NS_IMETHOD PromptAuth(nsIDOMWindow *parent, nsIChannel *channel, PRUint32 level, nsIAuthInformation *auth_info, const PRUnichar *checkbox_label, PRBool *check_value, PRBool *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->PromptAuth(parent, channel, level, auth_info, checkbox_label, check_value, _retval); } \
+  NS_IMETHOD AsyncPromptAuth(nsIDOMWindow *parent, nsIChannel *channel, nsIAuthPromptCallback *callbck, nsISupports *contxt, PRUint32 level, nsIAuthInformation *auth_info, const PRUnichar *checkbox_label, PRBool *check_value, nsICancelable **_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->AsyncPromptAuth(parent, channel, callbck, contxt, level, auth_info, checkbox_label, check_value, _retval); } 
+
+#if 0
+/* Use the code below as a template for the implementation class for this interface. */
+
+/* Header file */
+class nsPromptService2 : public nsIPromptService2
+{
+public:
+  NS_DECL_ISUPPORTS
+  NS_DECL_NSIPROMPTSERVICE2
+
+  nsPromptService2();
+
+private:
+  ~nsPromptService2();
+
+protected:
+  /* additional members */
+};
+
+/* Implementation file */
+NS_IMPL_ISUPPORTS1(nsPromptService2, nsIPromptService2)
+
+nsPromptService2::nsPromptService2()
+{
+  /* member initializers and constructor code */
+}
+
+nsPromptService2::~nsPromptService2()
+{
+  /* destructor code */
+}
+
+/* boolean promptAuth (in nsIDOMWindow parent, in nsIChannel channel, in PRUint32 level, in nsIAuthInformation auth_info, in wstring checkbox_label, inout boolean check_value); */
+NS_IMETHODIMP nsPromptService2::PromptAuth(nsIDOMWindow *parent, nsIChannel *channel, PRUint32 level, nsIAuthInformation *auth_info, const PRUnichar *checkbox_label, PRBool *check_value, PRBool *_retval)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* nsICancelable asyncPromptAuth (in nsIDOMWindow parent, in nsIChannel channel, in nsIAuthPromptCallback callbck, in nsISupports contxt, in PRUint32 level, in nsIAuthInformation auth_info, in wstring checkbox_label, inout boolean check_value); */
+NS_IMETHODIMP nsPromptService2::AsyncPromptAuth(nsIDOMWindow *parent, nsIChannel *channel, nsIAuthPromptCallback *callbck, nsISupports *contxt, PRUint32 level, nsIAuthInformation *auth_info, const PRUnichar *checkbox_label, PRBool *check_value, nsICancelable **_retval)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* End of implementation class template. */
+#endif
+
+
+/* starting interface:    nsIAuthInformation */
+#define NS_IAUTHINFORMATION_IID_STR "0d73639c-2a92-4518-9f92-28f71fea5f20"
+
+#define NS_IAUTHINFORMATION_IID \
+  {0x0d73639c, 0x2a92, 0x4518, \
+    { 0x9f, 0x92, 0x28, 0xf7, 0x1f, 0xea, 0x5f, 0x20 }}
+
+class NS_NO_VTABLE nsIAuthInformation : public nsISupports {
+ public: 
+
+  NS_DEFINE_STATIC_IID_ACCESSOR(NS_IAUTHINFORMATION_IID)
+
+  enum { AUTH_HOST = 1U };
+
+  enum { AUTH_PROXY = 2U };
+
+  enum { NEED_DOMAIN = 4U };
+
+  enum { ONLY_PASSWORD = 8U };
+
+  /* readonly attribute unsigned long flags; */
+  NS_IMETHOD GetFlags(PRUint32 *aFlags) = 0;
+
+  /* readonly attribute AString realm; */
+  NS_IMETHOD GetRealm(nsAString & aRealm) = 0;
+
+  /* readonly attribute AUTF8String authenticationScheme; */
+  NS_IMETHOD GetAuthenticationScheme(nsACString & aAuthenticationScheme) = 0;
+
+  /* attribute AString username; */
+  NS_IMETHOD GetUsername(nsAString & aUsername) = 0;
+  NS_IMETHOD SetUsername(const nsAString & aUsername) = 0;
+
+  /* attribute AString password; */
+  NS_IMETHOD GetPassword(nsAString & aPassword) = 0;
+  NS_IMETHOD SetPassword(const nsAString & aPassword) = 0;
+
+  /* attribute AString domain; */
+  NS_IMETHOD GetDomain(nsAString & aDomain) = 0;
+  NS_IMETHOD SetDomain(const nsAString & aDomain) = 0;
+
+};
+
+/* Use this macro when declaring classes that implement this interface. */
+#define NS_DECL_NSIAUTHINFORMATION \
+  NS_IMETHOD GetFlags(PRUint32 *aFlags); \
+  NS_IMETHOD GetRealm(nsAString & aRealm); \
+  NS_IMETHOD GetAuthenticationScheme(nsACString & aAuthenticationScheme); \
+  NS_IMETHOD GetUsername(nsAString & aUsername); \
+  NS_IMETHOD SetUsername(const nsAString & aUsername); \
+  NS_IMETHOD GetPassword(nsAString & aPassword); \
+  NS_IMETHOD SetPassword(const nsAString & aPassword); \
+  NS_IMETHOD GetDomain(nsAString & aDomain); \
+  NS_IMETHOD SetDomain(const nsAString & aDomain); 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object. */
+#define NS_FORWARD_NSIAUTHINFORMATION(_to) \
+  NS_IMETHOD GetFlags(PRUint32 *aFlags) { return _to GetFlags(aFlags); } \
+  NS_IMETHOD GetRealm(nsAString & aRealm) { return _to GetRealm(aRealm); } \
+  NS_IMETHOD GetAuthenticationScheme(nsACString & aAuthenticationScheme) { return _to GetAuthenticationScheme(aAuthenticationScheme); } \
+  NS_IMETHOD GetUsername(nsAString & aUsername) { return _to GetUsername(aUsername); } \
+  NS_IMETHOD SetUsername(const nsAString & aUsername) { return _to SetUsername(aUsername); } \
+  NS_IMETHOD GetPassword(nsAString & aPassword) { return _to GetPassword(aPassword); } \
+  NS_IMETHOD SetPassword(const nsAString & aPassword) { return _to SetPassword(aPassword); } \
+  NS_IMETHOD GetDomain(nsAString & aDomain) { return _to GetDomain(aDomain); } \
+  NS_IMETHOD SetDomain(const nsAString & aDomain) { return _to SetDomain(aDomain); } 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
+#define NS_FORWARD_SAFE_NSIAUTHINFORMATION(_to) \
+  NS_IMETHOD GetFlags(PRUint32 *aFlags) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetFlags(aFlags); } \
+  NS_IMETHOD GetRealm(nsAString & aRealm) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetRealm(aRealm); } \
+  NS_IMETHOD GetAuthenticationScheme(nsACString & aAuthenticationScheme) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetAuthenticationScheme(aAuthenticationScheme); } \
+  NS_IMETHOD GetUsername(nsAString & aUsername) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetUsername(aUsername); } \
+  NS_IMETHOD SetUsername(const nsAString & aUsername) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetUsername(aUsername); } \
+  NS_IMETHOD GetPassword(nsAString & aPassword) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPassword(aPassword); } \
+  NS_IMETHOD SetPassword(const nsAString & aPassword) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPassword(aPassword); } \
+  NS_IMETHOD GetDomain(nsAString & aDomain) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetDomain(aDomain); } \
+  NS_IMETHOD SetDomain(const nsAString & aDomain) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetDomain(aDomain); } 
+
+#if 0
+/* Use the code below as a template for the implementation class for this interface. */
+
+/* Header file */
+class nsAuthInformation : public nsIAuthInformation
+{
+public:
+  NS_DECL_ISUPPORTS
+  NS_DECL_NSIAUTHINFORMATION
+
+  nsAuthInformation();
+
+private:
+  ~nsAuthInformation();
+
+protected:
+  /* additional members */
+};
+
+/* Implementation file */
+NS_IMPL_ISUPPORTS1(nsAuthInformation, nsIAuthInformation)
+
+nsAuthInformation::nsAuthInformation()
+{
+  /* member initializers and constructor code */
+}
+
+nsAuthInformation::~nsAuthInformation()
+{
+  /* destructor code */
+}
+
+/* readonly attribute unsigned long flags; */
+NS_IMETHODIMP nsAuthInformation::GetFlags(PRUint32 *aFlags)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute AString realm; */
+NS_IMETHODIMP nsAuthInformation::GetRealm(nsAString & aRealm)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* readonly attribute AUTF8String authenticationScheme; */
+NS_IMETHODIMP nsAuthInformation::GetAuthenticationScheme(nsACString & aAuthenticationScheme)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute AString username; */
+NS_IMETHODIMP nsAuthInformation::GetUsername(nsAString & aUsername)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsAuthInformation::SetUsername(const nsAString & aUsername)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute AString password; */
+NS_IMETHODIMP nsAuthInformation::GetPassword(nsAString & aPassword)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsAuthInformation::SetPassword(const nsAString & aPassword)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* attribute AString domain; */
+NS_IMETHODIMP nsAuthInformation::GetDomain(nsAString & aDomain)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+NS_IMETHODIMP nsAuthInformation::SetDomain(const nsAString & aDomain)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
@@ -14033,8 +17670,6 @@ class nsIWebProgress; /* forward declaration */
 
 class nsIRequest; /* forward declaration */
 
-class nsIURI; /* forward declaration */
-
 
 /* starting interface:    nsIWebProgressListener */
 #define NS_IWEBPROGRESSLISTENER_IID_STR "570f39d1-efd0-11d3-b093-00a024ffc08c"
@@ -14187,12 +17822,83 @@ NS_IMETHODIMP nsWebProgressListener::OnSecurityChange(nsIWebProgress *web_progre
 #endif
 
 
-/* starting interface:    nsIWebProgressListener2 */
-#define NS_IWEBPROGRESSLISTENER2_IID_STR "3f24610d-1e1f-4151-9d2e-239884742324"
+/* starting interface:    nsIWebProgressListener2_18 */
+#define NS_IWEBPROGRESSLISTENER2_18_IID_STR "3f24610d-1e1f-4151-9d2e-239884742324"
 
-#define NS_IWEBPROGRESSLISTENER2_IID \
+#define NS_IWEBPROGRESSLISTENER2_18_IID \
   {0x3f24610d, 0x1e1f, 0x4151, \
     { 0x9d, 0x2e, 0x23, 0x98, 0x84, 0x74, 0x23, 0x24 }}
+
+class NS_NO_VTABLE nsIWebProgressListener2_18 : public nsIWebProgressListener {
+ public: 
+
+  NS_DEFINE_STATIC_IID_ACCESSOR(NS_IWEBPROGRESSLISTENER2_18_IID)
+
+  /* void onProgressChange64 (in nsIWebProgress web_progress, in nsIRequest request, in long long cur_self_progress, in long long max_self_progress, in long long cur_total_progress, in long long max_total_progress); */
+  NS_IMETHOD OnProgressChange64(nsIWebProgress *web_progress, nsIRequest *request, PRInt64 cur_self_progress, PRInt64 max_self_progress, PRInt64 cur_total_progress, PRInt64 max_total_progress) = 0;
+
+};
+
+/* Use this macro when declaring classes that implement this interface. */
+#define NS_DECL_NSIWEBPROGRESSLISTENER2_18 \
+  NS_IMETHOD OnProgressChange64(nsIWebProgress *web_progress, nsIRequest *request, PRInt64 cur_self_progress, PRInt64 max_self_progress, PRInt64 cur_total_progress, PRInt64 max_total_progress); 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object. */
+#define NS_FORWARD_NSIWEBPROGRESSLISTENER2_18(_to) \
+  NS_IMETHOD OnProgressChange64(nsIWebProgress *web_progress, nsIRequest *request, PRInt64 cur_self_progress, PRInt64 max_self_progress, PRInt64 cur_total_progress, PRInt64 max_total_progress) { return _to OnProgressChange64(web_progress, request, cur_self_progress, max_self_progress, cur_total_progress, max_total_progress); } 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
+#define NS_FORWARD_SAFE_NSIWEBPROGRESSLISTENER2_18(_to) \
+  NS_IMETHOD OnProgressChange64(nsIWebProgress *web_progress, nsIRequest *request, PRInt64 cur_self_progress, PRInt64 max_self_progress, PRInt64 cur_total_progress, PRInt64 max_total_progress) { return !_to ? NS_ERROR_NULL_POINTER : _to->OnProgressChange64(web_progress, request, cur_self_progress, max_self_progress, cur_total_progress, max_total_progress); } 
+
+#if 0
+/* Use the code below as a template for the implementation class for this interface. */
+
+/* Header file */
+class nsWebProgressListener2_18 : public nsIWebProgressListener2_18
+{
+public:
+  NS_DECL_ISUPPORTS
+  NS_DECL_NSIWEBPROGRESSLISTENER2_18
+
+  nsWebProgressListener2_18();
+
+private:
+  ~nsWebProgressListener2_18();
+
+protected:
+  /* additional members */
+};
+
+/* Implementation file */
+NS_IMPL_ISUPPORTS1(nsWebProgressListener2_18, nsIWebProgressListener2_18)
+
+nsWebProgressListener2_18::nsWebProgressListener2_18()
+{
+  /* member initializers and constructor code */
+}
+
+nsWebProgressListener2_18::~nsWebProgressListener2_18()
+{
+  /* destructor code */
+}
+
+/* void onProgressChange64 (in nsIWebProgress web_progress, in nsIRequest request, in long long cur_self_progress, in long long max_self_progress, in long long cur_total_progress, in long long max_total_progress); */
+NS_IMETHODIMP nsWebProgressListener2_18::OnProgressChange64(nsIWebProgress *web_progress, nsIRequest *request, PRInt64 cur_self_progress, PRInt64 max_self_progress, PRInt64 cur_total_progress, PRInt64 max_total_progress)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* End of implementation class template. */
+#endif
+
+
+/* starting interface:    nsIWebProgressListener2 */
+#define NS_IWEBPROGRESSLISTENER2_IID_STR "dde39de0-e4e0-11da-8ad9-0800200c9a66"
+
+#define NS_IWEBPROGRESSLISTENER2_IID \
+  {0xdde39de0, 0xe4e0, 0x11da, \
+    { 0x8a, 0xd9, 0x08, 0x00, 0x20, 0x0c, 0x9a, 0x66 }}
 
 class NS_NO_VTABLE nsIWebProgressListener2 : public nsIWebProgressListener {
  public: 
@@ -14202,19 +17908,25 @@ class NS_NO_VTABLE nsIWebProgressListener2 : public nsIWebProgressListener {
   /* void onProgressChange64 (in nsIWebProgress web_progress, in nsIRequest request, in long long cur_self_progress, in long long max_self_progress, in long long cur_total_progress, in long long max_total_progress); */
   NS_IMETHOD OnProgressChange64(nsIWebProgress *web_progress, nsIRequest *request, PRInt64 cur_self_progress, PRInt64 max_self_progress, PRInt64 cur_total_progress, PRInt64 max_total_progress) = 0;
 
+  /* boolean onRefreshAttempted (in nsIWebProgress web_progress, in nsIURI refresh_uri, in long millis, in boolean same_uri); */
+  NS_IMETHOD OnRefreshAttempted(nsIWebProgress *web_progress, nsIURI *refresh_uri, PRInt32 millis, PRBool same_uri, PRBool *_retval) = 0;
+
 };
 
 /* Use this macro when declaring classes that implement this interface. */
 #define NS_DECL_NSIWEBPROGRESSLISTENER2 \
-  NS_IMETHOD OnProgressChange64(nsIWebProgress *web_progress, nsIRequest *request, PRInt64 cur_self_progress, PRInt64 max_self_progress, PRInt64 cur_total_progress, PRInt64 max_total_progress); 
+  NS_IMETHOD OnProgressChange64(nsIWebProgress *web_progress, nsIRequest *request, PRInt64 cur_self_progress, PRInt64 max_self_progress, PRInt64 cur_total_progress, PRInt64 max_total_progress); \
+  NS_IMETHOD OnRefreshAttempted(nsIWebProgress *web_progress, nsIURI *refresh_uri, PRInt32 millis, PRBool same_uri, PRBool *_retval); 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object. */
 #define NS_FORWARD_NSIWEBPROGRESSLISTENER2(_to) \
-  NS_IMETHOD OnProgressChange64(nsIWebProgress *web_progress, nsIRequest *request, PRInt64 cur_self_progress, PRInt64 max_self_progress, PRInt64 cur_total_progress, PRInt64 max_total_progress) { return _to OnProgressChange64(web_progress, request, cur_self_progress, max_self_progress, cur_total_progress, max_total_progress); } 
+  NS_IMETHOD OnProgressChange64(nsIWebProgress *web_progress, nsIRequest *request, PRInt64 cur_self_progress, PRInt64 max_self_progress, PRInt64 cur_total_progress, PRInt64 max_total_progress) { return _to OnProgressChange64(web_progress, request, cur_self_progress, max_self_progress, cur_total_progress, max_total_progress); } \
+  NS_IMETHOD OnRefreshAttempted(nsIWebProgress *web_progress, nsIURI *refresh_uri, PRInt32 millis, PRBool same_uri, PRBool *_retval) { return _to OnRefreshAttempted(web_progress, refresh_uri, millis, same_uri, _retval); } 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
 #define NS_FORWARD_SAFE_NSIWEBPROGRESSLISTENER2(_to) \
-  NS_IMETHOD OnProgressChange64(nsIWebProgress *web_progress, nsIRequest *request, PRInt64 cur_self_progress, PRInt64 max_self_progress, PRInt64 cur_total_progress, PRInt64 max_total_progress) { return !_to ? NS_ERROR_NULL_POINTER : _to->OnProgressChange64(web_progress, request, cur_self_progress, max_self_progress, cur_total_progress, max_total_progress); } 
+  NS_IMETHOD OnProgressChange64(nsIWebProgress *web_progress, nsIRequest *request, PRInt64 cur_self_progress, PRInt64 max_self_progress, PRInt64 cur_total_progress, PRInt64 max_total_progress) { return !_to ? NS_ERROR_NULL_POINTER : _to->OnProgressChange64(web_progress, request, cur_self_progress, max_self_progress, cur_total_progress, max_total_progress); } \
+  NS_IMETHOD OnRefreshAttempted(nsIWebProgress *web_progress, nsIURI *refresh_uri, PRInt32 millis, PRBool same_uri, PRBool *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->OnRefreshAttempted(web_progress, refresh_uri, millis, same_uri, _retval); } 
 
 #if 0
 /* Use the code below as a template for the implementation class for this interface. */
@@ -14254,6 +17966,12 @@ NS_IMETHODIMP nsWebProgressListener2::OnProgressChange64(nsIWebProgress *web_pro
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
+/* boolean onRefreshAttempted (in nsIWebProgress web_progress, in nsIURI refresh_uri, in long millis, in boolean same_uri); */
+NS_IMETHODIMP nsWebProgressListener2::OnRefreshAttempted(nsIWebProgress *web_progress, nsIURI *refresh_uri, PRInt32 millis, PRBool same_uri, PRBool *_retval)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
 /* End of implementation class template. */
 #endif
 
@@ -14262,6 +17980,77 @@ class nsIMIMEInfo; /* forward declaration */
 class nsILocalFile; /* forward declaration */
 
 class nsICancelable; /* forward declaration */
+
+
+/* starting interface:    nsITransfer18 */
+#define NS_ITRANSFER18_IID_STR "23c51569-e9a1-4a92-adeb-3723db82ef7c"
+
+#define NS_ITRANSFER18_IID \
+  {0x23c51569, 0xe9a1, 0x4a92, \
+    { 0xad, 0xeb, 0x37, 0x23, 0xdb, 0x82, 0xef, 0x7c }}
+
+class NS_NO_VTABLE nsITransfer18 : public nsIWebProgressListener2_18 {
+ public: 
+
+  NS_DEFINE_STATIC_IID_ACCESSOR(NS_ITRANSFER18_IID)
+
+  /* void init (in nsIURI source, in nsIURI target, in AString display_name, in nsIMIMEInfo mime_info, in PRTime start_time, in nsILocalFile temp_file, in nsICancelable cancelable); */
+  NS_IMETHOD Init(nsIURI *source, nsIURI *target, const nsAString & display_name, nsIMIMEInfo *mime_info, PRTime start_time, nsILocalFile *temp_file, nsICancelable *cancelable) = 0;
+
+};
+
+/* Use this macro when declaring classes that implement this interface. */
+#define NS_DECL_NSITRANSFER18 \
+  NS_IMETHOD Init(nsIURI *source, nsIURI *target, const nsAString & display_name, nsIMIMEInfo *mime_info, PRTime start_time, nsILocalFile *temp_file, nsICancelable *cancelable); 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object. */
+#define NS_FORWARD_NSITRANSFER18(_to) \
+  NS_IMETHOD Init(nsIURI *source, nsIURI *target, const nsAString & display_name, nsIMIMEInfo *mime_info, PRTime start_time, nsILocalFile *temp_file, nsICancelable *cancelable) { return _to Init(source, target, display_name, mime_info, start_time, temp_file, cancelable); } 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
+#define NS_FORWARD_SAFE_NSITRANSFER18(_to) \
+  NS_IMETHOD Init(nsIURI *source, nsIURI *target, const nsAString & display_name, nsIMIMEInfo *mime_info, PRTime start_time, nsILocalFile *temp_file, nsICancelable *cancelable) { return !_to ? NS_ERROR_NULL_POINTER : _to->Init(source, target, display_name, mime_info, start_time, temp_file, cancelable); } 
+
+#if 0
+/* Use the code below as a template for the implementation class for this interface. */
+
+/* Header file */
+class nsTransfer18 : public nsITransfer18
+{
+public:
+  NS_DECL_ISUPPORTS
+  NS_DECL_NSITRANSFER18
+
+  nsTransfer18();
+
+private:
+  ~nsTransfer18();
+
+protected:
+  /* additional members */
+};
+
+/* Implementation file */
+NS_IMPL_ISUPPORTS1(nsTransfer18, nsITransfer18)
+
+nsTransfer18::nsTransfer18()
+{
+  /* member initializers and constructor code */
+}
+
+nsTransfer18::~nsTransfer18()
+{
+  /* destructor code */
+}
+
+/* void init (in nsIURI source, in nsIURI target, in AString display_name, in nsIMIMEInfo mime_info, in PRTime start_time, in nsILocalFile temp_file, in nsICancelable cancelable); */
+NS_IMETHODIMP nsTransfer18::Init(nsIURI *source, nsIURI *target, const nsAString & display_name, nsIMIMEInfo *mime_info, PRTime start_time, nsILocalFile *temp_file, nsICancelable *cancelable)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* End of implementation class template. */
+#endif
 
 
 /* starting interface:    nsITransfer */
@@ -14327,341 +18116,6 @@ nsTransfer::~nsTransfer()
 
 /* void init (in nsIURI source, in nsIURI target, in AString display_name, in nsIMIMEInfo mime_info, in PRTime start_time, in nsILocalFile temp_file, in nsICancelable cancelable); */
 NS_IMETHODIMP nsTransfer::Init(nsIURI *source, nsIURI *target, const nsAString & display_name, nsIMIMEInfo *mime_info, PRTime start_time, nsILocalFile *temp_file, nsICancelable *cancelable)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* End of implementation class template. */
-#endif
-
-
-/* starting interface:    nsIURI */
-#define NS_IURI_IID_STR "07a22cc0-0ce5-11d3-9331-00104ba0fd40"
-
-#define NS_IURI_IID \
-  {0x07a22cc0, 0x0ce5, 0x11d3, \
-    { 0x93, 0x31, 0x00, 0x10, 0x4b, 0xa0, 0xfd, 0x40 }}
-
-class NS_NO_VTABLE nsIURI : public nsISupports {
- public: 
-
-  NS_DEFINE_STATIC_IID_ACCESSOR(NS_IURI_IID)
-
-  /* attribute AUTF8String spec; */
-  NS_IMETHOD GetSpec(nsACString & aSpec) = 0;
-  NS_IMETHOD SetSpec(const nsACString & aSpec) = 0;
-
-  /* readonly attribute AUTF8String prePath; */
-  NS_IMETHOD GetPrePath(nsACString & aPrePath) = 0;
-
-  /* attribute ACString scheme; */
-  NS_IMETHOD GetScheme(nsACString & aScheme) = 0;
-  NS_IMETHOD SetScheme(const nsACString & aScheme) = 0;
-
-  /* attribute AUTF8String userPass; */
-  NS_IMETHOD GetUserPass(nsACString & aUserPass) = 0;
-  NS_IMETHOD SetUserPass(const nsACString & aUserPass) = 0;
-
-  /* attribute AUTF8String username; */
-  NS_IMETHOD GetUsername(nsACString & aUsername) = 0;
-  NS_IMETHOD SetUsername(const nsACString & aUsername) = 0;
-
-  /* attribute AUTF8String password; */
-  NS_IMETHOD GetPassword(nsACString & aPassword) = 0;
-  NS_IMETHOD SetPassword(const nsACString & aPassword) = 0;
-
-  /* attribute AUTF8String hostPort; */
-  NS_IMETHOD GetHostPort(nsACString & aHostPort) = 0;
-  NS_IMETHOD SetHostPort(const nsACString & aHostPort) = 0;
-
-  /* attribute AUTF8String host; */
-  NS_IMETHOD GetHost(nsACString & aHost) = 0;
-  NS_IMETHOD SetHost(const nsACString & aHost) = 0;
-
-  /* attribute long port; */
-  NS_IMETHOD GetPort(PRInt32 *aPort) = 0;
-  NS_IMETHOD SetPort(PRInt32 aPort) = 0;
-
-  /* attribute AUTF8String path; */
-  NS_IMETHOD GetPath(nsACString & aPath) = 0;
-  NS_IMETHOD SetPath(const nsACString & aPath) = 0;
-
-  /* boolean equals (in nsIURI other); */
-  NS_IMETHOD Equals(nsIURI *other, PRBool *_retval) = 0;
-
-  /* boolean schemeIs (in string scheme); */
-  NS_IMETHOD SchemeIs(const char *scheme, PRBool *_retval) = 0;
-
-  /* nsIURI clone (); */
-  NS_IMETHOD Clone(nsIURI **_retval) = 0;
-
-  /* AUTF8String resolve (in AUTF8String relative_path); */
-  NS_IMETHOD Resolve(const nsACString & relative_path, nsACString & _retval) = 0;
-
-  /* readonly attribute ACString asciiSpec; */
-  NS_IMETHOD GetAsciiSpec(nsACString & aAsciiSpec) = 0;
-
-  /* readonly attribute ACString asciiHost; */
-  NS_IMETHOD GetAsciiHost(nsACString & aAsciiHost) = 0;
-
-  /* readonly attribute ACString originCharset; */
-  NS_IMETHOD GetOriginCharset(nsACString & aOriginCharset) = 0;
-
-};
-
-/* Use this macro when declaring classes that implement this interface. */
-#define NS_DECL_NSIURI \
-  NS_IMETHOD GetSpec(nsACString & aSpec); \
-  NS_IMETHOD SetSpec(const nsACString & aSpec); \
-  NS_IMETHOD GetPrePath(nsACString & aPrePath); \
-  NS_IMETHOD GetScheme(nsACString & aScheme); \
-  NS_IMETHOD SetScheme(const nsACString & aScheme); \
-  NS_IMETHOD GetUserPass(nsACString & aUserPass); \
-  NS_IMETHOD SetUserPass(const nsACString & aUserPass); \
-  NS_IMETHOD GetUsername(nsACString & aUsername); \
-  NS_IMETHOD SetUsername(const nsACString & aUsername); \
-  NS_IMETHOD GetPassword(nsACString & aPassword); \
-  NS_IMETHOD SetPassword(const nsACString & aPassword); \
-  NS_IMETHOD GetHostPort(nsACString & aHostPort); \
-  NS_IMETHOD SetHostPort(const nsACString & aHostPort); \
-  NS_IMETHOD GetHost(nsACString & aHost); \
-  NS_IMETHOD SetHost(const nsACString & aHost); \
-  NS_IMETHOD GetPort(PRInt32 *aPort); \
-  NS_IMETHOD SetPort(PRInt32 aPort); \
-  NS_IMETHOD GetPath(nsACString & aPath); \
-  NS_IMETHOD SetPath(const nsACString & aPath); \
-  NS_IMETHOD Equals(nsIURI *other, PRBool *_retval); \
-  NS_IMETHOD SchemeIs(const char *scheme, PRBool *_retval); \
-  NS_IMETHOD Clone(nsIURI **_retval); \
-  NS_IMETHOD Resolve(const nsACString & relative_path, nsACString & _retval); \
-  NS_IMETHOD GetAsciiSpec(nsACString & aAsciiSpec); \
-  NS_IMETHOD GetAsciiHost(nsACString & aAsciiHost); \
-  NS_IMETHOD GetOriginCharset(nsACString & aOriginCharset); 
-
-/* Use this macro to declare functions that forward the behavior of this interface to another object. */
-#define NS_FORWARD_NSIURI(_to) \
-  NS_IMETHOD GetSpec(nsACString & aSpec) { return _to GetSpec(aSpec); } \
-  NS_IMETHOD SetSpec(const nsACString & aSpec) { return _to SetSpec(aSpec); } \
-  NS_IMETHOD GetPrePath(nsACString & aPrePath) { return _to GetPrePath(aPrePath); } \
-  NS_IMETHOD GetScheme(nsACString & aScheme) { return _to GetScheme(aScheme); } \
-  NS_IMETHOD SetScheme(const nsACString & aScheme) { return _to SetScheme(aScheme); } \
-  NS_IMETHOD GetUserPass(nsACString & aUserPass) { return _to GetUserPass(aUserPass); } \
-  NS_IMETHOD SetUserPass(const nsACString & aUserPass) { return _to SetUserPass(aUserPass); } \
-  NS_IMETHOD GetUsername(nsACString & aUsername) { return _to GetUsername(aUsername); } \
-  NS_IMETHOD SetUsername(const nsACString & aUsername) { return _to SetUsername(aUsername); } \
-  NS_IMETHOD GetPassword(nsACString & aPassword) { return _to GetPassword(aPassword); } \
-  NS_IMETHOD SetPassword(const nsACString & aPassword) { return _to SetPassword(aPassword); } \
-  NS_IMETHOD GetHostPort(nsACString & aHostPort) { return _to GetHostPort(aHostPort); } \
-  NS_IMETHOD SetHostPort(const nsACString & aHostPort) { return _to SetHostPort(aHostPort); } \
-  NS_IMETHOD GetHost(nsACString & aHost) { return _to GetHost(aHost); } \
-  NS_IMETHOD SetHost(const nsACString & aHost) { return _to SetHost(aHost); } \
-  NS_IMETHOD GetPort(PRInt32 *aPort) { return _to GetPort(aPort); } \
-  NS_IMETHOD SetPort(PRInt32 aPort) { return _to SetPort(aPort); } \
-  NS_IMETHOD GetPath(nsACString & aPath) { return _to GetPath(aPath); } \
-  NS_IMETHOD SetPath(const nsACString & aPath) { return _to SetPath(aPath); } \
-  NS_IMETHOD Equals(nsIURI *other, PRBool *_retval) { return _to Equals(other, _retval); } \
-  NS_IMETHOD SchemeIs(const char *scheme, PRBool *_retval) { return _to SchemeIs(scheme, _retval); } \
-  NS_IMETHOD Clone(nsIURI **_retval) { return _to Clone(_retval); } \
-  NS_IMETHOD Resolve(const nsACString & relative_path, nsACString & _retval) { return _to Resolve(relative_path, _retval); } \
-  NS_IMETHOD GetAsciiSpec(nsACString & aAsciiSpec) { return _to GetAsciiSpec(aAsciiSpec); } \
-  NS_IMETHOD GetAsciiHost(nsACString & aAsciiHost) { return _to GetAsciiHost(aAsciiHost); } \
-  NS_IMETHOD GetOriginCharset(nsACString & aOriginCharset) { return _to GetOriginCharset(aOriginCharset); } 
-
-/* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
-#define NS_FORWARD_SAFE_NSIURI(_to) \
-  NS_IMETHOD GetSpec(nsACString & aSpec) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetSpec(aSpec); } \
-  NS_IMETHOD SetSpec(const nsACString & aSpec) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetSpec(aSpec); } \
-  NS_IMETHOD GetPrePath(nsACString & aPrePath) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPrePath(aPrePath); } \
-  NS_IMETHOD GetScheme(nsACString & aScheme) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetScheme(aScheme); } \
-  NS_IMETHOD SetScheme(const nsACString & aScheme) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetScheme(aScheme); } \
-  NS_IMETHOD GetUserPass(nsACString & aUserPass) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetUserPass(aUserPass); } \
-  NS_IMETHOD SetUserPass(const nsACString & aUserPass) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetUserPass(aUserPass); } \
-  NS_IMETHOD GetUsername(nsACString & aUsername) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetUsername(aUsername); } \
-  NS_IMETHOD SetUsername(const nsACString & aUsername) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetUsername(aUsername); } \
-  NS_IMETHOD GetPassword(nsACString & aPassword) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPassword(aPassword); } \
-  NS_IMETHOD SetPassword(const nsACString & aPassword) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPassword(aPassword); } \
-  NS_IMETHOD GetHostPort(nsACString & aHostPort) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetHostPort(aHostPort); } \
-  NS_IMETHOD SetHostPort(const nsACString & aHostPort) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetHostPort(aHostPort); } \
-  NS_IMETHOD GetHost(nsACString & aHost) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetHost(aHost); } \
-  NS_IMETHOD SetHost(const nsACString & aHost) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetHost(aHost); } \
-  NS_IMETHOD GetPort(PRInt32 *aPort) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPort(aPort); } \
-  NS_IMETHOD SetPort(PRInt32 aPort) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPort(aPort); } \
-  NS_IMETHOD GetPath(nsACString & aPath) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPath(aPath); } \
-  NS_IMETHOD SetPath(const nsACString & aPath) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPath(aPath); } \
-  NS_IMETHOD Equals(nsIURI *other, PRBool *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->Equals(other, _retval); } \
-  NS_IMETHOD SchemeIs(const char *scheme, PRBool *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->SchemeIs(scheme, _retval); } \
-  NS_IMETHOD Clone(nsIURI **_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->Clone(_retval); } \
-  NS_IMETHOD Resolve(const nsACString & relative_path, nsACString & _retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->Resolve(relative_path, _retval); } \
-  NS_IMETHOD GetAsciiSpec(nsACString & aAsciiSpec) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetAsciiSpec(aAsciiSpec); } \
-  NS_IMETHOD GetAsciiHost(nsACString & aAsciiHost) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetAsciiHost(aAsciiHost); } \
-  NS_IMETHOD GetOriginCharset(nsACString & aOriginCharset) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetOriginCharset(aOriginCharset); } 
-
-#if 0
-/* Use the code below as a template for the implementation class for this interface. */
-
-/* Header file */
-class nsURI : public nsIURI
-{
-public:
-  NS_DECL_ISUPPORTS
-  NS_DECL_NSIURI
-
-  nsURI();
-
-private:
-  ~nsURI();
-
-protected:
-  /* additional members */
-};
-
-/* Implementation file */
-NS_IMPL_ISUPPORTS1(nsURI, nsIURI)
-
-nsURI::nsURI()
-{
-  /* member initializers and constructor code */
-}
-
-nsURI::~nsURI()
-{
-  /* destructor code */
-}
-
-/* attribute AUTF8String spec; */
-NS_IMETHODIMP nsURI::GetSpec(nsACString & aSpec)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-NS_IMETHODIMP nsURI::SetSpec(const nsACString & aSpec)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* readonly attribute AUTF8String prePath; */
-NS_IMETHODIMP nsURI::GetPrePath(nsACString & aPrePath)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* attribute ACString scheme; */
-NS_IMETHODIMP nsURI::GetScheme(nsACString & aScheme)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-NS_IMETHODIMP nsURI::SetScheme(const nsACString & aScheme)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* attribute AUTF8String userPass; */
-NS_IMETHODIMP nsURI::GetUserPass(nsACString & aUserPass)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-NS_IMETHODIMP nsURI::SetUserPass(const nsACString & aUserPass)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* attribute AUTF8String username; */
-NS_IMETHODIMP nsURI::GetUsername(nsACString & aUsername)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-NS_IMETHODIMP nsURI::SetUsername(const nsACString & aUsername)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* attribute AUTF8String password; */
-NS_IMETHODIMP nsURI::GetPassword(nsACString & aPassword)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-NS_IMETHODIMP nsURI::SetPassword(const nsACString & aPassword)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* attribute AUTF8String hostPort; */
-NS_IMETHODIMP nsURI::GetHostPort(nsACString & aHostPort)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-NS_IMETHODIMP nsURI::SetHostPort(const nsACString & aHostPort)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* attribute AUTF8String host; */
-NS_IMETHODIMP nsURI::GetHost(nsACString & aHost)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-NS_IMETHODIMP nsURI::SetHost(const nsACString & aHost)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* attribute long port; */
-NS_IMETHODIMP nsURI::GetPort(PRInt32 *aPort)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-NS_IMETHODIMP nsURI::SetPort(PRInt32 aPort)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* attribute AUTF8String path; */
-NS_IMETHODIMP nsURI::GetPath(nsACString & aPath)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-NS_IMETHODIMP nsURI::SetPath(const nsACString & aPath)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* boolean equals (in nsIURI other); */
-NS_IMETHODIMP nsURI::Equals(nsIURI *other, PRBool *_retval)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* boolean schemeIs (in string scheme); */
-NS_IMETHODIMP nsURI::SchemeIs(const char *scheme, PRBool *_retval)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* nsIURI clone (); */
-NS_IMETHODIMP nsURI::Clone(nsIURI **_retval)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* AUTF8String resolve (in AUTF8String relative_path); */
-NS_IMETHODIMP nsURI::Resolve(const nsACString & relative_path, nsACString & _retval)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* readonly attribute ACString asciiSpec; */
-NS_IMETHODIMP nsURI::GetAsciiSpec(nsACString & aAsciiSpec)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* readonly attribute ACString asciiHost; */
-NS_IMETHODIMP nsURI::GetAsciiHost(nsACString & aAsciiHost)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* readonly attribute ACString originCharset; */
-NS_IMETHODIMP nsURI::GetOriginCharset(nsACString & aOriginCharset)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
@@ -14872,8 +18326,6 @@ NS_IMETHODIMP nsStandardURL::Init(PRUint32 aUrlType, PRInt32 aDefaultPort, const
 
 /* End of implementation class template. */
 #endif
-
-class nsIURI; /* forward declaration */
 
 class nsIRequest; /* forward declaration */
 
@@ -16059,10 +19511,6 @@ NS_IMETHODIMP nsWebBrowserFocus::SetFocusedElement(nsIDOMElement * aFocusedEleme
 /* End of implementation class template. */
 #endif
 
-class nsIURI; /* forward declaration */
-
-class nsIFile; /* forward declaration */
-
 class nsIChannel; /* forward declaration */
 
 class nsIWebProgressListener; /* forward declaration */
@@ -16311,8 +19759,6 @@ NS_IMETHODIMP nsWebBrowserPersist::CancelSave()
 
 /* End of implementation class template. */
 #endif
-
-class nsIURI; /* forward declaration */
 
 class nsIInputStream; /* forward declaration */
 
@@ -17060,8 +20506,6 @@ NS_IMETHODIMP nsXPCSecurityManager::CanAccess(PRUint32 aAction, nsAXPCNativeCall
 /* End of implementation class template. */
 #endif
 
-class nsIURI; /* forward declaration */
-
 
 /* starting interface:    nsIPrincipal */
 #define NS_IPRINCIPAL_IID_STR "0575ea96-4561-4dc6-a818-3c4c97c2430d"
@@ -17135,11 +20579,11 @@ NS_IMETHODIMP nsPrincipal::Placeholder()
 
 
 /* starting interface:    nsIScriptSecurityManager */
-#define NS_ISCRIPTSECURITYMANAGER_IID_STR "f8e350b9-9f31-451a-8c8f-d10fea26b780"
+#define NS_ISCRIPTSECURITYMANAGER_IID_STR "f4d74511-2b2d-4a14-a3e4-a392ac5ac3ff"
 
 #define NS_ISCRIPTSECURITYMANAGER_IID \
-  {0xf8e350b9, 0x9f31, 0x451a, \
-    { 0x8c, 0x8f, 0xd1, 0x0f, 0xea, 0x26, 0xb7, 0x80 }}
+  {0xf4d74511, 0x2b2d, 0x4a14, \
+    { 0xa3, 0xe4, 0xa3, 0x92, 0xac, 0x5a, 0xc3, 0xff }}
 
 class NS_NO_VTABLE nsIScriptSecurityManager : public nsIXPCSecurityManager {
  public: 
@@ -19537,6 +22981,77 @@ NS_IMETHODIMP nsWebBrowserStream::AppendToStream(const PRUint8 *aData, PRUint32 
 
 /* void closeStream (); */
 NS_IMETHODIMP nsWebBrowserStream::CloseStream()
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* End of implementation class template. */
+#endif
+
+
+/* starting interface:    nsISSLCertErrorDialog */
+#define NS_ISSLCERTERRORDIALOG_IID_STR "0729ce8e-8935-4989-ba72-a2d6307f2365"
+
+#define NS_ISSLCERTERRORDIALOG_IID \
+  {0x0729ce8e, 0x8935, 0x4989, \
+    { 0xba, 0x72, 0xa2, 0xd6, 0x30, 0x7f, 0x23, 0x65 }}
+
+class NS_NO_VTABLE nsISSLCertErrorDialog : public nsISupports {
+ public: 
+
+  NS_DEFINE_STATIC_IID_ACCESSOR(NS_ISSLCERTERRORDIALOG_IID)
+
+  /* void showCertError (in nsIInterfaceRequestor ctx, in nsISSLStatus status, in nsIX509Cert cert, in AString text_error_message, in AString html_error_message, in ACString host_name, in PRUint32 port_number); */
+  NS_IMETHOD ShowCertError(nsIInterfaceRequestor *ctx, nsISSLStatus *status, nsIX509Cert *cert, const nsAString & text_error_message, const nsAString & html_error_message, const nsACString & host_name, PRUint32 port_number) = 0;
+
+};
+
+/* Use this macro when declaring classes that implement this interface. */
+#define NS_DECL_NSISSLCERTERRORDIALOG \
+  NS_IMETHOD ShowCertError(nsIInterfaceRequestor *ctx, nsISSLStatus *status, nsIX509Cert *cert, const nsAString & text_error_message, const nsAString & html_error_message, const nsACString & host_name, PRUint32 port_number); 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object. */
+#define NS_FORWARD_NSISSLCERTERRORDIALOG(_to) \
+  NS_IMETHOD ShowCertError(nsIInterfaceRequestor *ctx, nsISSLStatus *status, nsIX509Cert *cert, const nsAString & text_error_message, const nsAString & html_error_message, const nsACString & host_name, PRUint32 port_number) { return _to ShowCertError(ctx, status, cert, text_error_message, html_error_message, host_name, port_number); } 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
+#define NS_FORWARD_SAFE_NSISSLCERTERRORDIALOG(_to) \
+  NS_IMETHOD ShowCertError(nsIInterfaceRequestor *ctx, nsISSLStatus *status, nsIX509Cert *cert, const nsAString & text_error_message, const nsAString & html_error_message, const nsACString & host_name, PRUint32 port_number) { return !_to ? NS_ERROR_NULL_POINTER : _to->ShowCertError(ctx, status, cert, text_error_message, html_error_message, host_name, port_number); } 
+
+#if 0
+/* Use the code below as a template for the implementation class for this interface. */
+
+/* Header file */
+class nsSSLCertErrorDialog : public nsISSLCertErrorDialog
+{
+public:
+  NS_DECL_ISUPPORTS
+  NS_DECL_NSISSLCERTERRORDIALOG
+
+  nsSSLCertErrorDialog();
+
+private:
+  ~nsSSLCertErrorDialog();
+
+protected:
+  /* additional members */
+};
+
+/* Implementation file */
+NS_IMPL_ISUPPORTS1(nsSSLCertErrorDialog, nsISSLCertErrorDialog)
+
+nsSSLCertErrorDialog::nsSSLCertErrorDialog()
+{
+  /* member initializers and constructor code */
+}
+
+nsSSLCertErrorDialog::~nsSSLCertErrorDialog()
+{
+  /* destructor code */
+}
+
+/* void showCertError (in nsIInterfaceRequestor ctx, in nsISSLStatus status, in nsIX509Cert cert, in AString text_error_message, in AString html_error_message, in ACString host_name, in PRUint32 port_number); */
+NS_IMETHODIMP nsSSLCertErrorDialog::ShowCertError(nsIInterfaceRequestor *ctx, nsISSLStatus *status, nsIX509Cert *cert, const nsAString & text_error_message, const nsAString & html_error_message, const nsACString & host_name, PRUint32 port_number)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }

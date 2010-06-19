@@ -5,7 +5,7 @@
 // Modified by:
 // Created:     2006-09-22
 // RCS-ID:      
-// Copyright:   (C) Copyright 2006-2009, Kirix Corporation, All Rights Reserved.
+// Copyright:   (C) Copyright 2006-2010, Kirix Corporation, All Rights Reserved.
 // Licence:     wxWindows Library Licence, Version 3.1
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -342,9 +342,11 @@ public:
 //     class; it is used for displaying and interacting with web content.
 
 class wxWebFavIconProgress;
+class MainURIListener;
 class wxWebControl : public wxControl
 {
 friend class BrowserChrome;
+friend class PromptService;
 friend class WindowCreator;
 friend class wxWebFavIconProgress;
 
@@ -353,7 +355,13 @@ public:
     static bool InitEngine(const wxString& path);
     static bool AddContentHandler(wxWebContentHandler* handler, bool take_ownership = false);
     static void AddPluginPath(const wxString& path);
+    static void SetProfilePath(const wxString& path);
+    
     static wxWebPreferences GetPreferences();
+    static void SetIgnoreCertErrors(bool ignore);
+    static bool GetIgnoreCertErrors();
+
+    static bool IsVersion18();
     
     static bool SaveRequest(
                  const wxString& uri,
@@ -445,6 +453,9 @@ private:
     void OnSetFocus(wxFocusEvent& evt);
     void OnKillFocus(wxFocusEvent& evt);
 
+    void InitPrintSettings();
+    wxString GetCurrentLoadURI();
+    
     void ResetFavicon();
     void FetchFavIcon(void* uri);
     void OnFavIconFetched(const wxString& filename);
@@ -459,6 +470,7 @@ private:
     wxWebContentHandlerPtrArray m_content_handlers;
     wxWebContentHandlerPtrArray m_to_delete;
     wxWebFavIconProgress* m_favicon_progress;
+    MainURIListener* m_main_uri_listener;
     
     wxImage m_favicon;
     bool m_favicon_fetched;
