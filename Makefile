@@ -16,8 +16,8 @@
 WX_DIR := ../wxWidgets
 WX_CONFIG := ${WX_DIR}/wx-config
 
-WX_CFLAGS := $(shell ${WX_CONFIG} --prefix=${WX_DIR} --cppflags)
-WX_LIBS := $(shell ${WX_CONFIG} --prefix=${WX_DIR} --libs)
+#WX_CFLAGS := $(shell ${WX_CONFIG} --prefix=${WX_DIR} --cppflags)
+#WX_LIBS := $(shell ${WX_CONFIG} --prefix=${WX_DIR} --libs)
 
 
 INCLUDE =
