@@ -5,7 +5,7 @@
 // Modified by:
 // Created:     2006-10-07
 // RCS-ID:      
-// Copyright:   (C) Copyright 2006-2009, Kirix Corporation, All Rights Reserved.
+// Copyright:   (C) Copyright 2006-2010, Kirix Corporation, All Rights Reserved.
 // Licence:     wxWindows Library Licence, Version 3.1
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -29,11 +29,13 @@
 #define NS_NSSDIALOGS_CID \
  {0x518e071f, 0x1dd2, 0x11b2, {0x93, 0x7e, 0xc4, 0x5f, 0x14, 0xde, 0xf7, 0x78}}
 
+#define NS_CERTOVERRIDE_CID \
+ {0x67ba681d, 0x5485, 0x4fff, {0x95, 0x2c, 0x2e, 0xe3, 0x37, 0xff, 0xdc, 0xd6}}
 
 void CreatePromptServiceFactory(nsIFactory** result);
 void CreateTransferFactory(nsIFactory** result);
 void CreateUnknownContentTypeHandlerFactory(nsIFactory** result);
-
+void CreateCertOverrideFactory(nsIFactory** result);
 
 #endif
 

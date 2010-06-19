@@ -5,7 +5,7 @@
 // Modified by:
 // Created:     2006-09-30
 // RCS-ID:      
-// Copyright:   (C) Copyright 2006-2009, Kirix Corporation, All Rights Reserved.
+// Copyright:   (C) Copyright 2006-2010, Kirix Corporation, All Rights Reserved.
 // Licence:     wxWindows Library Licence, Version 3.1
 ///////////////////////////////////////////////////////////////////////////////
 

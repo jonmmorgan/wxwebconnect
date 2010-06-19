@@ -5,7 +5,7 @@
 // Modified by:
 // Created:     2006-10-08
 // RCS-ID:      
-// Copyright:   (C) Copyright 2006-2009, Kirix Corporation, All Rights Reserved.
+// Copyright:   (C) Copyright 2006-2010, Kirix Corporation, All Rights Reserved.
 // Licence:     wxWindows Library Licence, Version 3.1
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -29,12 +29,12 @@ public:
 
 public:
 
-    ns_smartptr()
+    ns_smartptr() : ns_smartptr_unknown()
     {
         p = 0;
     }
 
-    ns_smartptr(T* const& _p)
+    ns_smartptr(T* const& _p) : ns_smartptr_unknown()
     {
         p = _p;
         if (p)
@@ -43,7 +43,7 @@ public:
         }
     }
     
-    ns_smartptr(const ns_smartptr<T>& c)
+    ns_smartptr(const ns_smartptr<T>& c) : ns_smartptr_unknown()
     {
         p = c.p;
         if (p)
@@ -52,7 +52,7 @@ public:
         }
     }
     
-    ns_smartptr(const ns_smartptr_unknown& u)
+	ns_smartptr(const ns_smartptr_unknown& u) : ns_smartptr_unknown()
     {
         u.qi(T::GetIID(), (void**)&p);
     }
