@@ -2937,8 +2937,9 @@ void wxWebControl::OpenURI(const wxString& uri,
     freeUnichar(ns_uri);
                                             
     ns_smartptr<nsIWebBrowserFocus> focus = nsRequestInterface(m_ptrs->m_web_browser);
-    if (!focus || !grab_focus)
+    if (!focus || !grab_focus) {
         return;
+    }
 
     focus->Activate();
 }
