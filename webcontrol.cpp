@@ -3616,7 +3616,7 @@ bool wxWebControl::SetContent(const wxString& strBaseURI, const wxString& strCon
     nsCString nsContentType;
     wx2ns(strContentType, nsContentType);
 
-    std::string strutf8data = strContent.ToUTF8();
+    std::string strutf8data = std::string(strContent.ToUTF8());
 
     ns_smartptr<nsIWebBrowserStream> browserStream(m_ptrs->m_web_browser);
     if (!browserStream.p)   {
