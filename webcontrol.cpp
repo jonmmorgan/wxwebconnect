@@ -700,21 +700,30 @@ bool wxWebControl::ExecuteJSCode(const wxString& js_code, wxString& result)
     nsEmbedString str;
     wx2ns(js_code, str);
 
+    JSContext *jscontext = (JSContext*)ctx->GetNativeContext();
+
     jsval out;
+    PRBool isUndefined;
     rv = ctx->EvaluateStringWithValue(
         str,
         sgo->GetGlobalJSObject(),
         principal,
-        "mozembed",
+        "wxWebConnect",
         0,
         nsnull,
         &out,
-        nsnull);
+        &isUndefined);
+
     if (NS_FAILED(rv))  {
         return false;
     }
+
+    if (isUndefined)    {
+        return false;
+    }
+
     // XXX: Root this variable properly to prevent GC?
-    JSString *jsstring = JS_ValueToString((JSContext*)ctx->GetNativeContext(), out);
+    JSString *jsstring = JS_ValueToString(jscontext, out);
     if (jsstring)  {
         wxString _wxString(JS_GetStringBytes(jsstring), wxConvUTF8);
         result = _wxString;
