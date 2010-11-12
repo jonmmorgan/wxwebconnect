@@ -438,9 +438,14 @@ wxString ns2wx(const PRUnichar* str)
 void wx2ns(const wxString& wxstr, nsEmbedString& nsstr)
 {
     size_t i, len = wxstr.Length();
+    wxString::const_iterator p;
     PRUnichar* buf = new PRUnichar[len+1];
-    for (i = 0; i < len; ++i)
-        buf[i] = wxstr.GetChar(i);
+    for (p=wxstr.begin(), i=0;
+        p<wxstr.end();
+        p++, i++)
+    {
+        buf[i] = *p; 
+    }
     nsstr.Assign(buf, len);
     delete[] buf;
 }
