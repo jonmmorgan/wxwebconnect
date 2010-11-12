@@ -209,13 +209,20 @@ nsresult XPCOMGlueStartup(const char* xpcom_dll_path)
     for (i = 0; i < count; ++i)
     {
         void* handle = dlopen(deplibs.Item(i).mbc_str(), RTLD_GLOBAL | RTLD_LAZY);
+        if (!handle)
+        {
+            fprintf(stderr, "dlopen %s failed! Error was:\n%s\n", deplibs.Item(i).mbc_str(), dlerror());
+        }
     }
     
     // now load the functions from libxpcom.so
     
     void* h = dlopen(xpcom_dll_path, RTLD_GLOBAL | RTLD_LAZY);
     if (!h)
+    {
+        fprintf(stderr, "dlopen %s failed! Error was:\n%s\n", xpcom_dll_path, dlerror());
         return NS_ERROR_FAILURE;
+    }
         
     GetFrozenFunctionsFunc f =
     f = (GetFrozenFunctionsFunc)dlsym(h, "NS_GetFrozenFunctions");
