@@ -169,6 +169,13 @@ nsresult XPCOMGlueStartup(const char* xpcom_dll_path)
         HMODULE h = LoadLibraryExA(deplibs.Item(i).mbc_str(),
                                0,
                                LOAD_WITH_ALTERED_SEARCH_PATH);
+        if (!h)
+        {
+            // XXX: It is possible to get the actual error message with
+            // GetLastError() and FormatMessage(), but I'm too lazy to do it
+            // right now.
+            fprintf(stderr, "LoadLibraryExA %s failed!\n", deplibs.Item(i).mbc_str());
+        }
     }
     
     // now load the functions from xpcom.dll
@@ -180,6 +187,7 @@ nsresult XPCOMGlueStartup(const char* xpcom_dll_path)
     
     if (!f)
     {
+        fprintf(stderr, "LoadLibraryExA %s failed!\n", xpcom_dll_path);
         FreeLibrary(h);
         return NS_ERROR_FAILURE;
     }
