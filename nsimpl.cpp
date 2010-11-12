@@ -211,13 +211,20 @@ nsresult XPCOMGlueStartup(const char* xpcom_dll_path)
     for (i = 0; i < count; ++i)
     {
         void* handle = dlopen(deplibs.Item(i).mbc_str(), RTLD_GLOBAL | RTLD_LAZY);
+		if (!handle)
+		{
+			fprintf(stderr, "dlopen failed! Error was:\n%s\n", dlerror());
+		}
     }
     
     // now load the functions from libxpcom.so
     
     void* h = dlopen(xpcom_dll_path, RTLD_GLOBAL | RTLD_LAZY);
     if (!h)
+	{
+		fprintf(stderr, "dlopen %s failed! Error was:\n%s\n", xpcom_dll_path, dlerror());
         return NS_ERROR_FAILURE;
+	}
         
     GetFrozenFunctionsFunc f =
     f = (GetFrozenFunctionsFunc)dlsym(h, "NS_GetFrozenFunctions");
@@ -438,9 +445,13 @@ wxString ns2wx(const PRUnichar* str)
 void wx2ns(const wxString& wxstr, nsEmbedString& nsstr)
 {
     size_t i, len = wxstr.Length();
+	wxString::const_iterator p;
     PRUnichar* buf = new PRUnichar[len+1];
-    for (i = 0; i < len; ++i)
-        buf[i] = wxstr.GetChar(i);
+	for (p=wxstr.begin(), i=0;
+		 p<wxstr.end();
+		 p++, i++)
+		// Don't use the GetChar method - it looks like linear access time...
+        buf[i] = *p;
     nsstr.Assign(buf, len);
     delete[] buf;
 }
