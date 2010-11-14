@@ -171,6 +171,13 @@ nsresult XPCOMGlueStartup(const char* xpcom_dll_path)
         HMODULE h = LoadLibraryExA(deplibs.Item(i).mbc_str(),
                                0,
                                LOAD_WITH_ALTERED_SEARCH_PATH);
+        if (!h)
+        {
+            // XXX: It is possible to get the actual error message with
+            // GetLastError() and FormatMessage(), but I'm too lazy to do it
+            // right now.
+            fprintf(stderr, "LoadLibraryExA %s failed!\n", deplibs.Item(i).mbc_str());
+        }
     }
     
     // now load the functions from xpcom.dll
@@ -182,6 +189,7 @@ nsresult XPCOMGlueStartup(const char* xpcom_dll_path)
     
     if (!f)
     {
+        fprintf(stderr, "LoadLibraryExA %s failed!\n", xpcom_dll_path);
         FreeLibrary(h);
         return NS_ERROR_FAILURE;
     }
@@ -211,20 +219,20 @@ nsresult XPCOMGlueStartup(const char* xpcom_dll_path)
     for (i = 0; i < count; ++i)
     {
         void* handle = dlopen(deplibs.Item(i).mbc_str(), RTLD_GLOBAL | RTLD_LAZY);
-		if (!handle)
-		{
-			fprintf(stderr, "dlopen failed! Error was:\n%s\n", dlerror());
-		}
+        if (!handle)
+        {
+            fprintf(stderr, "dlopen %s failed! Error was:\n%s\n", deplibs.Item(i).mbc_str(), dlerror());
+        }
     }
     
     // now load the functions from libxpcom.so
     
     void* h = dlopen(xpcom_dll_path, RTLD_GLOBAL | RTLD_LAZY);
     if (!h)
-	{
-		fprintf(stderr, "dlopen %s failed! Error was:\n%s\n", xpcom_dll_path, dlerror());
+    {
+        fprintf(stderr, "dlopen %s failed! Error was:\n%s\n", xpcom_dll_path, dlerror());
         return NS_ERROR_FAILURE;
-	}
+    }
         
     GetFrozenFunctionsFunc f =
     f = (GetFrozenFunctionsFunc)dlsym(h, "NS_GetFrozenFunctions");
@@ -445,13 +453,14 @@ wxString ns2wx(const PRUnichar* str)
 void wx2ns(const wxString& wxstr, nsEmbedString& nsstr)
 {
     size_t i, len = wxstr.Length();
-	wxString::const_iterator p;
+    wxString::const_iterator p;
     PRUnichar* buf = new PRUnichar[len+1];
-	for (p=wxstr.begin(), i=0;
-		 p<wxstr.end();
-		 p++, i++)
-		// Don't use the GetChar method - it looks like linear access time...
-        buf[i] = *p;
+    for (p=wxstr.begin(), i=0;
+        p<wxstr.end();
+        p++, i++)
+    {
+        buf[i] = *p; 
+    }
     nsstr.Assign(buf, len);
     delete[] buf;
 }
