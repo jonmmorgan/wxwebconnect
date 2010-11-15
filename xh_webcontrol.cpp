@@ -44,7 +44,7 @@ wxObject *wxWebControlXmlHandler::DoCreateResource()
     {
 		// Dunno what makes for a good default URI; 
 		// this should do for now though...
-        control->SetContent("about:blank", GetText(wxT("htmlcode")));
+        control->SetContent(wxT("about:blank"), GetText(wxT("htmlcode")));
     }
 
     SetupWindow(control);
