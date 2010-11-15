@@ -15,6 +15,7 @@
 
 
 #include "dom.h"
+#include "wx/xrc/xmlres.h"
 
 
 #undef SWIG
@@ -353,6 +354,7 @@ friend class wxWebFavIconProgress;
 public:
 
     static bool InitEngine(const wxString& path);
+    static void InstallXRCHandler(wxXmlResource *res = NULL);
     static bool AddContentHandler(wxWebContentHandler* handler, bool take_ownership = false);
     static void AddPluginPath(const wxString& path);
     static void SetProfilePath(const wxString& path);
@@ -379,10 +381,18 @@ public:
                  
 public:
 
+    wxWebControl() : wxControl(), m_ok(false) {};
     wxWebControl(wxWindow* parent,
                  wxWindowID id = wxID_ANY,
                  const wxPoint& pos = wxDefaultPosition,
-                 const wxSize& size = wxDefaultSize);
+                 const wxSize& size = wxDefaultSize) {
+		Create(parent, id, pos, size);
+	}
+
+    bool Create(wxWindow* parent,
+           wxWindowID id = wxID_ANY,
+           const wxPoint& pos = wxDefaultPosition,
+           const wxSize& size = wxDefaultSize);
     ~wxWebControl();
     
     bool IsOk() const;
