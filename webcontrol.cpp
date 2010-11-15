@@ -3047,31 +3047,33 @@ bool wxWebControl::Create(wxWindow* parent,
 
 wxWebControl::~wxWebControl()
 {
-    if (m_ok)
+    if (!m_ok)
     {
-        m_main_uri_listener->m_wnd = NULL;
-        m_main_uri_listener->Release();
-
-        // destroy web browser
-        m_ptrs->m_base_window->Destroy();
-        m_ptrs->m_base_window.clear();
-    
-        // release chrome
-        m_chrome->ChromeUninit();
-        m_chrome->Release();
-
-
-        // delete any web content handlers that we 'own'
-        size_t i, count;
-        for (i = 0, count = m_to_delete.GetCount(); i < count; ++i)
-        {
-            wxWebContentHandler* handler = m_to_delete.Item(i);
-            delete handler;
-        }
-        
-        delete m_favicon_progress;
-        delete m_ptrs;
+        return;
     }
+
+    m_main_uri_listener->m_wnd = NULL;
+    m_main_uri_listener->Release();
+
+    // destroy web browser
+    m_ptrs->m_base_window->Destroy();
+    m_ptrs->m_base_window.clear();
+
+    // release chrome
+    m_chrome->ChromeUninit();
+    m_chrome->Release();
+
+
+    // delete any web content handlers that we 'own'
+    size_t i, count;
+    for (i = 0, count = m_to_delete.GetCount(); i < count; ++i)
+    {
+        wxWebContentHandler* handler = m_to_delete.Item(i);
+        delete handler;
+    }
+    
+    delete m_favicon_progress;
+    delete m_ptrs;
 }
 
 // (METHOD) wxWebControl::IsOk
