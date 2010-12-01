@@ -104,6 +104,8 @@ typedef nsresult (PR_CALLBACK *GetFrozenFunctionsFunc)(XPCOMFunctionTable *func_
                                                        const char* path);
 
 
+JS_ValueToStringFunc JS_ValueToStringImpl;
+JS_GetStringBytesFunc JS_GetStringBytesImpl;
 
 
 #ifdef __WXMSW__
@@ -254,6 +256,36 @@ nsresult XPCOMGlueStartup(const char* xpcom_dll_path)
     return 0;
 }
 
+#endif
+
+#ifdef __WXMSW__
+bool SetupJSFunctions(const char* js_dll_path)
+{
+    // now load the functions from mozjs.dll
+    
+    HMODULE h = LoadLibraryExA(js_dll_path, 0, LOAD_WITH_ALTERED_SEARCH_PATH);
+    if (!h)
+    {
+        fprintf(stderr, "LoadLibraryExA %s failed!\n", js_dll_path);
+        return false;
+    }
+    
+    JS_ValueToStringImpl = (JS_ValueToStringFunc)GetProcAddress(h, "JS_ValueToString");
+    if (!JS_ValueToStringImpl)
+    {
+        fprintf(stderr, "Unable to find JS_ValueToString!\n");
+        return false;
+    }
+    
+    JS_GetStringBytesImpl = (JS_GetStringBytesFunc)GetProcAddress(h, "JS_GetStringBytes");
+    if (!JS_GetStringBytesImpl)
+    {
+        fprintf(stderr, "Unable to find JS_GetStringBytes!\n");
+        return false;
+    }
+
+    return true;
+}
 #endif
 
 
