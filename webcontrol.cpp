@@ -724,9 +724,9 @@ bool wxWebControl::ExecuteJSCode(const wxString& js_code, wxString& result)
     }
 
     // XXX: Root this variable properly to prevent GC?
-    JSString *jsstring = JS_ValueToString(jscontext, out);
+    JSString *jsstring = JS_ValueToStringImpl(jscontext, out);
     if (jsstring)  {
-        wxString _wxString(JS_GetStringBytes(jsstring), wxConvUTF8);
+        wxString _wxString(JS_GetStringBytesImpl(jsstring), wxConvUTF8);
         result = _wxString;
     }
 
@@ -2473,6 +2473,7 @@ bool GeckoEngine::Init()
     std::string xpcom_path = gecko_path;
     if (xpcom_path.empty() || xpcom_path[xpcom_path.length()-1] != path_separator)
         xpcom_path += path_separator;
+    std::string js_path = xpcom_path;
     #if defined __WXMSW__
     xpcom_path += "xpcom.dll";
     #elif defined __WXMAC__
@@ -2481,8 +2482,19 @@ bool GeckoEngine::Init()
     xpcom_path += "libxpcom.so";
     #endif
 
+    #if defined __WXMSW__
+    js_path += "js3250.dll";
+    #elif defined __WXMAC__
+    js_path += "libmozjs.dylib";
+    #else
+    js_path += "libmozjs.so";
+    #endif
+
         
     if (NS_FAILED(XPCOMGlueStartup(xpcom_path.c_str())))
+        return false;
+
+    if (!SetupJSFunctions(js_path.c_str()))
         return false;
     
     ns_smartptr<nsILocalFile> gre_dir;
