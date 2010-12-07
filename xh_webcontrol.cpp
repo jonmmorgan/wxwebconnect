@@ -14,6 +14,7 @@
 
 #if wxUSE_XRC
 
+#include <wx/wx.h>
 #include "xh_webcontrol.h"
 #include "webcontrol.h"
 
