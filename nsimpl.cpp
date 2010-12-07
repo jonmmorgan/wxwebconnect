@@ -181,6 +181,7 @@ nsresult XPCOMGlueStartup(const char* xpcom_dll_path)
 {
     // load library dependencies
     wxArrayString deplibs;
+    wxString js_dll_path;
     GetDependentLibraryList(xpcom_dll_path, deplibs);
     size_t i, count = deplibs.GetCount();
     for (i = 0; i < count; ++i)
@@ -194,6 +195,10 @@ nsresult XPCOMGlueStartup(const char* xpcom_dll_path)
             // GetLastError() and FormatMessage(), but I'm too lazy to do it
             // right now.
             fprintf(stderr, "LoadLibraryExA %s failed!\n", deplibs.Item(i).mbc_str());
+        }
+        if ((deplibs.Item(i).find(wxT("mozjs")) != wxString::npos) || (deplibs.Item(i).find(wxT("js")) == 0))
+        {
+            js_dll_path = deplibs.Item(i);
         }
     }
     
@@ -222,6 +227,12 @@ nsresult XPCOMGlueStartup(const char* xpcom_dll_path)
         return NS_ERROR_FAILURE;
     }
 
+    if (js_dll_path.empty() || !SetupJSFunctions(js_dll_path.mbc_str()))
+    {
+        FreeLibrary(h);
+        return NS_ERROR_FAILURE;
+    }
+
     return 0;
 }
 
@@ -231,6 +242,7 @@ nsresult XPCOMGlueStartup(const char* xpcom_dll_path)
 {
     // load library dependencies
     wxArrayString deplibs;
+    wxString js_dll_path;
     GetDependentLibraryList(xpcom_dll_path, deplibs);
     size_t i, count = deplibs.GetCount();
     for (i = 0; i < count; ++i)
@@ -244,6 +256,11 @@ nsresult XPCOMGlueStartup(const char* xpcom_dll_path)
             {
                 wxLogError(wxT("dlopen %s failed! Error:\n%s"), deplibs.Item(i).c_str(), wxString::FromAscii(dlerror()).c_str());
             }
+        }
+
+        if ((deplibs.Item(i).find(wxT("mozjs")) != wxString::npos) || (deplibs.Item(i).find(wxT("js")) == 0))
+        {
+            js_dll_path = deplibs.Item(i);
         }
     }
     
@@ -269,6 +286,12 @@ nsresult XPCOMGlueStartup(const char* xpcom_dll_path)
     res = f(&funcs, xpcom_dll_path);
     
     if (NS_FAILED(res))
+    {
+        dlclose(h);
+        return NS_ERROR_FAILURE;
+    }
+
+    if (js_dll_path.empty() || !SetupJSFunctions(js_dll_path.mbc_str()))
     {
         dlclose(h);
         return NS_ERROR_FAILURE;
