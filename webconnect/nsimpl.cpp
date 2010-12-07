@@ -160,6 +160,26 @@ static void GetDependentLibraryList(const char* xpcom_dll_path, wxArrayString& a
 
 
 #ifdef __WXMSW__
+    typedef HMODULE HandleType;
+    #define LoadFunctionFromLibrary(handle, function_name) GetProcAddress(handle, function_name);
+    #define LoadLibraryImpl(dll_path) LoadLibraryExA(dll_path, 0, LOAD_WITH_ALTERED_SEARCH_PATH);
+#else
+    typedef void* HandleType;
+    #define LoadFunctionFromLibrary(handle, function_name) dlsym(handle, function_name);
+    #define LoadLibraryImpl(dll_path) dlopen(dll_path, RTLD_GLOBAL | RTLD_LAZY);
+#endif
+
+#define GetFunctionImpl(handle, function_name) \
+{   \
+    function_name##Impl = (function_name##Func)LoadFunctionFromLibrary(handle, #function_name); \
+    if (!function_name##Impl) \
+    { \
+        fprintf(stderr, "Unable to find function_name##Impl"); \
+        return false; \
+    } \
+}
+
+#ifdef __WXMSW__
 nsresult XPCOMGlueStartup(const char* xpcom_dll_path)
 {
     // load library dependencies
@@ -253,68 +273,21 @@ nsresult XPCOMGlueStartup(const char* xpcom_dll_path)
 
 #endif
 
-#ifdef __WXMSW__
 bool SetupJSFunctions(const char* js_dll_path)
 {
     // now load the functions from mozjs.dll
-    
-    HMODULE h = LoadLibraryExA(js_dll_path, 0, LOAD_WITH_ALTERED_SEARCH_PATH);
+    HandleType h = LoadLibraryImpl(js_dll_path);
     if (!h)
     {
-        fprintf(stderr, "LoadLibraryExA %s failed!\n", js_dll_path);
+        fprintf(stderr, "LoadLibraryImpl %s failed!\n", js_dll_path);
         return false;
     }
-    
-    JS_ValueToStringImpl = (JS_ValueToStringFunc)GetProcAddress(h, "JS_ValueToString");
-    if (!JS_ValueToStringImpl)
-    {
-        fprintf(stderr, "Unable to find JS_ValueToString!\n");
-        return false;
-    }
-    
-    JS_GetStringBytesImpl = (JS_GetStringBytesFunc)GetProcAddress(h, "JS_GetStringBytes");
-    if (!JS_GetStringBytesImpl)
-    {
-        fprintf(stderr, "Unable to find JS_GetStringBytes!\n");
-        return false;
-    }
+
+    GetFunctionImpl(h, JS_ValueToString);
+    GetFunctionImpl(h, JS_GetStringBytes);
 
     return true;
 }
-
-#else
-
-bool SetupJSFunctions(const char* js_dll_path)
-{
-    // now load the functions from mozjs.dll
-    
-    fprintf(stderr, "Setting up JS functions.\n");
-    void *h = dlopen(js_dll_path, RTLD_GLOBAL | RTLD_LAZY);
-    if (!h)
-    {
-        fprintf(stderr, "LoadLibraryExA %s failed!\n", js_dll_path);
-        return false;
-    }
-    
-    JS_ValueToStringImpl = (JS_ValueToStringFunc)dlsym(h, "JS_ValueToString");
-    if (!JS_ValueToStringImpl)
-    {
-        fprintf(stderr, "Unable to find JS_ValueToString!\n");
-        return false;
-    }
-    
-    JS_GetStringBytesImpl = (JS_GetStringBytesFunc)dlsym(h, "JS_GetStringBytes");
-    if (!JS_GetStringBytesImpl)
-    {
-        fprintf(stderr, "Unable to find JS_GetStringBytes!\n");
-        return false;
-    }
-
-    return true;
-}
-
-#endif
-
 
 nsresult NS_InitXPCOM2(nsIServiceManager** result,
                        nsIFile* bin_directory,
