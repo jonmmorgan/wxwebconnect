@@ -238,7 +238,12 @@ nsresult XPCOMGlueStartup(const char* xpcom_dll_path)
         void *handle = dlopen(deplibs.Item(i).mbc_str(), RTLD_GLOBAL | RTLD_LAZY);
         if (!handle)
         {
-            wxLogError(wxT("dlopen %s failed! Error:\n%s"), deplibs.Item(i).c_str(),wxString::FromAscii(dlerror()).c_str());
+            // Check if the library can be loaded from the system path rather than the XULRunner directory.
+            void *handle = dlopen(deplibs.Item(i).AfterLast(XPCOM_PATH_SEPARATOR).mbc_str(), RTLD_GLOBAL | RTLD_LAZY);
+            if (!handle)
+            {
+                wxLogError(wxT("dlopen %s failed! Error:\n%s"), deplibs.Item(i).c_str(), wxString::FromAscii(dlerror()).c_str());
+            }
         }
     }
     
