@@ -696,8 +696,6 @@ bool wxWebControl::ExecuteJSCode(const wxString& js_code, wxString& result)
     if (ctx.empty())
         return false;
 
-    void* obj = sgo->GetGlobalJSObject();
-    
     nsEmbedString str;
     wx2ns(js_code, str);
 

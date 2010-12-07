@@ -97,11 +97,6 @@ struct XPCOMFunctionTable
 
 static XPCOMFunctionTable funcs;
 
-static bool isLibraryOk()
-{
-    return (funcs.Init != 0) ? true : false;
-}
-
 typedef nsresult (PR_CALLBACK *GetFrozenFunctionsFunc)(XPCOMFunctionTable *func_table,
                                                        const char* path);
 
@@ -240,7 +235,7 @@ nsresult XPCOMGlueStartup(const char* xpcom_dll_path)
     size_t i, count = deplibs.GetCount();
     for (i = 0; i < count; ++i)
     {
-        void* handle = dlopen(deplibs.Item(i).mbc_str(), RTLD_GLOBAL | RTLD_LAZY);
+        (void *)dlopen(deplibs.Item(i).mbc_str(), RTLD_GLOBAL | RTLD_LAZY);
     }
     
     // now load the functions from libxpcom.so
