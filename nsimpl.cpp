@@ -221,10 +221,6 @@ nsresult XPCOMGlueStartup(const char* xpcom_dll_path)
     for (i = 0; i < count; ++i)
     {
         void* handle = dlopen(deplibs.Item(i).mbc_str(), RTLD_GLOBAL | RTLD_LAZY);
-        if (!handle)
-        {
-            fprintf(stderr, "dlopen %s failed! Error was:\n%s\n", deplibs.Item(i).mbc_str(), dlerror());
-        }
     }
     
     // now load the functions from libxpcom.so
@@ -236,8 +232,7 @@ nsresult XPCOMGlueStartup(const char* xpcom_dll_path)
         return NS_ERROR_FAILURE;
     }
         
-    GetFrozenFunctionsFunc f =
-    f = (GetFrozenFunctionsFunc)dlsym(h, "NS_GetFrozenFunctions");
+    GetFrozenFunctionsFunc f = (GetFrozenFunctionsFunc)dlsym(h, "NS_GetFrozenFunctions");
     if (!f)
     {
         dlclose(h);
@@ -288,6 +283,38 @@ bool SetupJSFunctions(const char* js_dll_path)
 
     return true;
 }
+
+#else
+
+bool SetupJSFunctions(const char* js_dll_path)
+{
+    // now load the functions from mozjs.dll
+    
+    fprintf(stderr, "Setting up JS functions.\n");
+    void *h = dlopen(js_dll_path, RTLD_GLOBAL | RTLD_LAZY);
+    if (!h)
+    {
+        fprintf(stderr, "LoadLibraryExA %s failed!\n", js_dll_path);
+        return false;
+    }
+    
+    JS_ValueToStringImpl = (JS_ValueToStringFunc)dlsym(h, "JS_ValueToString");
+    if (!JS_ValueToStringImpl)
+    {
+        fprintf(stderr, "Unable to find JS_ValueToString!\n");
+        return false;
+    }
+    
+    JS_GetStringBytesImpl = (JS_GetStringBytesFunc)dlsym(h, "JS_GetStringBytes");
+    if (!JS_GetStringBytesImpl)
+    {
+        fprintf(stderr, "Unable to find JS_GetStringBytes!\n");
+        return false;
+    }
+
+    return true;
+}
+
 #endif
 
 
