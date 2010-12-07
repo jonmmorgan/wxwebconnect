@@ -1838,7 +1838,6 @@ bool GeckoEngine::Init()
     std::string xpcom_path = gecko_path;
     if (xpcom_path.empty() || xpcom_path[xpcom_path.length()-1] != path_separator)
         xpcom_path += path_separator;
-    std::string js_path = xpcom_path;
     #if defined __WXMSW__
     xpcom_path += "xpcom.dll";
     #elif defined __WXMAC__
@@ -1846,20 +1845,8 @@ bool GeckoEngine::Init()
     #else
     xpcom_path += "libxpcom.so";
     #endif
-
-    #if defined __WXMSW__
-    js_path += "js3250.dll";
-    #elif defined __WXMAC__
-    js_path += "libmozjs.dylib";
-    #else
-    js_path += "libmozjs.so";
-    #endif
-
         
     if (NS_FAILED(XPCOMGlueStartup(xpcom_path.c_str())))
-        return false;
-
-    if (!SetupJSFunctions(js_path.c_str()))
         return false;
     
     ns_smartptr<nsILocalFile> gre_dir;
