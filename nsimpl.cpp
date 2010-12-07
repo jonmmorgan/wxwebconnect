@@ -196,7 +196,8 @@ nsresult XPCOMGlueStartup(const char* xpcom_dll_path)
             // right now.
             fprintf(stderr, "LoadLibraryExA %s failed!\n", deplibs.Item(i).mbc_str());
         }
-        if ((deplibs.Item(i).find(wxT("mozjs")) != wxString::npos) || (deplibs.Item(i).find(wxT("js")) == 0))
+        if ((deplibs.Item(i).find(wxT("mozjs")) != wxString::npos) ||
+                (deplibs.Item(i).AfterLast(XPCOM_PATH_SEPARATOR).find(wxT("js")) == 0))
         {
             js_dll_path = deplibs.Item(i);
         }
@@ -258,7 +259,8 @@ nsresult XPCOMGlueStartup(const char* xpcom_dll_path)
             }
         }
 
-        if ((deplibs.Item(i).find(wxT("mozjs")) != wxString::npos) || (deplibs.Item(i).find(wxT("js")) == 0))
+        if ((deplibs.Item(i).find(wxT("mozjs")) != wxString::npos) ||
+                (deplibs.Item(i).AfterLast(XPCOM_PATH_SEPARATOR).find(wxT("js")) == 0))
         {
             js_dll_path = deplibs.Item(i);
         }
