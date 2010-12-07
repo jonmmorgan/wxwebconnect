@@ -235,7 +235,11 @@ nsresult XPCOMGlueStartup(const char* xpcom_dll_path)
     size_t i, count = deplibs.GetCount();
     for (i = 0; i < count; ++i)
     {
-        (void *)dlopen(deplibs.Item(i).mbc_str(), RTLD_GLOBAL | RTLD_LAZY);
+        void *handle = dlopen(deplibs.Item(i).mbc_str(), RTLD_GLOBAL | RTLD_LAZY);
+        if (!handle)
+        {
+            wxLogError(wxT("dlopen %s failed! Error:\n%s"), deplibs.Item(i).c_str(),wxString::FromAscii(dlerror()).c_str());
+        }
     }
     
     // now load the functions from libxpcom.so
@@ -243,7 +247,7 @@ nsresult XPCOMGlueStartup(const char* xpcom_dll_path)
     void* h = dlopen(xpcom_dll_path, RTLD_GLOBAL | RTLD_LAZY);
     if (!h)
     {
-        fprintf(stderr, "dlopen %s failed! Error was:\n%s\n", xpcom_dll_path, dlerror());
+        wxLogError(wxT("dlopen %s failed! Error was:\n%s\n"), xpcom_dll_path, wxString::FromAscii(dlerror()).c_str());
         return NS_ERROR_FAILURE;
     }
         
