@@ -75,7 +75,7 @@ struct EmbeddingPtrs
     ns_smartptr<nsIDOMEventTarget> m_event_target;
     ns_smartptr<nsIClipboardCommands> m_clipboard_commands;
     
-    ns_smartptr<nsISupports> m_print_settings;
+    ns_smartptr<nsIPrintSettings> m_print_settings;
 };
 
 
