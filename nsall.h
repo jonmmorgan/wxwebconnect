@@ -21,6 +21,8 @@ typedef PRInt64 PRInt64;
 
 typedef PRUint64 PRTime;
 
+typedef PRInt32 PRBool;
+
 #endif
 
 /* starting interface:    nsISupports */
@@ -15282,19 +15284,32 @@ NS_IMETHODIMP nsPrintSettings18::SetIsInitializedFromPrefs(PRBool aIsInitialized
 /* End of implementation class template. */
 #endif
 
+class nsIPrintSession; /* forward declaration */
+
 
 /* starting interface:    nsIPrintSettings */
-#define NS_IPRINTSETTINGS_IID_STR "5af07661-6477-4235-8814-4a45215855b8"
+#define NS_IPRINTSETTINGS_IID_STR "343700dd-078b-42b6-a809-b9c1d7e951d0"
 
 #define NS_IPRINTSETTINGS_IID \
-  {0x5af07661, 0x6477, 0x4235, \
-    { 0x88, 0x14, 0x4a, 0x45, 0x21, 0x58, 0x55, 0xb8 }}
+  {0x343700dd, 0x078b, 0x42b6, \
+    { 0xa8, 0x09, 0xb9, 0xc1, 0xd7, 0xe9, 0x51, 0xd0 }}
 
 class NS_NO_VTABLE nsIPrintSettings : public nsISupports {
  public: 
 
   NS_DEFINE_STATIC_IID_ACCESSOR(NS_IPRINTSETTINGS_IID)
 
+  /**
+ * Native types
+ */
+/**
+ * Simplified graphics interface for JS rendering.
+ *
+ * @status UNDER_REVIEW
+ */
+/**
+   * PrintSettings to be Saved Navigation Constants
+   */
   enum { kInitSaveOddEvenPages = 1U };
 
   enum { kInitSaveHeaderLeft = 2U };
@@ -15375,22 +15390,37 @@ class NS_NO_VTABLE nsIPrintSettings : public nsISupports {
 
   enum { kJustRight = 2 };
 
+  /**
+   * FrameSet Default Type Constants
+   */
   enum { kUseInternalDefault = 0 };
 
   enum { kUseSettingWhenPossible = 1 };
 
+  /**
+   * Page Size Type Constants
+   */
   enum { kPaperSizeNativeData = 0 };
 
   enum { kPaperSizeDefined = 1 };
 
+  /**
+   * Page Size Unit Constants
+   */
   enum { kPaperSizeInches = 0 };
 
   enum { kPaperSizeMillimeters = 1 };
 
+  /**
+   * Orientation Constants
+   */
   enum { kPortraitOrientation = 0 };
 
   enum { kLandscapeOrientation = 1 };
 
+  /**
+   * Print Frame Constants
+   */
   enum { kNoFrames = 0 };
 
   enum { kFramesAsIs = 1 };
@@ -15399,36 +15429,64 @@ class NS_NO_VTABLE nsIPrintSettings : public nsISupports {
 
   enum { kEachFrameSep = 3 };
 
+  /**
+   * How to Enable Frame Set Printing Constants
+   */
   enum { kFrameEnableNone = 0 };
 
   enum { kFrameEnableAll = 1 };
 
   enum { kFrameEnableAsIsAndEach = 2 };
 
+  /**
+   * Output file format
+   */
   enum { kOutputFormatNative = 0 };
 
   enum { kOutputFormatPS = 1 };
 
   enum { kOutputFormatPDF = 2 };
 
-  /* void SetPrintOptions (in PRInt32 type, in boolean turn_on_off); */
-  NS_IMETHOD SetPrintOptions(PRInt32 type, PRBool turn_on_off) = 0;
+  /**
+   * Set PrintOptions 
+   */
+  /* void SetPrintOptions (in PRInt32 aType, in PRBool aTurnOnOff); */
+  NS_IMETHOD SetPrintOptions(PRInt32 aType, PRBool aTurnOnOff) = 0;
 
-  /* boolean GetPrintOptions (in PRInt32 type); */
-  NS_IMETHOD GetPrintOptions(PRInt32 type, PRBool *_retval) = 0;
+  /**
+   * Get PrintOptions 
+   */
+  /* PRBool GetPrintOptions (in PRInt32 aType); */
+  NS_IMETHOD GetPrintOptions(PRInt32 aType, PRBool *_retval) = 0;
 
+  /**
+   * Set PrintOptions Bit field
+   */
   /* PRInt32 GetPrintOptionsBits (); */
   NS_IMETHOD GetPrintOptionsBits(PRInt32 *_retval) = 0;
 
-  /* void GetEffectivePageSize (out double width, out double height); */
-  NS_IMETHOD GetEffectivePageSize(double *width, double *height) = 0;
+  /**
+   * Get the page size in twips, considering the
+   * orientation (portrait or landscape).
+   */
+  /* void GetEffectivePageSize (out double aWidth, out double aHeight); */
+  NS_IMETHOD GetEffectivePageSize(double *aWidth, double *aHeight) = 0;
 
+  /**
+   * Makes a new copy
+   */
   /* nsIPrintSettings clone (); */
   NS_IMETHOD Clone(nsIPrintSettings **_retval) = 0;
 
-  /* void assign (in nsIPrintSettings print_settings); */
-  NS_IMETHOD Assign(nsIPrintSettings *print_settings) = 0;
+  /**
+   * Assigns the internal values from the "in" arg to the current object
+   */
+  /* void assign (in nsIPrintSettings aPS); */
+  NS_IMETHOD Assign(nsIPrintSettings *aPS) = 0;
 
+  /**
+   * Data Members
+   */
   /* [noscript] attribute nsIPrintSession printSession; */
   NS_IMETHOD GetPrintSession(nsIPrintSession * *aPrintSession) = 0;
   NS_IMETHOD SetPrintSession(nsIPrintSession * aPrintSession) = 0;
@@ -15441,6 +15499,11 @@ class NS_NO_VTABLE nsIPrintSettings : public nsISupports {
   NS_IMETHOD GetEndPageRange(PRInt32 *aEndPageRange) = 0;
   NS_IMETHOD SetEndPageRange(PRInt32 aEndPageRange) = 0;
 
+  /**
+   * The edge measurements define the positioning of the headers
+   * and footers on the page. They're measured as an offset from
+   * the "unwriteable margin" (described below).
+   */
   /* attribute double edgeTop; */
   NS_IMETHOD GetEdgeTop(double *aEdgeTop) = 0;
   NS_IMETHOD SetEdgeTop(double aEdgeTop) = 0;
@@ -15457,6 +15520,11 @@ class NS_NO_VTABLE nsIPrintSettings : public nsISupports {
   NS_IMETHOD GetEdgeRight(double *aEdgeRight) = 0;
   NS_IMETHOD SetEdgeRight(double aEdgeRight) = 0;
 
+  /**
+   * The margins define the positioning of the content on the page.
+   * They're treated as an offset from the "unwriteable margin"
+   * (described below).
+   */
   /* attribute double marginTop; */
   NS_IMETHOD GetMarginTop(double *aMarginTop) = 0;
   NS_IMETHOD SetMarginTop(double aMarginTop) = 0;
@@ -15473,6 +15541,10 @@ class NS_NO_VTABLE nsIPrintSettings : public nsISupports {
   NS_IMETHOD GetMarginRight(double *aMarginRight) = 0;
   NS_IMETHOD SetMarginRight(double aMarginRight) = 0;
 
+  /**
+   * The unwriteable margin defines the printable region of the paper, creating
+   * an invisible border from which the edge and margin attributes are measured.
+   */
   /* attribute double unwriteableMarginTop; */
   NS_IMETHOD GetUnwriteableMarginTop(double *aUnwriteableMarginTop) = 0;
   NS_IMETHOD SetUnwriteableMarginTop(double aUnwriteableMarginTop) = 0;
@@ -15645,24 +15717,52 @@ class NS_NO_VTABLE nsIPrintSettings : public nsISupports {
   NS_IMETHOD GetPrintPageDelay(PRInt32 *aPrintPageDelay) = 0;
   NS_IMETHOD SetPrintPageDelay(PRInt32 aPrintPageDelay) = 0;
 
+  /**
+   * This attribute tracks whether the PS has been initialized 
+   * from a printer specified by the "printerName" attr. 
+   * If a different name is set into the "printerName" 
+   * attribute than the one it was initialized with the PS
+   * will then get intialized from that printer.
+   */
   /* attribute boolean isInitializedFromPrinter; */
   NS_IMETHOD GetIsInitializedFromPrinter(PRBool *aIsInitializedFromPrinter) = 0;
   NS_IMETHOD SetIsInitializedFromPrinter(PRBool aIsInitializedFromPrinter) = 0;
 
+  /**
+   * This attribute tracks whether the PS has been initialized 
+   * from prefs. If a different name is set into the "printerName" 
+   * attribute than the one it was initialized with the PS
+   * will then get intialized from prefs again.
+   */
   /* attribute boolean isInitializedFromPrefs; */
   NS_IMETHOD GetIsInitializedFromPrefs(PRBool *aIsInitializedFromPrefs) = 0;
   NS_IMETHOD SetIsInitializedFromPrefs(PRBool aIsInitializedFromPrefs) = 0;
+
+  /**
+     * Helper functions that require native types have been excluded
+     * following Kirix's lead.  Hope this still works...
+     */
+/**
+   * We call this function so that anything that requires a run of the event loop
+   * can do so safely. The print dialog runs the event loop but in silent printing
+   * that doesn't happen.
+   *
+   * Either this or ShowPrintDialog (but not both) MUST be called by the print engine
+   * before printing, otherwise printing can fail on some platforms.
+   */
+  /* [noscript] void SetupSilentPrinting (); */
+  NS_IMETHOD SetupSilentPrinting(void) = 0;
 
 };
 
 /* Use this macro when declaring classes that implement this interface. */
 #define NS_DECL_NSIPRINTSETTINGS \
-  NS_IMETHOD SetPrintOptions(PRInt32 type, PRBool turn_on_off); \
-  NS_IMETHOD GetPrintOptions(PRInt32 type, PRBool *_retval); \
+  NS_IMETHOD SetPrintOptions(PRInt32 aType, PRBool aTurnOnOff); \
+  NS_IMETHOD GetPrintOptions(PRInt32 aType, PRBool *_retval); \
   NS_IMETHOD GetPrintOptionsBits(PRInt32 *_retval); \
-  NS_IMETHOD GetEffectivePageSize(double *width, double *height); \
+  NS_IMETHOD GetEffectivePageSize(double *aWidth, double *aHeight); \
   NS_IMETHOD Clone(nsIPrintSettings **_retval); \
-  NS_IMETHOD Assign(nsIPrintSettings *print_settings); \
+  NS_IMETHOD Assign(nsIPrintSettings *aPS); \
   NS_IMETHOD GetPrintSession(nsIPrintSession * *aPrintSession); \
   NS_IMETHOD SetPrintSession(nsIPrintSession * aPrintSession); \
   NS_IMETHOD GetStartPageRange(PRInt32 *aStartPageRange); \
@@ -15774,16 +15874,17 @@ class NS_NO_VTABLE nsIPrintSettings : public nsISupports {
   NS_IMETHOD GetIsInitializedFromPrinter(PRBool *aIsInitializedFromPrinter); \
   NS_IMETHOD SetIsInitializedFromPrinter(PRBool aIsInitializedFromPrinter); \
   NS_IMETHOD GetIsInitializedFromPrefs(PRBool *aIsInitializedFromPrefs); \
-  NS_IMETHOD SetIsInitializedFromPrefs(PRBool aIsInitializedFromPrefs); 
+  NS_IMETHOD SetIsInitializedFromPrefs(PRBool aIsInitializedFromPrefs); \
+  NS_IMETHOD SetupSilentPrinting(void); 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object. */
 #define NS_FORWARD_NSIPRINTSETTINGS(_to) \
-  NS_IMETHOD SetPrintOptions(PRInt32 type, PRBool turn_on_off) { return _to SetPrintOptions(type, turn_on_off); } \
-  NS_IMETHOD GetPrintOptions(PRInt32 type, PRBool *_retval) { return _to GetPrintOptions(type, _retval); } \
+  NS_IMETHOD SetPrintOptions(PRInt32 aType, PRBool aTurnOnOff) { return _to SetPrintOptions(aType, aTurnOnOff); } \
+  NS_IMETHOD GetPrintOptions(PRInt32 aType, PRBool *_retval) { return _to GetPrintOptions(aType, _retval); } \
   NS_IMETHOD GetPrintOptionsBits(PRInt32 *_retval) { return _to GetPrintOptionsBits(_retval); } \
-  NS_IMETHOD GetEffectivePageSize(double *width, double *height) { return _to GetEffectivePageSize(width, height); } \
+  NS_IMETHOD GetEffectivePageSize(double *aWidth, double *aHeight) { return _to GetEffectivePageSize(aWidth, aHeight); } \
   NS_IMETHOD Clone(nsIPrintSettings **_retval) { return _to Clone(_retval); } \
-  NS_IMETHOD Assign(nsIPrintSettings *print_settings) { return _to Assign(print_settings); } \
+  NS_IMETHOD Assign(nsIPrintSettings *aPS) { return _to Assign(aPS); } \
   NS_IMETHOD GetPrintSession(nsIPrintSession * *aPrintSession) { return _to GetPrintSession(aPrintSession); } \
   NS_IMETHOD SetPrintSession(nsIPrintSession * aPrintSession) { return _to SetPrintSession(aPrintSession); } \
   NS_IMETHOD GetStartPageRange(PRInt32 *aStartPageRange) { return _to GetStartPageRange(aStartPageRange); } \
@@ -15895,16 +15996,17 @@ class NS_NO_VTABLE nsIPrintSettings : public nsISupports {
   NS_IMETHOD GetIsInitializedFromPrinter(PRBool *aIsInitializedFromPrinter) { return _to GetIsInitializedFromPrinter(aIsInitializedFromPrinter); } \
   NS_IMETHOD SetIsInitializedFromPrinter(PRBool aIsInitializedFromPrinter) { return _to SetIsInitializedFromPrinter(aIsInitializedFromPrinter); } \
   NS_IMETHOD GetIsInitializedFromPrefs(PRBool *aIsInitializedFromPrefs) { return _to GetIsInitializedFromPrefs(aIsInitializedFromPrefs); } \
-  NS_IMETHOD SetIsInitializedFromPrefs(PRBool aIsInitializedFromPrefs) { return _to SetIsInitializedFromPrefs(aIsInitializedFromPrefs); } 
+  NS_IMETHOD SetIsInitializedFromPrefs(PRBool aIsInitializedFromPrefs) { return _to SetIsInitializedFromPrefs(aIsInitializedFromPrefs); } \
+  NS_IMETHOD SetupSilentPrinting(void) { return _to SetupSilentPrinting(); } 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
 #define NS_FORWARD_SAFE_NSIPRINTSETTINGS(_to) \
-  NS_IMETHOD SetPrintOptions(PRInt32 type, PRBool turn_on_off) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPrintOptions(type, turn_on_off); } \
-  NS_IMETHOD GetPrintOptions(PRInt32 type, PRBool *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPrintOptions(type, _retval); } \
+  NS_IMETHOD SetPrintOptions(PRInt32 aType, PRBool aTurnOnOff) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPrintOptions(aType, aTurnOnOff); } \
+  NS_IMETHOD GetPrintOptions(PRInt32 aType, PRBool *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPrintOptions(aType, _retval); } \
   NS_IMETHOD GetPrintOptionsBits(PRInt32 *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPrintOptionsBits(_retval); } \
-  NS_IMETHOD GetEffectivePageSize(double *width, double *height) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetEffectivePageSize(width, height); } \
+  NS_IMETHOD GetEffectivePageSize(double *aWidth, double *aHeight) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetEffectivePageSize(aWidth, aHeight); } \
   NS_IMETHOD Clone(nsIPrintSettings **_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->Clone(_retval); } \
-  NS_IMETHOD Assign(nsIPrintSettings *print_settings) { return !_to ? NS_ERROR_NULL_POINTER : _to->Assign(print_settings); } \
+  NS_IMETHOD Assign(nsIPrintSettings *aPS) { return !_to ? NS_ERROR_NULL_POINTER : _to->Assign(aPS); } \
   NS_IMETHOD GetPrintSession(nsIPrintSession * *aPrintSession) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPrintSession(aPrintSession); } \
   NS_IMETHOD SetPrintSession(nsIPrintSession * aPrintSession) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetPrintSession(aPrintSession); } \
   NS_IMETHOD GetStartPageRange(PRInt32 *aStartPageRange) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetStartPageRange(aStartPageRange); } \
@@ -16016,7 +16118,8 @@ class NS_NO_VTABLE nsIPrintSettings : public nsISupports {
   NS_IMETHOD GetIsInitializedFromPrinter(PRBool *aIsInitializedFromPrinter) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetIsInitializedFromPrinter(aIsInitializedFromPrinter); } \
   NS_IMETHOD SetIsInitializedFromPrinter(PRBool aIsInitializedFromPrinter) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetIsInitializedFromPrinter(aIsInitializedFromPrinter); } \
   NS_IMETHOD GetIsInitializedFromPrefs(PRBool *aIsInitializedFromPrefs) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetIsInitializedFromPrefs(aIsInitializedFromPrefs); } \
-  NS_IMETHOD SetIsInitializedFromPrefs(PRBool aIsInitializedFromPrefs) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetIsInitializedFromPrefs(aIsInitializedFromPrefs); } 
+  NS_IMETHOD SetIsInitializedFromPrefs(PRBool aIsInitializedFromPrefs) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetIsInitializedFromPrefs(aIsInitializedFromPrefs); } \
+  NS_IMETHOD SetupSilentPrinting(void) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetupSilentPrinting(); } 
 
 #if 0
 /* Use the code below as a template for the implementation class for this interface. */
@@ -16050,14 +16153,14 @@ nsPrintSettings::~nsPrintSettings()
   /* destructor code */
 }
 
-/* void SetPrintOptions (in PRInt32 type, in boolean turn_on_off); */
-NS_IMETHODIMP nsPrintSettings::SetPrintOptions(PRInt32 type, PRBool turn_on_off)
+/* void SetPrintOptions (in PRInt32 aType, in PRBool aTurnOnOff); */
+NS_IMETHODIMP nsPrintSettings::SetPrintOptions(PRInt32 aType, PRBool aTurnOnOff)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* boolean GetPrintOptions (in PRInt32 type); */
-NS_IMETHODIMP nsPrintSettings::GetPrintOptions(PRInt32 type, PRBool *_retval)
+/* PRBool GetPrintOptions (in PRInt32 aType); */
+NS_IMETHODIMP nsPrintSettings::GetPrintOptions(PRInt32 aType, PRBool *_retval)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
@@ -16068,8 +16171,8 @@ NS_IMETHODIMP nsPrintSettings::GetPrintOptionsBits(PRInt32 *_retval)
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* void GetEffectivePageSize (out double width, out double height); */
-NS_IMETHODIMP nsPrintSettings::GetEffectivePageSize(double *width, double *height)
+/* void GetEffectivePageSize (out double aWidth, out double aHeight); */
+NS_IMETHODIMP nsPrintSettings::GetEffectivePageSize(double *aWidth, double *aHeight)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
@@ -16080,8 +16183,8 @@ NS_IMETHODIMP nsPrintSettings::Clone(nsIPrintSettings **_retval)
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* void assign (in nsIPrintSettings print_settings); */
-NS_IMETHODIMP nsPrintSettings::Assign(nsIPrintSettings *print_settings)
+/* void assign (in nsIPrintSettings aPS); */
+NS_IMETHODIMP nsPrintSettings::Assign(nsIPrintSettings *aPS)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
@@ -16646,6 +16749,12 @@ NS_IMETHODIMP nsPrintSettings::SetIsInitializedFromPrefs(PRBool aIsInitializedFr
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
+/* [noscript] void SetupSilentPrinting (); */
+NS_IMETHODIMP nsPrintSettings::SetupSilentPrinting()
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
 /* End of implementation class template. */
 #endif
 
@@ -16659,6 +16768,15 @@ class nsIDOMWindow; /* forward declaration */
   {0x1630c61a, 0x325e, 0x49ca, \
     { 0x87, 0x59, 0xa3, 0x1b, 0x16, 0xc4, 0x7a, 0xa5 }}
 
+/**
+   * Sets/Gets the "unwriteable margin" for the page format.  This defines
+   * the boundary from which we'll measure the EdgeInTwips and MarginInTwips 
+   * attributes, to place the headers and content, respectively.
+   *
+   * Note: Implementations of SetUnwriteableMarginInTwips should handle
+   * negative margin values by falling back on the system default for
+   * that margin.
+   */
 class NS_NO_VTABLE nsIPromptService : public nsISupports {
  public: 
 
