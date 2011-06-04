@@ -402,6 +402,8 @@ public:
     void Reload();
     void Stop();
     bool IsContentLoaded() const;
+    void SetHistoryMaxLength(int max_length);
+    void PurgeHistory();
     
     // javascript
     bool Execute(const wxString& js_code);
