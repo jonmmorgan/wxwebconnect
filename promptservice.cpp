@@ -395,7 +395,6 @@ END_EVENT_TABLE()
 
 
 class PromptService : public nsIPromptService2,
-                      public nsIBadCertListener,
                       public nsIBadCertListener2
 {
 public:
@@ -408,7 +407,6 @@ public:
     NS_DECL_ISUPPORTS
     NS_DECL_NSIPROMPTSERVICE
     NS_DECL_NSIPROMPTSERVICE2
-    NS_DECL_NSIBADCERTLISTENER
     NS_DECL_NSIBADCERTLISTENER2
 };
 
@@ -420,7 +418,6 @@ NS_INTERFACE_MAP_BEGIN(PromptService)
     NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIPromptService)
     NS_INTERFACE_MAP_ENTRY(nsIPromptService)
     NS_INTERFACE_MAP_ENTRY(nsIPromptService2)
-    NS_INTERFACE_MAP_ENTRY(nsIBadCertListener)
 NS_INTERFACE_MAP_END
 
 
@@ -613,35 +610,6 @@ NS_IMETHODIMP PromptService::Select(nsIDOMWindow* parent,
     return NS_OK;
 }
 
-NS_IMETHODIMP PromptService::ConfirmUnknownIssuer(
-                                    nsIInterfaceRequestor* socketInfo,
-                                    nsIX509Cert* cert,
-                                    PRInt16* certAddType,
-                                    PRBool* retval)
-{
-    if (wxWebControl::GetIgnoreCertErrors())
-    {
-        *retval = PR_TRUE;
-        return NS_OK;
-    }
-
-    int res = wxMessageBox(
-        _("The requested web page is certified by an unknown authority.  Would you like to continue?"),
-        _("Website Certified by an Unknown Authority"),
-        wxICON_QUESTION | wxCENTER | wxYES_NO,
-        NULL);
-        
-    if (res != wxYES)
-    {
-        *retval = PR_FALSE;
-        return NS_OK;
-    }
-        
-    *certAddType = nsIBadCertListener::ADD_TRUSTED_FOR_SESSION;
-    *retval = PR_TRUE;
-    return NS_OK;
-}
-
 NS_IMETHODIMP PromptService::PromptAuth(nsIDOMWindow* parent,
                                         nsIChannel* channel,
                                         PRUint32 level,
@@ -687,71 +655,6 @@ NS_IMETHODIMP PromptService::AsyncPromptAuth(nsIDOMWindow* parent,
                                         const PRUnichar* checkbox_label,
                                         PRBool* check_value,
                                         nsICancelable** retval)
-{
-    return NS_OK;
-}
-
-
-
-NS_IMETHODIMP PromptService::ConfirmMismatchDomain(
-                                    nsIInterfaceRequestor* socketInfo,
-                                    const nsACString& targetURL,
-                                    nsIX509Cert *cert,
-                                    PRBool* retval)
-{
-    if (wxWebControl::GetIgnoreCertErrors())
-    {
-        *retval = PR_TRUE;
-        return NS_OK;
-    }
-
-    int res = wxMessageBox(
-        _("The requested web page uses a certificate which does not match the domain.  Would you like to continue?"),
-        _("Domain Mismatch"),
-        wxICON_QUESTION | wxCENTER | wxYES_NO,
-        NULL);
-        
-    if (res != wxYES)
-    {
-        *retval = PR_FALSE;
-        return NS_OK;
-    }
-    
-    *retval = PR_TRUE;
-    return NS_OK;
-}
-
-NS_IMETHODIMP PromptService::ConfirmCertExpired(
-                                    nsIInterfaceRequestor* socketInfo,
-                                    nsIX509Cert* cert,
-                                    PRBool* retval)
-{
-    if (wxWebControl::GetIgnoreCertErrors())
-    {
-        *retval = PR_TRUE;
-        return NS_OK;
-    }
-
-    int res = wxMessageBox(
-        _("The requested web page uses a certificate which has expired.  Would you like to continue?"),
-        _("Certificate Expired"),
-        wxICON_QUESTION | wxCENTER | wxYES_NO,
-        NULL);
-    
-    if (res != wxYES)
-    {
-        *retval = PR_FALSE;
-        return NS_OK;
-    }
-    
-    *retval = PR_TRUE;
-    return NS_OK;
-}
-
-NS_IMETHODIMP PromptService::NotifyCrlNextupdate(
-                                    nsIInterfaceRequestor* socketInfo,
-                                    const nsACString& targetURL,
-                                    nsIX509Cert* cert)
 {
     return NS_OK;
 }
@@ -914,107 +817,6 @@ void CreatePromptServiceFactory(nsIFactory** result)
 
 
 
-
-///////////////////////////////////////////////////////////////////////////////
-//  TransferService class implementation
-///////////////////////////////////////////////////////////////////////////////
-
-
-class TransferService18 : public nsITransfer18
-{
-public:
-
-    NS_DECL_ISUPPORTS
-
-    TransferService18()
-    {
-    }
-
-    NS_IMETHODIMP Init(nsIURI* source,
-                       nsIURI* target,
-                       const nsAString& display_name,
-                       nsIMIMEInfo* mime_info,
-                       PRTime start_time,
-                       nsILocalFile* temp_file,
-                       nsICancelable* cancelable)
-    {
-        return NS_OK;
-    }
-
-    NS_IMETHOD OnStateChange(nsIWebProgress* web_progress,
-                             nsIRequest* request,
-                             PRUint32 state_flags,
-                             nsresult status)
-    {
-        return NS_OK;
-    }
-
-    NS_IMETHOD OnProgressChange(nsIWebProgress* web_progress,
-                                nsIRequest* request,
-                                PRInt32 cur_self_progress,
-                                PRInt32 max_self_progress,
-                                PRInt32 cur_total_progress,
-                                PRInt32 max_total_progress)
-    {
-        return OnProgressChange64(web_progress,
-                                  request,
-                                  cur_self_progress,
-                                  max_self_progress,
-                                  cur_total_progress,
-                                  max_total_progress);
-    }
-    
-    NS_IMETHOD OnProgressChange64(
-                                 nsIWebProgress* web_progress,
-                                 nsIRequest* request,
-                                 PRInt64 cur_self_progress,
-                                 PRInt64 max_self_progress,
-                                 PRInt64 cur_total_progress,
-                                 PRInt64 max_total_progress)
-    {
-       return NS_OK;
-    }
-    
-    NS_IMETHOD OnLocationChange(
-                             nsIWebProgress* web_progress,
-                             nsIRequest* request,
-                             nsIURI* location)
-    {
-       return NS_OK;
-    }
-
-    NS_IMETHOD OnStatusChange(
-                             nsIWebProgress* web_progress,
-                             nsIRequest* request,
-                             nsresult status,
-                             const PRUnichar* message)
-    {
-        return NS_OK;
-    }
-
-
-    NS_IMETHOD OnSecurityChange(
-                             nsIWebProgress* web_progress,
-                             nsIRequest* request,
-                             PRUint32 state)
-    {
-       return NS_OK;
-    }
-};
-
-
-NS_IMPL_ADDREF(TransferService18)
-NS_IMPL_RELEASE(TransferService18)
-
-NS_INTERFACE_MAP_BEGIN(TransferService18)
-    NS_INTERFACE_MAP_ENTRY(nsISupports)
-    NS_INTERFACE_MAP_ENTRY(nsITransfer18)
-    NS_INTERFACE_MAP_ENTRY(nsIWebProgressListener2_18)
-    NS_INTERFACE_MAP_ENTRY(nsIWebProgressListener)
-NS_INTERFACE_MAP_END
-
-
-
 ///////////////////////////////////////////////////////////////////////////////
 //  TransferService class implementation
 ///////////////////////////////////////////////////////////////////////////////
@@ -1151,26 +953,12 @@ public:
             
         if (outer)
             return NS_ERROR_NO_AGGREGATION;
-        
-        if (wxWebControl::IsVersion18())
-        {
-            TransferService18* obj = new TransferService18();
-            if (!obj)
-                return NS_ERROR_OUT_OF_MEMORY;
-            obj->AddRef();
-            res = obj->QueryInterface(iid, result);
-            obj->Release();
-        }
-         else
-        {
-            TransferService* obj = new TransferService();
-            if (!obj)
-                return NS_ERROR_OUT_OF_MEMORY;
-            obj->AddRef();
-            res = obj->QueryInterface(iid, result);
-            obj->Release();
-        }
-        
+        TransferService* obj = new TransferService();
+        if (!obj)
+            return NS_ERROR_OUT_OF_MEMORY;
+        obj->AddRef();
+        res = obj->QueryInterface(iid, result);
+        obj->Release();
         
         return res;
     }
@@ -1199,8 +987,7 @@ void CreateTransferFactory(nsIFactory** result)
 ///////////////////////////////////////////////////////////////////////////////
 
 
-class UnknownContentTypeHandler : public nsIHelperAppLauncherDialog,
-                                  public nsIHelperAppLauncherDialog18
+class UnknownContentTypeHandler : public nsIHelperAppLauncherDialog
 {
 public:
 
@@ -1247,12 +1034,6 @@ public:
         launcher->GetMIMEInfo((nsIMIMEInfo**)&mime_info_supports.p);
         wxString mime_type;
         
-        ns_smartptr<nsIMIMEInfo18> mime_info18 = mime_info_supports;
-        if (mime_info18)
-        {
-            mime_info18->GetMIMEType(ns_mimetype);
-            mime_type = ns2wx(ns_mimetype);
-        }
         ns_smartptr<nsIMIMEInfo> mime_info = mime_info_supports;
         if (mime_info)
         {
@@ -1312,10 +1093,7 @@ public:
                 evt.m_download_listener->Init(url, evt.m_download_action_path);
                 nsIWebProgressListener* progress = CreateProgressListenerAdaptor(evt.m_download_listener);
                 
-                if (wxWebControl::IsVersion18())
-                    launcher->SetWebProgressListener((nsIWebProgressListener2*)(nsIWebProgressListener2_18*)progress);
-                     else
-                    launcher->SetWebProgressListener((nsIWebProgressListener2*)progress);
+                launcher->SetWebProgressListener((nsIWebProgressListener2*)progress);
                 
                 progress->Release();
             }
@@ -1399,7 +1177,6 @@ NS_IMPL_RELEASE(UnknownContentTypeHandler)
 NS_INTERFACE_MAP_BEGIN(UnknownContentTypeHandler)
     NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIHelperAppLauncherDialog)
     NS_INTERFACE_MAP_ENTRY(nsIHelperAppLauncherDialog)
-    NS_INTERFACE_MAP_ENTRY(nsIHelperAppLauncherDialog18)
 NS_INTERFACE_MAP_END
 
 

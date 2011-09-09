@@ -268,19 +268,14 @@ public:
 
     void AddPluginPath(const wxString& path);
     
-    // xulrunner versions 1.8 will return true, 1.9 will return false
-    bool IsVersion18() const { return m_is18; }
-    
 private:
 
     wxString m_gecko_path;
     wxString m_storage_path;
     wxString m_history_filename;
     bool m_ok;
-    bool m_is18;
     
     ContentListenerPtrArray m_content_listeners;
-    ns_smartptr<nsIAppShell> m_appshell;
     PluginListProvider* m_plugin_provider;
 };
 
@@ -1804,7 +1799,6 @@ NS_INTERFACE_MAP_END
 GeckoEngine::GeckoEngine()
 {
     m_ok = false;
-    m_is18 = false;
     m_plugin_provider = new PluginListProvider;
     m_plugin_provider->AddRef();
 }
@@ -1928,15 +1922,6 @@ bool GeckoEngine::Init()
         return false;
     
     
-    // create an app shell
-    const nsCID appshell_cid = NS_APPSHELL_CID;
-    m_appshell = nsCreateInstance(appshell_cid);
-    if (m_appshell)
-    {
-        m_appshell->Create(0, nsnull);
-        m_appshell->Spinup();
-    }
-
     // set the window creator
     
     ns_smartptr<nsIWindowWatcher> window_watcher = nsGetWindowWatcherService();
@@ -2074,26 +2059,6 @@ bool GeckoEngine::Init()
 
 
     m_ok = true;
-    
-    m_is18 = m_appshell.empty() ? false : true;
-    
-    
-    if (m_is18)
-    {
-        // 24 May 2008 - a bug was discovered; if a web control is not created
-        // in about 1 minute of the web engine being initialized, something goes
-        // wrong with the message queue, and the web control will only update
-        // when the mouse is moved over it-- strange.  I think there must be some
-        // thread condition that waits until the first web control is created.
-        // In any case, creating a web control here appears to solve the problem;
-        // It's destroyed 10 seconds after creation.
-        
-        wxWebFrame* f = new wxWebFrame(NULL, -1, wxT(""));
-        f->SetShouldPreventAppExit(false);
-        f->GetWebControl()->OpenURI(wxT("about:blank"));
-        
-        DelayedWindowDestroy* d = new DelayedWindowDestroy(f, 10);
-    }
     
     return true;
 }
@@ -2236,13 +2201,6 @@ bool wxWebControl::GetIgnoreCertErrors()
     return g_ignore_ssl_cert_errors;
 }
 
-//static
-bool wxWebControl::IsVersion18()
-{
-    return g_gecko_engine.IsVersion18();
-}
-
-
 
 ///////////////////////////////////////////////////////////////////////////////
 //  wxWebFavIconProgress class implementation
@@ -2268,10 +2226,7 @@ public:
     {
         if (m_progress)
         {
-            if (wxWebControl::IsVersion18())
-                ((ProgressListenerAdaptor18*)m_progress)->ClearProgressReference();
-                 else
-                ((ProgressListenerAdaptor*)m_progress)->ClearProgressReference();
+            ((ProgressListenerAdaptor*)m_progress)->ClearProgressReference();
             
             m_progress->Release();
         }
@@ -2415,21 +2370,12 @@ bool wxWebControl::Create(wxWindow* parent,
 
     // set the type to contentWrapper
     ns_smartptr<nsIDocShellTreeItem> dsti = m_ptrs->m_web_browser;
-    if (dsti)
+    if (dsti.empty())
     {
-        dsti->SetItemType(nsIDocShellTreeItem::typeContentWrapper);
+        wxASSERT(0);
+        return false;
     }
-     else
-    {
-        // 1.8.x support
-        ns_smartptr<ns18IDocShellTreeItem> dsti = m_ptrs->m_web_browser;
-        if (dsti.empty())
-        {
-            wxASSERT(0);
-            return false;
-        }
-        dsti->SetItemType(nsIDocShellTreeItem::typeContentWrapper);
-    }
+    dsti->SetItemType(nsIDocShellTreeItem::typeContentWrapper);
     
     // get base window interface and set its native window
     #ifdef __WXGTK__
@@ -2482,30 +2428,16 @@ bool wxWebControl::Create(wxWindow* parent,
     
     
     ns_smartptr<nsIDOMWindow2> dom_window2(dom_window);
-    if (dom_window2)
+    if (!dom_window2)
     {
-        res = dom_window2->GetWindowRoot(&m_ptrs->m_event_target.p);
-        if (NS_FAILED(res))
-        {
-            wxASSERT(0);
-            return false;
-        }
+        wxASSERT(0);
+        return false;
     }
-     else
+    res = dom_window2->GetWindowRoot(&m_ptrs->m_event_target.p);
+    if (NS_FAILED(res))
     {
-        // 1.8.x support
-        ns_smartptr<ns18IDOMWindow2> dom_window2(dom_window);
-        if (!dom_window2)
-        {
-            wxASSERT(0);
-            return false;
-        }
-        res = dom_window2->GetWindowRoot(&m_ptrs->m_event_target.p);
-        if (NS_FAILED(res))
-        {
-            wxASSERT(0);
-            return false;
-        }
+        wxASSERT(0);
+        return false;
     }
 
 
@@ -2656,7 +2588,7 @@ bool wxWebControl::AddContentHandler(wxWebContentHandler* handler,
         return false;
     
     
-    ns_smartptr<nsISupports> uri_loader;
+    ns_smartptr<nsIURILoader> uri_loader;
     
     nsIID iid = NS_ISUPPORTS_IID;
     service_mgr->GetServiceByContractID("@mozilla.org/uriloader;1",
@@ -2665,30 +2597,12 @@ bool wxWebControl::AddContentHandler(wxWebContentHandler* handler,
                                         
     if (uri_loader.empty())
         return false;
-
-    ns_smartptr<nsIURILoader> uri_loader19 = uri_loader;
-    if (uri_loader19)
-    {
-        ContentListener* l = new ContentListener(handler);
-        l->AddRef(); // will be released later
-        res = uri_loader19->RegisterContentListener(static_cast<nsIURIContentListener*>(l));
-        if (NS_FAILED(res))
-            return false;
-        g_gecko_engine.AddContentListener(l);
-    }
-     else
-    {
-        ns_smartptr<ns18IURILoader> uri_loader18 = uri_loader;
-        if (uri_loader18.empty())
-            return false;
-    
-        ContentListener* l = new ContentListener(handler);
-        l->AddRef(); // will be released later
-        res = uri_loader18->RegisterContentListener(static_cast<nsIURIContentListener*>(l));
-        if (NS_FAILED(res))
-            return false;
-        g_gecko_engine.AddContentListener(l);
-    }
+    ContentListener* l = new ContentListener(handler);
+    l->AddRef(); // will be released later
+    res = uri_loader->RegisterContentListener(static_cast<nsIURIContentListener*>(l));
+    if (NS_FAILED(res))
+        return false;
+    g_gecko_engine.AddContentListener(l);
     
     return true;
 }
@@ -3380,23 +3294,13 @@ void wxWebControl::Print(bool silent)
     }
     
     InitPrintSettings();
-    
-    ns_smartptr<nsIPrintSettings18> settings18 = m_ptrs->m_print_settings;
-    if (settings18)
-    {
-        settings18->SetShowPrintProgress(PR_FALSE);
-        settings18->SetPrintSilent(silent ? PR_TRUE : PR_FALSE);
-        
-        ns_smartptr<nsIWebBrowserPrint18> web_browser_print = nsRequestInterface(m_ptrs->m_web_browser);
-        web_browser_print->Print(settings18.p, NULL);
-    }
 
-    ns_smartptr<nsIPrintSettings> settings19 = m_ptrs->m_print_settings;
-    if (settings19)
+    ns_smartptr<nsIPrintSettings> settings = m_ptrs->m_print_settings;
+    if (settings)
     {
-        settings19->SetShowPrintProgress(PR_FALSE);
-        settings19->SetPrintSilent(silent ? PR_TRUE : PR_FALSE);
-        web_browser_print->Print(settings19, NULL);
+        settings->SetShowPrintProgress(PR_FALSE);
+        settings->SetPrintSilent(silent ? PR_TRUE : PR_FALSE);
+        web_browser_print->Print(settings, NULL);
     }
     
 }
@@ -3428,51 +3332,27 @@ void wxWebControl::SetPageSettings(double page_width, double page_height,
     InitPrintSettings();
     
     
-    ns_smartptr<nsIPrintSettings18> settings18 = m_ptrs->m_print_settings;
-    if (settings18)
+    ns_smartptr<nsIPrintSettings> settings = m_ptrs->m_print_settings;
+    if (settings)
     {
         // if the page width is greater than the page height,
         // set the proper orientation
-        settings18->SetOrientation(settings18->kPortraitOrientation);
+        settings->SetOrientation(settings->kPortraitOrientation);
         if (page_width > page_height)
         {
             double t = page_width;
             page_width = page_height;
             page_height = t;
 
-            settings18->SetOrientation(settings18->kLandscapeOrientation);
+            settings->SetOrientation(settings->kLandscapeOrientation);
         }
 
-        settings18->SetPaperWidth(page_width);
-        settings18->SetPaperHeight(page_height);
-        settings18->SetMarginLeft(left_margin);
-        settings18->SetMarginRight(right_margin);
-        settings18->SetMarginTop(top_margin);
-        settings18->SetMarginBottom(bottom_margin);
-    }
-    
-    
-    ns_smartptr<nsIPrintSettings> settings19 = m_ptrs->m_print_settings;
-    if (settings19)
-    {
-        // if the page width is greater than the page height,
-        // set the proper orientation
-        settings19->SetOrientation(settings19->kPortraitOrientation);
-        if (page_width > page_height)
-        {
-            double t = page_width;
-            page_width = page_height;
-            page_height = t;
-
-            settings19->SetOrientation(settings19->kLandscapeOrientation);
-        }
-
-        settings19->SetPaperWidth(page_width);
-        settings19->SetPaperHeight(page_height);
-        settings19->SetMarginLeft(left_margin);
-        settings19->SetMarginRight(right_margin);
-        settings19->SetMarginTop(top_margin);
-        settings19->SetMarginBottom(bottom_margin);
+        settings->SetPaperWidth(page_width);
+        settings->SetPaperHeight(page_height);
+        settings->SetMarginLeft(left_margin);
+        settings->SetMarginRight(right_margin);
+        settings->SetMarginTop(top_margin);
+        settings->SetMarginBottom(bottom_margin);
     }
 }
 
@@ -3501,45 +3381,22 @@ void wxWebControl::GetPageSettings(double* page_width, double* page_height,
 
 
     InitPrintSettings();
-
-
-    ns_smartptr<nsIPrintSettings18> settings18 = m_ptrs->m_print_settings;
-    if (settings18)
-    {
-        settings18->GetPaperWidth(page_width);
-        settings18->GetPaperHeight(page_height);
-        settings18->GetMarginLeft(left_margin);
-        settings18->GetMarginRight(right_margin);
-        settings18->GetMarginTop(top_margin);
-        settings18->GetMarginBottom(bottom_margin);
-        
-        // if the orientation is set, reverse the page width
-        // and page height
-        PRInt32 orientation;
-        settings18->GetOrientation(&orientation);
-        if (orientation == settings18->kLandscapeOrientation)
-        {
-            double t = *page_width;
-            *page_width = *page_height;
-            *page_height = t;
-        }
-    }
     
-    ns_smartptr<nsIPrintSettings> settings19 = m_ptrs->m_print_settings;
-    if (settings19)
+    ns_smartptr<nsIPrintSettings> settings = m_ptrs->m_print_settings;
+    if (settings)
     {
-        settings19->GetPaperWidth(page_width);
-        settings19->GetPaperHeight(page_height);
-        settings19->GetMarginLeft(left_margin);
-        settings19->GetMarginRight(right_margin);
-        settings19->GetMarginTop(top_margin);
-        settings19->GetMarginBottom(bottom_margin);
+        settings->GetPaperWidth(page_width);
+        settings->GetPaperHeight(page_height);
+        settings->GetMarginLeft(left_margin);
+        settings->GetMarginRight(right_margin);
+        settings->GetMarginTop(top_margin);
+        settings->GetMarginBottom(bottom_margin);
         
         // if the orientation is set, reverse the page width
         // and page height
         PRInt32 orientation;
-        settings19->GetOrientation(&orientation);
-        if (orientation == settings19->kLandscapeOrientation)
+        settings->GetOrientation(&orientation);
+        if (orientation == settings->kLandscapeOrientation)
         {
             double t = *page_width;
             *page_width = *page_height;

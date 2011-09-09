@@ -363,8 +363,6 @@ public:
     static void SetIgnoreCertErrors(bool ignore);
     static bool GetIgnoreCertErrors();
 
-    static bool IsVersion18();
-    
     static bool SaveRequest(
                  const wxString& uri,
                  const wxString& destination_path,
