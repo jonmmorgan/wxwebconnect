@@ -37,7 +37,7 @@ OBJECTS = \
 	webframe.o \
 	webprefs.o
 
-all: nsall.h
+all: ns_generic.h ns_xulrunner_192.h
 
 #all: libwebconnect.a
 
@@ -51,5 +51,5 @@ clean:
 $(OBJECTS): %.o : %.cpp
 	$(CPP) $(CFLAGS) $(INCLUDES) $(DEFINES) -c $<
 
-nsall.h: nsall.idl
-	$(XPIDL) -m header nsall.idl
+%.h: %.idl
+	$(XPIDL) -m header $<
