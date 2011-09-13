@@ -109,8 +109,15 @@ PRUint32 NS_CStringGetData(const nsACString& str, const char** str_data, PRBool*
 
 typedef JSString *(*JS_ValueToStringFunc)(JSContext *context, jsval val);
 extern JS_ValueToStringFunc JS_ValueToStringImpl;
+#if defined(XULRUNNER_192)
 typedef char *(*JS_GetStringBytesFunc)(JSString *str);
 extern JS_GetStringBytesFunc JS_GetStringBytesImpl;
+#elif defined(XULRUNNER_20)
+typedef char *(*JS_EncodeStringFunc)(JSContext *context, JSString *str);
+extern JS_EncodeStringFunc JS_EncodeStringImpl;
+typedef char *(*JS_freeFunc)(JSContext *context, void *p);
+extern JS_freeFunc JS_freeImpl;
+#endif
 
 
 ///////////////////////////////////////////////////////////////////////////////

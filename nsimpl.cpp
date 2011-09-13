@@ -102,7 +102,12 @@ typedef nsresult (PR_CALLBACK *GetFrozenFunctionsFunc)(XPCOMFunctionTable *func_
 
 
 JS_ValueToStringFunc JS_ValueToStringImpl;
+#if defined(XULRUNNER_192)
 JS_GetStringBytesFunc JS_GetStringBytesImpl;
+#elif defined(XULRUNNER_20)
+JS_EncodeStringFunc JS_EncodeStringImpl;
+JS_freeFunc JS_freeImpl;
+#endif
 
 
 #ifdef __WXMSW__
@@ -315,7 +320,12 @@ bool SetupJSFunctions(const char* js_dll_path)
     }
 
     GetFunctionImpl(h, JS_ValueToString);
+#if defined(XULRUNNER_192)
     GetFunctionImpl(h, JS_GetStringBytes);
+#elif defined(XULRUNNER_20)
+    GetFunctionImpl(h, JS_EncodeString);
+    GetFunctionImpl(h, JS_free);
+#endif
 
     return true;
 }

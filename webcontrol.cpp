@@ -93,8 +93,10 @@ class PluginListProvider;
 
 
 
-#ifdef XULRUNNER_192
+#if defined(XULRUNNER_192)
     #include "xulrunner_private_headers_192.h"
+#elif defined(XULRUNNER_20)
+    #include "xulrunner_private_headers_20.h"
 #endif
 
 
@@ -162,8 +164,15 @@ bool wxWebControl::ExecuteJSCode(const wxString& js_code, wxString& result)
     // XXX: Root this variable properly to prevent GC?
     JSString *jsstring = JS_ValueToStringImpl(jscontext, out);
     if (jsstring)  {
+#if defined(XULRUNNER_192)
         wxString _wxString(JS_GetStringBytesImpl(jsstring), wxConvUTF8);
         result = _wxString;
+#elif defined(XULRUNNER_20)
+        char *temp_str = JS_EncodeStringImpl(jscontext, jsstring);
+        wxString _wxString(temp_str, wxConvUTF8);
+        result = _wxString;
+        JS_freeImpl(jscontext, temp_str);
+#endif
     }
 
     return true;

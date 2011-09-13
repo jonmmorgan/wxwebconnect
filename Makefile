@@ -37,7 +37,7 @@ OBJECTS = \
 	webframe.o \
 	webprefs.o
 
-all: ns_generic.h ns_xulrunner_192.h
+all: ns_generic.h ns_xulrunner_192.h ns_xulrunner_20.h
 
 #all: libwebconnect.a
 

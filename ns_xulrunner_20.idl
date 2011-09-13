@@ -10,8 +10,8 @@ interface nsIDOMDOMConfiguration;
  * For more information on this interface, please see
  * http://www.w3.org/TR/DOM-Level-3-Core/
  */
-[scriptable, uuid(2e0e9ea1-72ab-4d9e-bdeb-ca64e1abeba4)]
-interface nsIDOM3Document : nsIDOM3Node
+[scriptable, uuid(c0568f22-b9d5-427a-9642-b6a797edc5cd)]
+interface nsIDOM3Document : nsISupports
 {
   // Introduced in DOM Level 3:
   readonly attribute DOMString       inputEncoding;
@@ -45,16 +45,30 @@ interface nsIDOM3Document : nsIDOM3Node
 //  nsIDOMWindow2
 ///////////////////////////////////////////////////////////////////////////////
 
-
 interface nsIDOMEventTarget;
 interface nsIDOMOfflineResourceList;
+interface nsIDOMBlob;
 
-
-[scriptable, uuid(73c5fa35-3add-4c87-a303-a850ccf4d65a)]
+[scriptable, uuid(efff0d88-3b94-4375-bdeb-676a847ecd7d)]
 interface nsIDOMWindow2 : nsIDOMWindow
 {
-    [noscript] readonly attribute nsIDOMEventTarget windowRoot;
-    readonly attribute nsIDOMOfflineResourceList applicationCache;
+  /**
+   * Get the window root for this window. This is useful for hooking
+   * up event listeners to this window and every other window nested
+   * in the window root.
+   */
+  [noscript] readonly attribute nsIDOMEventTarget windowRoot;
+
+  /**
+   * Get the application cache object for this window.
+   */
+  readonly attribute nsIDOMOfflineResourceList applicationCache;
+
+  /**
+   * Deprecated, but can't remove yet since we don't want to change interfaces.
+   */
+  [noscript] DOMString createBlobURL(in nsIDOMBlob blob);
+  [noscript] void revokeBlobURL(in DOMString URL);
 };
 
 
@@ -62,21 +76,53 @@ interface nsIDOMWindow2 : nsIDOMWindow
 //  nsITransfer
 ///////////////////////////////////////////////////////////////////////////////
 
-
+interface nsIURI;
+interface nsICancelable;
 interface nsIMIMEInfo;
 interface nsILocalFile;
-interface nsICancelable;
 
-[scriptable, uuid(23c51569-e9a1-4a92-adeb-3723db82ef7c)]
-interface nsITransfer : nsIWebProgressListener2
-{
-    void init(in nsIURI source,
-              in nsIURI target,
-              in AString display_name,
-              in nsIMIMEInfo mime_info,
-              in PRTime start_time,
-              in nsILocalFile temp_file,
-              in nsICancelable cancelable);
+[scriptable, uuid(3a982955-dc44-422e-8734-8462bf8d2121)]
+interface nsITransfer : nsIWebProgressListener2 {
+
+    /**
+     * Initializes the transfer with certain properties.  This function must
+     * be called prior to accessing any properties on this interface.
+     *
+     * @param aSource The source URI of the transfer. Must not be null.
+     *
+     * @param aTarget The target URI of the transfer. Must not be null.
+     *
+     * @param aDisplayName The user-readable description of the transfer.
+     *                     Can be empty.
+     *
+     * @param aMIMEInfo The MIME info associated with the target,
+     *                  including MIME type and helper app when appropriate.
+     *                  This parameter is optional.
+     *
+     * @param startTime Time when the download started (ie, when the first
+     *                  response from the server was received)
+     *                  XXX presumably wbp and exthandler do this differently
+     *
+     * @param aTempFile The location of a temporary file; i.e. a file in which
+     *                  the received data will be stored, but which is not
+     *                  equal to the target file. (will be moved to the real
+     *                  target by the caller, when the download is finished)
+     *                  May be null.
+     *
+     * @param aCancelable An object that can be used to abort the download.
+     *                    Must not be null.
+     *                    Implementations are expected to hold a strong
+     *                    reference to this object until the download is
+     *                    finished, at which point they should release the
+     *                    reference.
+     */
+    void init(in nsIURI aSource,
+              in nsIURI aTarget,
+              in AString aDisplayName,
+              in nsIMIMEInfo aMIMEInfo,
+              in PRTime startTime,
+              in nsILocalFile aTempFile,
+              in nsICancelable aCancelable);
 };
 
 
@@ -85,60 +131,199 @@ interface nsITransfer : nsIWebProgressListener2
 ///////////////////////////////////////////////////////////////////////////////
 
 
+interface nsIURI;
+interface nsIFile;
 interface nsIUTF8StringEnumerator;
-interface nsMIMEInfoHandleAction;
 interface nsIHandlerApp;
-interface nsIMutableArray;
 interface nsIArray;
+interface nsIMutableArray;
+interface nsIInterfaceRequestor;
+
 typedef long nsHandlerInfoAction;
 
-
-
-
+/**
+ * nsIHandlerInfo gives access to the information about how a given protocol
+ * scheme or MIME-type is handled.
+ */
 [scriptable, uuid(325e56a7-3762-4312-aec7-f1fcf84b4145)] 
-interface nsIHandlerInfo : nsISupports
-{
+interface nsIHandlerInfo : nsISupports {
+    /**
+     * The type of this handler info.  For MIME handlers, this is the MIME type.
+     * For protocol handlers, it's the scheme.
+     * 
+     * @return String representing the type.
+     */
+    readonly attribute ACString type;
+
+    /**
+     * A human readable description of the handler type
+     */
+    attribute AString description;
+
+    /**
+     * The application the user has said they want associated with this content
+     * type. This is not always guaranteed to be set!!
+     */
+    attribute nsIHandlerApp preferredApplicationHandler;
+
+    /**
+     * Applications that can handle this content type.
+     *
+     * The list will include the preferred handler, if any.  Elements of this
+     * array are nsIHandlerApp objects, and this attribute will always reference
+     * an array, whether or not there are any possible handlers.  If there are
+     * no possible handlers, the array will contain no elements, so just check
+     * its length (nsIArray::length) to see if there are any possible handlers.
+     */
+    readonly attribute nsIMutableArray possibleApplicationHandlers;
+
+    /**
+     * Indicates whether a default application handler exists,
+     * i.e. whether launchWithFile with action = useSystemDefault is possible
+     * and defaultDescription will contain usable information.
+     */
+    readonly attribute boolean hasDefaultHandler;
+
+    /**
+     * A pretty name description of the associated default application. Only
+     * usable if hasDefaultHandler is true.
+     */
+    readonly attribute AString defaultDescription;
+
+    /**
+     * Launches the application with the specified URI, in a way that
+     * depends on the value of preferredAction. preferredAction must be
+     * useHelperApp or useSystemDefault.
+     *  
+     * @note Only the URI scheme is used to determine how to launch.  This is
+     * essentially a pass-by-value operation.  This means that in the case of
+     * a file: URI, the handler that is registered for file: will be launched
+     * and our code will not make any decision based on the content-type or
+     * extension, though the invoked file: handler is free to do so. 
+     *
+     * @param aURI
+     *        The URI to launch this application with
+     *
+     * @param aWindowContext 
+     *        The window to parent the dialog against, and, if a web handler
+     *        is chosen, it is loaded in this window as well.  See 
+     *        nsIHandlerApp.launchWithURI for more details.
+     *
+     * @throw NS_ERROR_INVALID_ARG if preferredAction is not valid for this
+     * call. Other exceptions may be thrown.
+     */
+    void launchWithURI(in nsIURI aURI, 
+                       [optional] in nsIInterfaceRequestor aWindowContext);
+
+    /**
+     * preferredAction is how the user specified they would like to handle
+     * this content type: save to disk, use specified helper app, use OS
+     * default handler or handle using navigator; possible value constants
+     * listed below
+     */
+    attribute nsHandlerInfoAction preferredAction;
+
     const long saveToDisk = 0;
+    /**
+     * Used to indicate that we know nothing about what to do with this.  You
+     * could consider this to be not initialized.
+     */
     const long alwaysAsk = 1;
     const long useHelperApp = 2;
     const long handleInternally = 3;
     const long useSystemDefault = 4;
-    
-    readonly attribute ACString type;
-    attribute AString description;
-    attribute nsIHandlerApp preferredApplicationHandler;
-    readonly attribute nsIMutableArray possibleApplicationHandlers;
-    readonly attribute boolean hasDefaultHandler;
-    readonly attribute AString defaultDescription;
 
-    void launchWithURI(in nsIURI uri,
-                       [optional] in nsIInterfaceRequestor window_context);
-
-    attribute nsHandlerInfoAction preferredAction;
-
+    /**
+     * alwaysAskBeforeHandling: if true, we should always give the user a
+     * dialog asking how to dispose of this content.
+     */
     attribute boolean alwaysAskBeforeHandling;
 };
 
-
-[scriptable, uuid(cd7083f8-5fe9-4248-bb09-0b0e2982fde8)]
-interface nsIMIMEInfo : nsIHandlerInfo
-{
+/**
+ * nsIMIMEInfo extends nsIHandlerInfo with a bunch of information specific to
+ * MIME content-types. There is a one-to-many relationship between MIME types
+ * and file extensions. This means that a MIMEInfo object may have multiple
+ * file extensions associated with it.  However, the reverse is not true.
+ *
+ * MIMEInfo objects are generally retrieved from the MIME Service
+ * @see nsIMIMEService
+ */
+[scriptable, uuid(1c21acef-c7a1-40c6-9d40-a20480ee53a1)]
+interface nsIMIMEInfo : nsIHandlerInfo {
+    /**
+     * Gives you an array of file types associated with this type.
+     *
+     * @return Number of elements in the array.
+     * @return Array of extensions.
+     */
     nsIUTF8StringEnumerator getFileExtensions();
-    
-    void setFileExtensions(in AUTF8String extensions);
-    boolean extensionExists(in AUTF8String extension);
-    void appendExtension(in AUTF8String extension);
-    
+
+    /**
+     * Set File Extensions. Input is a comma delimited list of extensions.
+     */
+    void setFileExtensions(in AUTF8String aExtensions);
+ 
+    /**
+     * Returns whether or not the given extension is
+     * associated with this MIME info.
+     *
+     * @return TRUE if the association exists. 
+     */
+    boolean extensionExists(in AUTF8String aExtension);
+
+    /**
+     * Append a given extension to the set of extensions
+     */
+    void appendExtension(in AUTF8String aExtension);
+
+    /**
+     * Returns the first extension association in
+     * the internal set of extensions.
+     *
+     * @return The first extension.
+     */
     attribute AUTF8String primaryExtension;
+    
+    /**
+     * The MIME type of this MIMEInfo.
+     * 
+     * @return String representing the MIME type.
+     * 
+     * @deprecated  use nsIHandlerInfo::type instead.
+     */
     readonly attribute ACString MIMEType;
-    attribute PRUint32 macType;
-    attribute PRUint32 macCreator;
-    
-    boolean equals(in nsIMIMEInfo mime_info);
-    
+
+    /**
+     * Returns whether or not these two nsIMIMEInfos are logically
+     * equivalent.
+     *
+     * @returns PR_TRUE if the two are considered equal
+     */
+    boolean equals(in nsIMIMEInfo aMIMEInfo);
+
+    /** 
+     * Returns a list of nsILocalHandlerApp objects containing
+     * handlers associated with this mimeinfo. Implemented per 
+     * platform using information in this object to generate the
+     * best list. Typically used for an "open with" style user 
+     * option.
+     * 
+     * @return nsIArray of nsILocalHandlerApp
+     */
     readonly attribute nsIArray possibleLocalHandlers;
-    
-    void launchWithFile(in nsIFile file);
+
+    /**
+     * Launches the application with the specified file, in a way that
+     * depends on the value of preferredAction. preferredAction must be
+     * useHelperApp or useSystemDefault.
+     *
+     * @param aFile The file to launch this application with.
+     *
+     * @throw NS_ERROR_INVALID_ARG if action is not valid for this function.
+     * Other exceptions may be thrown.
+     */
+    void launchWithFile(in nsIFile aFile);
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -146,34 +331,97 @@ interface nsIMIMEInfo : nsIHandlerInfo
 ///////////////////////////////////////////////////////////////////////////////
 
 
-interface nsIDOMHTMLFormElement;
+interface nsIControllers;
+interface nsIDOMFileList;
+interface nsIDOMValidityState;
 
-[scriptable, uuid(a6cf9093-15b3-11d2-932e-00805f8add32)]
+ /**
+  * The nsIDOMHTMLInputElement interface is the interface to a [X]HTML
+  * input element.
+  *
+  * This interface is trying to follow the DOM Level 2 HTML specification:
+  * http://www.w3.org/TR/DOM-Level-2-HTML/
+  *
+  * with changes from the work-in-progress WHATWG HTML specification:
+  * http://www.whatwg.org/specs/web-apps/current-work/
+  */
+
+[scriptable, uuid(0805059d-f18f-4095-ae6b-0bf6df80b7b8)]
 interface nsIDOMHTMLInputElement : nsIDOMHTMLElement
 {
-    attribute DOMString defaultValue;
-    attribute boolean defaultChecked;
-    readonly attribute nsIDOMHTMLFormElement form;
-    attribute DOMString accept;
-    attribute DOMString accessKey;
-    attribute DOMString align;
-    attribute DOMString alt;
-    attribute boolean checked;
-    attribute boolean disabled;
-    attribute long maxLength;
-    attribute DOMString name;
-    attribute boolean readOnly;
-    attribute unsigned long size;
-    attribute DOMString src;
-    attribute long tabIndex;
-    attribute DOMString type;
-    attribute DOMString useMap;
-    attribute DOMString value;
-    
-    void blur();
-    void focus();
-    void select();
-    void click();
+           attribute DOMString             accept;
+           attribute DOMString             alt;
+
+           attribute DOMString             autocomplete;
+           attribute boolean               autofocus;
+           attribute boolean               defaultChecked;
+           attribute boolean               checked;
+           attribute boolean               disabled;
+  readonly attribute nsIDOMHTMLFormElement form;
+           attribute DOMString             formAction;
+           attribute DOMString             formEnctype;
+           attribute DOMString             formMethod;
+           attribute boolean               formNoValidate;
+           attribute DOMString             formTarget;
+
+  readonly attribute nsIDOMFileList        files;
+
+           attribute boolean               indeterminate;
+
+  readonly attribute nsIDOMHTMLElement     list;
+           attribute long                  maxLength;
+
+           attribute boolean               multiple;
+           attribute DOMString             name;
+
+           attribute DOMString             pattern;
+           attribute DOMString             placeholder;
+           attribute boolean               readOnly;
+           attribute boolean               required;
+
+           attribute DOMString             accessKey;
+           attribute DOMString             align;
+
+           attribute unsigned long         size;
+           attribute DOMString             src;
+
+           attribute DOMString             type;
+           attribute DOMString             defaultValue;
+           attribute DOMString             value;
+
+  // The following lines are parte of the constraint validation API, see:
+  // http://www.whatwg.org/specs/web-apps/current-work/#the-constraint-validation-api
+  readonly attribute boolean             willValidate;
+  readonly attribute nsIDOMValidityState validity;
+  readonly attribute DOMString           validationMessage;
+  boolean checkValidity();
+  void setCustomValidity(in DOMString error);
+
+  void select();
+           attribute long                  selectionStart;
+           attribute long                  selectionEnd;
+  void setSelectionRange(in long selectionStart, in long selectionEnd);
+          
+
+           attribute long                  tabIndex;
+           attribute DOMString             useMap;
+  readonly attribute nsIControllers        controllers;	
+	readonly attribute long                  textLength;
+
+  void mozGetFileNameArray([optional] out unsigned long aLength,
+                           [array,size_is(aLength), retval] out wstring aFileNames);
+  void mozSetFileNameArray([array,size_is(aLength)] in wstring aFileNames,
+                           in unsigned long aLength);
+
+    /**
+   * This non-standard method prevents to check types manually to know if the
+   * element is a text field.
+   */
+  boolean mozIsTextField(in boolean aExcludePassword);
+
+  void blur();
+  void focus();
+  void click();
 };
 
 
@@ -182,102 +430,153 @@ interface nsIDOMHTMLInputElement : nsIDOMHTMLElement
 //  nsIDOMHTMLButtonElement
 ///////////////////////////////////////////////////////////////////////////////
 
+interface nsIDOMValidityState;
 
-interface nsIDOMHTMLFormElement;
-
-
-[scriptable, uuid(a6cf9095-15b3-11d2-932e-00805f8add32)]
+[scriptable, uuid(bcae78a1-9f9b-46bf-abb5-a3fe410d97ae)]
 interface nsIDOMHTMLButtonElement : nsIDOMHTMLElement
 {
-    readonly attribute nsIDOMHTMLFormElement form;
-    attribute DOMString accessKey;
-    attribute boolean disabled;
-    attribute DOMString name;
-    attribute long tabIndex;
-    [noscript] readonly attribute DOMString type;
-    attribute DOMString value;
+           attribute boolean               autofocus;
+           attribute boolean               disabled;
+  readonly attribute nsIDOMHTMLFormElement form;
+           attribute DOMString             formAction;
+           attribute DOMString             formEnctype;
+           attribute DOMString             formMethod;
+           attribute boolean               formNoValidate;
+           attribute DOMString             formTarget;
+
+           attribute DOMString             name;
+           attribute DOMString             type;
+           attribute DOMString             value;
+
+           
+           attribute DOMString             accessKey;
+           attribute long                  tabIndex;
+  void                      blur();
+  void                      focus();
+  void                      click();
+
+  // The following lines are parte of the constraint validation API, see:
+  // http://www.whatwg.org/specs/web-apps/current-work/#the-constraint-validation-api
+  readonly attribute boolean             willValidate;
+  readonly attribute nsIDOMValidityState validity;
+  readonly attribute DOMString           validationMessage;
+  boolean checkValidity();
+  void setCustomValidity(in DOMString error);
 };
+
+interface nsIDOMHTMLFormElement;
 
 ///////////////////////////////////////////////////////////////////////////////
 //  nsIDOMHTMLAnchorElement
 ///////////////////////////////////////////////////////////////////////////////
 
 
-[scriptable, uuid(a6cf90aa-15b3-11d2-932e-00805f8add32)]
+
+[scriptable, uuid(4e237175-3628-4dc8-892f-5270edc3c71a)]
 interface nsIDOMHTMLAnchorElement : nsIDOMHTMLElement
 {
-    attribute DOMString accessKey;
-    attribute DOMString charset;
-    attribute DOMString coords;
-    attribute DOMString href;
-    attribute DOMString hreflang;
-    attribute DOMString name;
-    attribute DOMString rel;
-    attribute DOMString rev;
-    attribute DOMString shape;
-    attribute long tabIndex;
-    attribute DOMString target;
-    attribute DOMString type;
+           attribute DOMString        href;
+           attribute DOMString        target;
 
-    void blur();
-    void focus();
+           attribute DOMString        ping;
+
+           attribute DOMString        rel;
+           attribute DOMString        hreflang;
+           attribute DOMString        type;
+
+  /**
+   * An alias for the textContent attribute.
+   */
+  [Null(Stringify)]
+           attribute DOMString        text;
+
+  // URL decomposition IDL attributes
+           attribute DOMString        protocol;
+           attribute DOMString        host;
+           attribute DOMString        hostname;
+           attribute DOMString        port;
+           attribute DOMString        pathname;
+           attribute DOMString        search;
+           attribute DOMString        hash;
+
+
+           attribute DOMString        accessKey;
+           attribute DOMString        charset;
+           attribute DOMString        coords;
+           attribute DOMString        name;
+           attribute DOMString        rev;
+           attribute DOMString        shape;
+           attribute long             tabIndex;
+
+  DOMString                 toString();
+  void                      blur();
+  void                      focus();
 };
-
 
 
 ///////////////////////////////////////////////////////////////////////////////
 //  nsIDOMHTMLSelectElement
 ///////////////////////////////////////////////////////////////////////////////
 
-
-interface nsIDOMHTMLFormElement;
+interface nsIDOMValidityState;
 interface nsIDOMHTMLOptionsCollection;
 
-[scriptable, uuid(a6cf9090-15b3-11d2-932e-00805f8add32)]
+[scriptable, uuid(e3c6d960-972c-4a5e-a8f4-6ca65d578abf)]
 interface nsIDOMHTMLSelectElement : nsIDOMHTMLElement
 {
-    readonly attribute DOMString type;
-    attribute long selectedIndex;
-    attribute DOMString value;
-    attribute unsigned long length;
-    readonly attribute nsIDOMHTMLFormElement form;
-    readonly attribute nsIDOMHTMLOptionsCollection options;
-    attribute boolean disabled;
-    attribute boolean multiple;
-    attribute DOMString name;
-    attribute long size;
-    attribute long tabIndex;
-    
-    void add(in nsIDOMHTMLElement element,
-             in nsIDOMHTMLElement before)
-             raises(DOMException);
-    
-    void remove(in long index);
-    void blur();
-    void focus();
-};
+           attribute boolean                     autofocus;
+           attribute boolean                     disabled;
+  readonly attribute nsIDOMHTMLFormElement       form;
+           attribute boolean                     multiple;
+           attribute DOMString                   name;
+           attribute long                        size;
 
+  readonly attribute DOMString                   type;
+
+  readonly attribute nsIDOMHTMLOptionsCollection options;
+           attribute unsigned long               length;
+  nsIDOMNode                item(in unsigned long index);
+  nsIDOMNode                namedItem(in DOMString name);
+  void                      add(in nsIDOMHTMLElement element, 
+                                in nsIDOMHTMLElement before)
+                                                     raises(DOMException);   
+  void                      remove(in long index);
+
+           attribute long                  selectedIndex;
+           attribute DOMString             value;
+
+           attribute long                  tabIndex;
+  void                      blur();
+  void                      focus();
+
+  // The following lines are parte of the constraint validation API, see:
+  // http://www.whatwg.org/specs/web-apps/current-work/#the-constraint-validation-api
+  readonly attribute boolean             willValidate;
+  readonly attribute nsIDOMValidityState validity;
+  readonly attribute DOMString           validationMessage;
+  boolean checkValidity();
+  void setCustomValidity(in DOMString error);
+};
 
 ///////////////////////////////////////////////////////////////////////////////
 //  nsIDOMHTMLOptionElement
 ///////////////////////////////////////////////////////////////////////////////
 
-
-interface nsIDOMHTMLFormElement;
-
-
-[scriptable, uuid(a6cf9092-15b3-11d2-932e-00805f8add32)]
+[scriptable, uuid(611d00f5-1eb8-4571-b995-2a2019d2d11c)]
 interface nsIDOMHTMLOptionElement : nsIDOMHTMLElement
 {
-    readonly attribute nsIDOMHTMLFormElement form;
-    attribute boolean defaultSelected;
-    readonly attribute DOMString text;
-    readonly attribute long index;
-    attribute boolean disabled;
-    attribute DOMString label;
-    attribute boolean selected;
-    attribute DOMString value;
+           attribute boolean               disabled;
+  readonly attribute nsIDOMHTMLFormElement form;
+           attribute DOMString             label;
+           attribute boolean               defaultSelected;
+           attribute boolean               selected;
+           attribute DOMString             value;
+
+           attribute DOMString             text;
+  readonly attribute long                  index;
 };
+
+
 
 ///////////////////////////////////////////////////////////////////////////////
 //  nsIPrincipal
@@ -296,7 +595,11 @@ interface nsIPrincipal : nsISupports //nsISerializable
 //  nsIScriptSecurityManager
 ///////////////////////////////////////////////////////////////////////////////
 
-[scriptable, uuid(f8e350b9-9f31-451a-8c8f-d10fea26b780)]
+interface nsIURI;
+interface nsIChannel;
+native jsid(jsid);
+
+[scriptable, uuid(50eda256-4dd2-4c7c-baed-96983910af9f)]
 interface nsIScriptSecurityManager : nsIXPCSecurityManager
 {
     ///////////////// Security Checks //////////////////
@@ -306,16 +609,8 @@ interface nsIScriptSecurityManager : nsIXPCSecurityManager
     [noscript] void checkPropertyAccess(in JSContextPtr aJSContext,
                                         in JSObjectPtr aJSObject,
                                         in string aClassName,
-                                        in JSVal aProperty,
+                                        in jsid aProperty,
                                         in PRUint32 aAction);
-
-    /**
-     * Checks whether the running script is allowed to connect to aTargetURI
-     */
-    [noscript] void checkConnect(in JSContextPtr aJSContext,
-                                 in nsIURI aTargetURI,
-                                 in string aClassName,
-                                 in string aProperty);
 
     /**
      * Check that the script currently running in context "cx" can load "uri".
@@ -447,7 +742,7 @@ interface nsIScriptSecurityManager : nsIXPCSecurityManager
     /**
      * Return the all-powerful system principal.
      */
-    [noscript] nsIPrincipal getSystemPrincipal();
+    nsIPrincipal getSystemPrincipal();
 
     /**
      * Return a principal with the specified certificate fingerprint, subject
@@ -574,6 +869,29 @@ interface nsIScriptSecurityManager : nsIXPCSecurityManager
     [noscript,notxpcom] nsIPrincipal getCxSubjectPrincipal(in JSContextPtr cx);
     [noscript,notxpcom] nsIPrincipal getCxSubjectPrincipalAndFrame(in JSContextPtr cx,
                                                                    out JSStackFramePtr fp);
+
+    /**
+     * If no scripted code is running "above" (or called from) fp, then
+     * instead of looking at cx->globalObject, we will return |principal|.
+     * This function only affects |cx|. If someone pushes another context onto
+     * the context stack, then it supersedes this call.
+     * NOTE: If |fp| is non-null popContextPrincipal must be called before fp
+     * has finished executing.
+     *
+     * @param cx The context to clamp.
+     * @param fp The frame pointer to clamp at. May be 'null'.
+     * @param principal The principal to clamp to.
+     */
+    [noscript] void pushContextPrincipal(in JSContextPtr cx,
+                                         in JSStackFramePtr fp,
+                                         in nsIPrincipal principal);
+
+    /**
+     * Removes a clamp set by pushContextPrincipal from cx. This must be
+     * called in a stack-like fashion (e.g., given two contexts |a| and |b|,
+     * it is not legal to do: push(a) push(b) pop(a)).
+     */
+    [noscript] void popContextPrincipal(in JSContextPtr cx);
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -581,18 +899,57 @@ interface nsIScriptSecurityManager : nsIXPCSecurityManager
 ///////////////////////////////////////////////////////////////////////////////
 
 
-typedef long nsCacheStoragePolicy;
+interface nsISimpleEnumerator;
+interface nsICacheListener;
 interface nsICacheSession;
 interface nsICacheVisitor;
+interface nsIEventTarget;
+typedef long nsCacheStoragePolicy;
 
-[scriptable, uuid(de114eb4-29fc-4959-b2f7-2d03eb9bc771)]
+[scriptable, uuid(14dbe1e9-f3bc-45af-92f4-2c574fcd4e39)]
 interface nsICacheService : nsISupports
 {
-    nsICacheSession createSession(in string clientID,
-                        in nsCacheStoragePolicy storagePolicy,
-                        in boolean streamBased);
+    /**
+     * Create a cache session
+     *
+     * A cache session represents a client's access into the cache.  The cache
+     * session is not "owned" by the cache service.  Hence, it is possible to
+     * create duplicate cache sessions.  Entries created by a cache session
+     * are invisible to other cache sessions, unless the cache sessions are
+     * equivalent.
+     *
+     * @param clientID - Specifies the name of the client using the cache.
+     * @param storagePolicy - Limits the storage policy for all entries
+     *   accessed via the returned session.  As a result, devices excluded
+     *   by the storage policy will not be searched when opening entries
+     *   from the returned session.
+     * @param streamBased - Indicates whether or not the data being cached
+     *   can be represented as a stream.  The storagePolicy must be 
+     *   consistent with the value of this field.  For example, a non-stream-
+     *   based cache entry can only have a storage policy of STORE_IN_MEMORY.
+     * @return new cache session.
+     */
+    nsICacheSession createSession(in string                 clientID,
+                                  in nsCacheStoragePolicy   storagePolicy,
+                                  in boolean                streamBased);
+
+    /**
+     * Visit entries stored in the cache.  Used to implement about:cache.
+     */
     void visitEntries(in nsICacheVisitor visitor);
-    void evictEntries(in nsCacheStoragePolicy storagePolicy);
+
+    /**
+     * Evicts all entries in all devices implied by the storage policy.
+     *
+     * @note This function may evict some items but will throw if it fails to evict
+     *       everything.
+     */
+    void evictEntries(in nsCacheStoragePolicy  storagePolicy);
+
+    /**
+     * Event target which is used for I/O operations
+     */
+    readonly attribute nsIEventTarget cacheIOTarget;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -613,7 +970,7 @@ interface nsIInputStream;
  * @created         8/Jun/2000
  * @author          Makoto Kato [m_kato@ga2.so-net.ne.jp]
  */
-[scriptable, uuid(1ea19c6c-c59f-4fd7-9fc7-151e946baca0)]
+[scriptable, uuid(f36ee324-5c1c-437f-ba10-2b4db7a18031)]
 interface nsIScriptableUnicodeConverter : nsISupports
 {
   /**
@@ -646,7 +1003,7 @@ interface nsIScriptableUnicodeConverter : nsISupports
    * called.
    */
   void convertToByteArray(in AString aString,
-                          out unsigned long aLen,
+                          [optional] out unsigned long aLen,
                           [array, size_is(aLen),retval] out octet aData);
 
   /**
@@ -663,8 +1020,16 @@ interface nsIScriptableUnicodeConverter : nsISupports
    *        The requested charset is not supported.
    */
   attribute string charset;
-};
 
+  /**
+   * Internal use
+   *
+   * When this attribute is set, all charsets may be accessed.
+   * When it is not set (the default), charsets with the isXSSVulnerable flag
+   *  may not be accessed
+   */
+  attribute boolean isInternal;
+};
 
 
 
@@ -673,20 +1038,143 @@ interface nsIScriptableUnicodeConverter : nsISupports
 ///////////////////////////////////////////////////////////////////////////////
 
 
+interface nsIInterfaceRequestor;
 interface nsIWebBrowserChrome;
 interface nsIURIContentListener;
 interface nsIDOMWindow;
 interface nsIWeakReference;
 
-[scriptable, uuid(69e5df00-7b8b-11d3-af61-00a024ffc08c)]
+/**
+ * The nsIWebBrowser interface is implemented by web browser objects.
+ * Embedders use this interface during initialisation to associate
+ * the new web browser instance with the embedders chrome and
+ * to register any listeners. The interface may also be used at runtime
+ * to obtain the content DOM window and from that the rest of the DOM.
+ */
+[scriptable, uuid(33e9d001-caab-4ba9-8961-54902f197202)]
 interface nsIWebBrowser : nsISupports
 {
-    void addWebBrowserListener(in nsIWeakReference listener, in nsIIDRef iid);
-    void removeWebBrowserListener(in nsIWeakReference listener, in nsIIDRef iid);
-    
+    /**
+     * Registers a listener of the type specified by the iid to receive
+     * callbacks. The browser stores a weak reference to the listener
+     * to avoid any circular dependencies.
+     * Typically this method will be called to register an object
+     * to receive <CODE>nsIWebProgressListener</CODE> or 
+     * <CODE>nsISHistoryListener</CODE> notifications in which case the
+     * the IID is that of the interface.
+     *
+     * @param aListener The listener to be added.
+     * @param aIID      The IID of the interface that will be called
+     *                  on the listener as appropriate.
+     * @return          <CODE>NS_OK</CODE> for successful registration;
+     *                  <CODE>NS_ERROR_INVALID_ARG</CODE> if aIID is not
+     *                  supposed to be registered using this method;
+     *                  <CODE>NS_ERROR_FAILURE</CODE> either aListener did not
+     *                  expose the interface specified by the IID, or some
+     *                  other internal error occurred.
+     *
+     * @see removeWebBrowserListener
+     * @see nsIWeakReference
+     * @see nsIWebProgressListener
+     * @see nsISHistoryListener
+     *
+     * @return <CODE>NS_OK</CODE>, listener was successfully added;
+     *         <CODE>NS_ERROR_INVALID_ARG</CODE>, one of the arguments was
+     *         invalid or the object did not implement the interface
+     *         specified by the IID.
+     */
+    void addWebBrowserListener(in nsIWeakReference aListener, in nsIIDRef aIID);
+
+    /**
+     * Removes a previously registered listener.
+     *
+     * @param aListener The listener to be removed.
+     * @param aIID      The IID of the interface on the listener that will
+     *                  no longer be called.
+     *
+     * @return <CODE>NS_OK</CODE>, listener was successfully removed;
+     *         <CODE>NS_ERROR_INVALID_ARG</CODE> arguments was invalid or
+     *         the object did not implement the interface specified by the IID.
+     *
+     * @see addWebBrowserListener
+     * @see nsIWeakReference
+     */
+    void removeWebBrowserListener(in nsIWeakReference aListener, in nsIIDRef aIID);
+
+    /**
+     * The chrome object associated with the browser instance. The embedder
+     * must create one chrome object for <I>each</I> browser object
+     * that is instantiated. The embedder must associate the two by setting
+     * this property to point to the chrome object before creating the browser
+     * window via the browser's <CODE>nsIBaseWindow</CODE> interface. 
+     *
+     * The chrome object must also implement <CODE>nsIEmbeddingSiteWindow</CODE>.
+     *
+     * The chrome may optionally implement <CODE>nsIInterfaceRequestor</CODE>,
+     * <CODE>nsIWebBrowserChromeFocus</CODE>,
+     * <CODE>nsIContextMenuListener</CODE> and
+     * <CODE>nsITooltipListener</CODE> to receive additional notifications
+     * from the browser object.
+     *
+     * The chrome object may optionally implement <CODE>nsIWebProgressListener</CODE> 
+     * instead of explicitly calling <CODE>addWebBrowserListener</CODE> and
+     * <CODE>removeWebBrowserListener</CODE> to register a progress listener
+     * object. If the implementation does this, it must also implement
+     * <CODE>nsIWeakReference</CODE>.
+     * 
+     * @note The implementation should not refcount the supplied chrome
+     *       object; it should assume that a non <CODE>nsnull</CODE> value is
+     *       always valid. The embedder must explicitly set this value back
+     *       to nsnull if the chrome object is destroyed before the browser
+     *       object.
+     *
+     * @see nsIBaseWindow
+     * @see nsIWebBrowserChrome
+     * @see nsIEmbeddingSiteWindow
+     * @see nsIInterfaceRequestor
+     * @see nsIWebBrowserChromeFocus
+     * @see nsIContextMenuListener
+     * @see nsITooltipListener
+     * @see nsIWeakReference
+     * @see nsIWebProgressListener
+     */
     attribute nsIWebBrowserChrome containerWindow;
+
+    /**
+     * URI content listener parent. The embedder may set this property to
+     * their own implementation if they intend to override or prevent
+     * how certain kinds of content are loaded.
+     *
+     * @note If this attribute is set to an object that implements
+     *       nsISupportsWeakReference, the implementation should get the
+     *       nsIWeakReference and hold that.  Otherwise, the implementation
+     *       should not refcount this interface; it should assume that a non
+     *       null value is always valid.  In that case, the embedder should
+     *       explicitly set this value back to null if the parent content
+     *       listener is destroyed before the browser object.
+     *
+     * @see nsIURIContentListener
+     */
     attribute nsIURIContentListener parentURIContentListener;
+
+    /**
+     * The top-level DOM window. The embedder may walk the entire
+     * DOM starting from this value.
+     *
+     * @see nsIDOMWindow
+     */
     readonly attribute nsIDOMWindow contentDOMWindow;
+
+    /**
+     * Whether this web browser is active. Active means that it's visible
+     * enough that we want to avoid certain optimizations like discarding
+     * decoded image data and throttling the refresh driver. In Firefox,
+     * this corresponds to the visible tab.
+     *
+     * Defaults to true. For optimal performance, set it to false when
+     * appropriate.
+     */
+    attribute boolean isActive;
 };
 
 
@@ -723,8 +1211,10 @@ interface nsILayoutHistoryState;
 interface nsISecureBrowserUI;
 interface nsIDOMStorage;
 interface nsIPrincipal;
+interface nsIWebBrowserPrint;
+interface nsIVariant;
 
-[scriptable, uuid(8ADFB831-1053-4A19-884D-BCDAD7277B4B)]
+[scriptable, uuid(98cdbcc4-2d81-4191-a63f-b6c52085edbc)]
 interface nsIDocShell : nsISupports
 {
   /**
@@ -822,6 +1312,13 @@ interface nsIDocShell : nsISupports
                               in boolean firstParty,
                               out nsIDocShell aDocShell,
                               out nsIRequest aRequest);
+
+  /**
+   * Do either a history.pushState() or history.replaceState() operation,
+   * depending on the value of aReplace.
+   */
+  void addState(in nsIVariant aData, in DOMString aTitle,
+                in DOMString aURL, in boolean aReplace);
 
   /**
    * Creates a DocShellLoadInfo object that you can manipulate and then pass
@@ -993,9 +1490,10 @@ interface nsIDocShell : nsISupports
   /**
    * Load commands for the document 
    */
-  const unsigned long LOAD_CMD_NORMAL  = 0x1; // Normal load
-  const unsigned long LOAD_CMD_RELOAD  = 0x2; // Reload
-  const unsigned long LOAD_CMD_HISTORY = 0x4; // Load from history
+  const unsigned long LOAD_CMD_NORMAL  = 0x1;   // Normal load
+  const unsigned long LOAD_CMD_RELOAD  = 0x2;   // Reload
+  const unsigned long LOAD_CMD_HISTORY = 0x4;   // Load from history
+  const unsigned long LOAD_CMD_PUSHSTATE = 0x8; // History.pushState()
 
   readonly attribute unsigned long busyFlags;
 
@@ -1084,17 +1582,23 @@ interface nsIDocShell : nsISupports
    * If it doesn't already exist, a new one will be created.
    *
    * @param uri the uri of the storage object to retrieve
+   * @param documentURI new storage will be created with reference to this
+   *                    document.documentURI that will appear in storage event
    */
-  nsIDOMStorage getSessionStorageForURI(in nsIURI uri);
+  nsIDOMStorage getSessionStorageForURI(in nsIURI uri,
+                                        in DOMString documentURI);
 
   /*
    * Retrieves the WebApps session storage object for the supplied principal.
    *
    * @param principal returns a storage for this principal
+   * @param documentURI new storage will be created with reference to this
+   *                    document.documentURI that will appear in storage event
    * @param create If true and a session storage object doesn't
    *               already exist, a new one will be created.
    */
   nsIDOMStorage getSessionStorageForPrincipal(in nsIPrincipal principal,
+                                              in DOMString documentURI,
                                               in boolean create);
 
   /*
@@ -1143,4 +1647,40 @@ interface nsIDocShell : nsISupports
    * and should be treated accordingly.
    **/
   attribute boolean isOffScreenBrowser;    
+
+  /**
+   * If the current content viewer isn't initialized for print preview,
+   * it is replaced with one which is and to which an about:blank document
+   * is loaded.
+   */
+  readonly attribute nsIWebBrowserPrint printPreview;
+
+  /**
+   * Whether this docshell can execute scripts based on its hierarchy.
+   * The rule of thumb here is that we disable js if this docshell or any
+   * of its parents disallow scripting, unless the only reason for js being
+   * disabled in this docshell is a parent docshell having a document that
+   * is in design mode.  In that case, we explicitly allow scripting on the
+   * current docshell.
+   */
+  readonly attribute boolean canExecuteScripts;
+
+  /**
+   * Sets whether a docshell is active. An active docshell is one that is
+   * visible, and thus is not a good candidate for certain optimizations
+   * like image frame discarding. Docshells are active unless told otherwise.
+   */
+  attribute boolean isActive;
+
+  /**
+   * The ID of the docshell in the session history.
+   */
+  readonly attribute unsigned long long historyID;
+
+  /**
+   * Sets whether a docshell is an app tab. An app tab docshell may behave
+   * differently than a non-app tab docshell in some cases, such as when
+   * handling link clicks. Docshells are not app tabs unless told otherwise.
+   */
+  attribute boolean isAppTab;
 };
