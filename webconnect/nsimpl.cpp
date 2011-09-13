@@ -169,7 +169,7 @@ static void GetDependentLibraryList(const char* xpcom_dll_path, wxArrayString& a
     function_name##Impl = (function_name##Func)LoadFunctionFromLibrary(handle, #function_name); \
     if (!function_name##Impl) \
     { \
-        fprintf(stderr, "Unable to find function_name##Impl"); \
+        fprintf(stderr, "Unable to find %sImpl.\n", #function_name); \
         return false; \
     } \
 }
@@ -192,7 +192,7 @@ nsresult XPCOMGlueStartup(const char* xpcom_dll_path)
             // XXX: It is possible to get the actual error message with
             // GetLastError() and FormatMessage(), but I'm too lazy to do it
             // right now.
-            fprintf(stderr, "LoadLibraryExA %s failed!\n", deplibs.Item(i).mbc_str());
+            fprintf(stderr, "LoadLibraryExA %s failed with errno %u!\n", deplibs.Item(i).mbc_str(), GetLastError());
         }
         if ((deplibs.Item(i).find(wxT("mozjs")) != wxString::npos) ||
                 (deplibs.Item(i).AfterLast(XPCOM_PATH_SEPARATOR).find(wxT("js")) == 0))
@@ -210,7 +210,7 @@ nsresult XPCOMGlueStartup(const char* xpcom_dll_path)
     
     if (!f)
     {
-        fprintf(stderr, "LoadLibraryExA %s failed!\n", xpcom_dll_path);
+        fprintf(stderr, "LoadLibraryExA %s failed with errno %u!\n", xpcom_dll_path, GetLastError());
         FreeLibrary(h);
         return NS_ERROR_FAILURE;
     }
