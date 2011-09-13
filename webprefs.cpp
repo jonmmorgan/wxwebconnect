@@ -26,9 +26,9 @@ wxWebPreferences::wxWebPreferences()
 {
 }
 
-bool wxWebPreferences::GetBoolPref(const wxString& name)
+bool wxWebPreferences::GetBoolPref(const wxString& branch_name, const wxString& name)
 {
-    ns_smartptr<nsIPref> prefs = nsGetPrefService();
+    ns_smartptr<nsIPrefBranch> prefs = nsGetPrefBranch(branch_name);
     wxASSERT(!prefs.empty());
     if (prefs.empty())
         return false;
@@ -40,11 +40,11 @@ bool wxWebPreferences::GetBoolPref(const wxString& name)
     return (val == PR_TRUE ? true : false);
 }
 
-wxString wxWebPreferences::GetStringPref(const wxString& name)
+wxString wxWebPreferences::GetStringPref(const wxString& branch_name, const wxString& name)
 {
     wxString val;
     
-    ns_smartptr<nsIPref> prefs = nsGetPrefService();
+    ns_smartptr<nsIPrefBranch> prefs = nsGetPrefBranch(branch_name);
     wxASSERT(!prefs.empty());
     if (prefs.empty())
         return val;
@@ -63,9 +63,9 @@ wxString wxWebPreferences::GetStringPref(const wxString& name)
     return val;
 }
 
-int wxWebPreferences::GetIntPref(const wxString& name)
+int wxWebPreferences::GetIntPref(const wxString& branch_name, const wxString& name)
 {
-    ns_smartptr<nsIPref> prefs = nsGetPrefService();
+    ns_smartptr<nsIPrefBranch> prefs = nsGetPrefBranch(branch_name);
     wxASSERT(!prefs.empty());
     if (prefs.empty())
         return 0;
@@ -78,27 +78,27 @@ int wxWebPreferences::GetIntPref(const wxString& name)
     return val;
 }
 
-void wxWebPreferences::SetIntPref(const wxString& name, int value)
+void wxWebPreferences::SetIntPref(const wxString& branch_name, const wxString& name, int value)
 {
-    ns_smartptr<nsIPref> prefs = nsGetPrefService();
+    ns_smartptr<nsIPrefBranch> prefs = nsGetPrefBranch(branch_name);
     if (prefs.empty())
         return;
         
     prefs->SetIntPref((const char*)name.mbc_str(), value);
 }
 
-void wxWebPreferences::SetStringPref(const wxString& name, const wxString& value)
+void wxWebPreferences::SetStringPref(const wxString& branch_name, const wxString& name, const wxString& value)
 {
-    ns_smartptr<nsIPref> prefs = nsGetPrefService();
+    ns_smartptr<nsIPrefBranch> prefs = nsGetPrefBranch(branch_name);
     if (prefs.empty())
         return;
 
     prefs->SetCharPref((const char*)name.mbc_str(), (const char*)value.mbc_str());
 }
 
-void wxWebPreferences::SetBoolPref(const wxString& name, bool value)
+void wxWebPreferences::SetBoolPref(const wxString& branch_name, const wxString& name, bool value)
 {
-    ns_smartptr<nsIPref> prefs = nsGetPrefService();
+    ns_smartptr<nsIPrefBranch> prefs = nsGetPrefBranch(branch_name);
     if (prefs.empty())
         return;
 

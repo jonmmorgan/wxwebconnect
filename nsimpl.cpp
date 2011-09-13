@@ -574,21 +574,29 @@ ns_smartptr<nsIWindowWatcher> nsGetWindowWatcherService()
     return result;
 }
 
-ns_smartptr<nsIPref> nsGetPrefService()
+ns_smartptr<nsIPrefService> nsGetPrefService()
 {
     ns_smartptr<nsIServiceManager> service_mgr;
-    ns_smartptr<nsIPref> result;
+    ns_smartptr<nsIPrefService> result;
     nsresult res;
     
     res = NS_GetServiceManager(&service_mgr.p);
     if (NS_FAILED(res))
         return result;
     
-    nsIID iid = NS_IPREF_IID;
-    service_mgr->GetServiceByContractID("@mozilla.org/preferences;1",
+    nsIID iid = NS_IPREFSERVICE_IID;
+    service_mgr->GetServiceByContractID(NS_PREFSERVICE_CONTRACTID,
                                         iid,
                                         (void**)&result.p);
     
+    return result;
+}
+
+ns_smartptr<nsIPrefBranch> nsGetPrefBranch(const wxString& branch_name)
+{
+    ns_smartptr<nsIPrefService> pref_service = nsGetPrefService();
+    ns_smartptr<nsIPrefBranch> result;
+    pref_service->GetBranch(branch_name.mbc_str(), &result.p);
     return result;
 }
 

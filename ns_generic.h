@@ -9314,628 +9314,539 @@ NS_IMETHODIMP nsJSContextStack::Push(JSContext * contxt)
 /* End of implementation class template. */
 #endif
 
-class nsIFileSpec; /* forward declaration */
 
-class nsILocalFile; /* forward declaration */
+/* starting interface:    nsIPrefBranch */
+#define NS_IPREFBRANCH_IID_STR "56c35506-f14b-11d3-99d3-ddbfac2ccf65"
 
-class nsIPrefBranch; /* forward declaration */
+#define NS_IPREFBRANCH_IID \
+  {0x56c35506, 0xf14b, 0x11d3, \
+    { 0x99, 0xd3, 0xdd, 0xbf, 0xac, 0x2c, 0xcf, 0x65 }}
 
-class nsIObserver; /* forward declaration */
-
-    typedef int (*PrefChangedFunc)(const char*, void*);
-    typedef void (*PrefEnumerationFunc)(const char *, void *);
-
-/* starting interface:    nsIPref */
-#define NS_IPREF_IID_STR "a22ad7b0-ca86-11d1-a9a4-00805f8a7ac4"
-
-#define NS_IPREF_IID \
-  {0xa22ad7b0, 0xca86, 0x11d1, \
-    { 0xa9, 0xa4, 0x00, 0x80, 0x5f, 0x8a, 0x7a, 0xc4 }}
-
-class NS_NO_VTABLE nsIPref : public nsISupports {
+/**
+ * The nsIPrefBranch interface is used to manipulate the preferences data. This
+ * object may be obtained from the preferences service (nsIPrefService) and
+ * used to get and set default and/or user preferences across the application.
+ *
+ * This object is created with a "root" value which describes the base point in
+ * the preferences "tree" from which this "branch" stems. Preferences are
+ * accessed off of this root by using just the final portion of the preference.
+ * For example, if this object is created with the root "browser.startup.",
+ * the preferences "browser.startup.page", "browser.startup.homepage",
+ * and "browser.startup.homepage_override" can be accessed by simply passing
+ * "page", "homepage", or "homepage_override" to the various Get/Set methods.
+ *
+ * @see nsIPrefService
+ */
+class NS_NO_VTABLE nsIPrefBranch : public nsISupports {
  public: 
 
-  NS_DEFINE_STATIC_IID_ACCESSOR(NS_IPREF_IID)
+  NS_DEFINE_STATIC_IID_ACCESSOR(NS_IPREFBRANCH_IID)
 
-  /* void readUserPrefs (in nsIFile file); */
-  NS_IMETHOD ReadUserPrefs(nsIFile *file) = 0;
+  /**
+   * Values describing the basic preference types.
+   *
+   * @see getPrefType
+   */
+  enum { PREF_INVALID = 0 };
 
-  /* void ResetPrefs (); */
-  NS_IMETHOD ResetPrefs(void) = 0;
+  enum { PREF_STRING = 32 };
 
-  /* void ResetUserPrefs (); */
-  NS_IMETHOD ResetUserPrefs(void) = 0;
+  enum { PREF_INT = 64 };
 
-  /* void savePrefFile (in nsIFile file); */
-  NS_IMETHOD SavePrefFile(nsIFile *file) = 0;
+  enum { PREF_BOOL = 128 };
 
-  /* nsIPrefBranch getBranch (in string pref_root); */
-  NS_IMETHOD GetBranch(const char *pref_root, nsIPrefBranch **_retval) = 0;
-
-  /* nsIPrefBranch getDefaultBranch (in string pref_root); */
-  NS_IMETHOD GetDefaultBranch(const char *pref_root, nsIPrefBranch **_retval) = 0;
-
-  enum { ePrefInvalid = 0 };
-
-  enum { ePrefLocked = 1 };
-
-  enum { ePrefUserset = 2 };
-
-  enum { ePrefConfig = 4 };
-
-  enum { ePrefRemote = 8 };
-
-  enum { ePrefLilocal = 16 };
-
-  enum { ePrefString = 32 };
-
-  enum { ePrefInt = 64 };
-
-  enum { ePrefBool = 128 };
-
-  enum { ePrefValuetypeMask = 224 };
-
+  /**
+   * Called to get the root on which this branch is based, such as
+   * "browser.startup."
+   */
   /* readonly attribute string root; */
   NS_IMETHOD GetRoot(char * *aRoot) = 0;
 
-  /* long GetPrefType (in string pref_name); */
-  NS_IMETHOD GetPrefType(const char *pref_name, PRInt32 *_retval) = 0;
+  /**
+   * Called to determine the type of a specific preference.
+   *
+   * @param aPrefName The preference to get the type of.
+   *
+   * @return long     A value representing the type of the preference. This
+   *                  value will be PREF_STRING, PREF_INT, or PREF_BOOL.
+   */
+  /* long getPrefType (in string aPrefName); */
+  NS_IMETHOD GetPrefType(const char *aPrefName, PRInt32 *_retval) = 0;
 
-  /* boolean GetBoolPref (in string pref_name); */
-  NS_IMETHOD GetBoolPref(const char *pref_name, PRBool *_retval) = 0;
+  /**
+   * Called to get the state of an individual boolean preference.
+   *
+   * @param aPrefName The boolean preference to get the state of.
+   *
+   * @return boolean  The value of the requested boolean preference.
+   *
+   * @see setBoolPref
+   */
+  /* boolean getBoolPref (in string aPrefName); */
+  NS_IMETHOD GetBoolPref(const char *aPrefName, PRBool *_retval) = 0;
 
-  /* void SetBoolPref (in string pref_name, in long value); */
-  NS_IMETHOD SetBoolPref(const char *pref_name, PRInt32 value) = 0;
+  /**
+   * Called to set the state of an individual boolean preference.
+   *
+   * @param aPrefName The boolean preference to set the state of.
+   * @param aValue    The boolean value to set the preference to.
+   *
+   * @return NS_OK The value was successfully set.
+   * @return Other The value was not set or is the wrong type.
+   *
+   * @see getBoolPref
+   */
+  /* void setBoolPref (in string aPrefName, in long aValue); */
+  NS_IMETHOD SetBoolPref(const char *aPrefName, PRInt32 aValue) = 0;
 
-  /* string GetCharPref (in string pref_name); */
-  NS_IMETHOD GetCharPref(const char *pref_name, char **_retval) = 0;
+  /**
+   * Called to get the state of an individual string preference.
+   *
+   * @param aPrefName The string preference to retrieve.
+   *
+   * @return string   The value of the requested string preference.
+   *
+   * @see setCharPref
+   */
+  /* string getCharPref (in string aPrefName); */
+  NS_IMETHOD GetCharPref(const char *aPrefName, char **_retval) = 0;
 
-  /* void SetCharPref (in string pref_name, in string value); */
-  NS_IMETHOD SetCharPref(const char *pref_name, const char *value) = 0;
+  /**
+   * Called to set the state of an individual string preference.
+   *
+   * @param aPrefName The string preference to set.
+   * @param aValue    The string value to set the preference to.
+   *
+   * @return NS_OK The value was successfully set.
+   * @return Other The value was not set or is the wrong type.
+   *
+   * @see getCharPref
+   */
+  /* void setCharPref (in string aPrefName, in string aValue); */
+  NS_IMETHOD SetCharPref(const char *aPrefName, const char *aValue) = 0;
 
-  /* long GetIntPref (in string pref_name); */
-  NS_IMETHOD GetIntPref(const char *pref_name, PRInt32 *_retval) = 0;
+  /**
+   * Called to get the state of an individual integer preference.
+   *
+   * @param aPrefName The integer preference to get the value of.
+   *
+   * @return long     The value of the requested integer preference.
+   *
+   * @see setIntPref
+   */
+  /* long getIntPref (in string aPrefName); */
+  NS_IMETHOD GetIntPref(const char *aPrefName, PRInt32 *_retval) = 0;
 
-  /* void SetIntPref (in string pref_name, in long value); */
-  NS_IMETHOD SetIntPref(const char *pref_name, PRInt32 value) = 0;
+  /**
+   * Called to set the state of an individual integer preference.
+   *
+   * @param aPrefName The integer preference to set the value of.
+   * @param aValue    The integer value to set the preference to.
+   *
+   * @return NS_OK The value was successfully set.
+   * @return Other The value was not set or is the wrong type.
+   *
+   * @see getIntPref
+   */
+  /* void setIntPref (in string aPrefName, in long aValue); */
+  NS_IMETHOD SetIntPref(const char *aPrefName, PRInt32 aValue) = 0;
 
-  /* void getComplexValue (in string pref_name, in nsIIDRef type, [iid_is (type), retval] out nsQIResult value); */
-  NS_IMETHOD GetComplexValue(const char *pref_name, const nsIID & type, void * *value) = 0;
+  /**
+   * Called to get the state of an individual complex preference. A complex
+   * preference is a preference which represents an XPCOM object that can not
+   * be easily represented using a standard boolean, integer or string value.
+   *
+   * @param aPrefName The complex preference to get the value of.
+   * @param aType     The XPCOM interface that this complex preference
+   *                  represents. Interfaces currently supported are:
+   *                    - nsILocalFile
+   *                    - nsISupportsString (UniChar)
+   *                    - nsIPrefLocalizedString (Localized UniChar)
+   * @param aValue    The XPCOM object into which to the complex preference 
+   *                  value should be retrieved.
+   *
+   * @return NS_OK The value was successfully retrieved.
+   * @return Other The value does not exist or is the wrong type.
+   *
+   * @see setComplexValue
+   */
+  /* void getComplexValue (in string aPrefName, in nsIIDRef aType, [iid_is (aType), retval] out nsQIResult aValue); */
+  NS_IMETHOD GetComplexValue(const char *aPrefName, const nsIID & aType, void * *aValue) = 0;
 
-  /* void setComplexValue (in string pref_name, in nsIIDRef type, in nsISupports value); */
-  NS_IMETHOD SetComplexValue(const char *pref_name, const nsIID & type, nsISupports *value) = 0;
+  /**
+   * Called to set the state of an individual complex preference. A complex
+   * preference is a preference which represents an XPCOM object that can not
+   * be easily represented using a standard boolean, integer or string value.
+   *
+   * @param aPrefName The complex preference to set the value of.
+   * @param aType     The XPCOM interface that this complex preference
+   *                  represents. Interfaces currently supported are:
+   *                    - nsILocalFile
+   *                    - nsISupportsString (UniChar)
+   *                    - nsIPrefLocalizedString (Localized UniChar)
+   * @param aValue    The XPCOM object from which to set the complex preference 
+   *                  value.
+   *
+   * @return NS_OK The value was successfully set.
+   * @return Other The value was not set or is the wrong type.
+   *
+   * @see getComplexValue
+   */
+  /* void setComplexValue (in string aPrefName, in nsIIDRef aType, in nsISupports aValue); */
+  NS_IMETHOD SetComplexValue(const char *aPrefName, const nsIID & aType, nsISupports *aValue) = 0;
 
-  /* void ClearUserPref (in string pref_name); */
-  NS_IMETHOD ClearUserPref(const char *pref_name) = 0;
+  /**
+   * Called to clear a user set value from a specific preference. This will, in
+   * effect, reset the value to the default value. If no default value exists
+   * the preference will cease to exist.
+   *
+   * @param aPrefName The preference to be cleared.
+   *
+   * @note
+   * This method does nothing if this object is a default branch.
+   *
+   * @return NS_OK The user preference was successfully cleared.
+   * @return Other The preference does not exist or have a user set value.
+   */
+  /* void clearUserPref (in string aPrefName); */
+  NS_IMETHOD ClearUserPref(const char *aPrefName) = 0;
 
-  /* boolean PrefIsLocked (in string pref_name); */
-  NS_IMETHOD PrefIsLocked(const char *pref_name, PRBool *_retval) = 0;
+  /**
+   * Called to lock a specific preference. Locking a preference will cause the
+   * preference service to always return the default value regardless of
+   * whether there is a user set value or not.
+   *
+   * @param aPrefName The preference to be locked.
+   *
+   * @note
+   * This method can be called on either a default or user branch but, in
+   * effect, always operates on the default branch.
+   *
+   * @return NS_OK The preference was successfully locked.
+   * @return Other The preference does not exist or an error occurred.
+   *
+   * @see unlockPref
+   */
+  /* void lockPref (in string aPrefName); */
+  NS_IMETHOD LockPref(const char *aPrefName) = 0;
 
-  /* void lockPref (in string pref_name); */
-  NS_IMETHOD LockPref(const char *pref_name) = 0;
+  /**
+   * Called to check if a specific preference has a user value associated to
+   * it.
+   *
+   * @param aPrefName The preference to be tested.
+   *
+   * @note
+   * This method can be called on either a default or user branch but, in
+   * effect, always operates on the user branch.
+   *
+   * @note
+   * If a preference was manually set to a value that equals the default value,
+   * then the preference no longer has a user set value, i.e. it is
+   * considered reset to its default value.
+   * In particular, this method will return false for such a preference and
+   * the preference will not be saved to a file by nsIPrefService.savePrefFile.
+   *
+   * @return boolean  true  The preference has a user set value.
+   *                  false The preference only has a default value.
+   */
+  /* boolean prefHasUserValue (in string aPrefName); */
+  NS_IMETHOD PrefHasUserValue(const char *aPrefName, PRBool *_retval) = 0;
 
-  /* void unlockPref (in string pref_name); */
-  NS_IMETHOD UnlockPref(const char *pref_name) = 0;
+  /**
+   * Called to check if a specific preference is locked. If a preference is
+   * locked calling its Get method will always return the default value.
+   *
+   * @param aPrefName The preference to be tested.
+   *
+   * @note
+   * This method can be called on either a default or user branch but, in
+   * effect, always operates on the default branch.
+   *
+   * @return boolean  true  The preference is locked.
+   *                  false The preference is not locked.
+   *
+   * @see lockPref
+   * @see unlockPref
+   */
+  /* boolean prefIsLocked (in string aPrefName); */
+  NS_IMETHOD PrefIsLocked(const char *aPrefName, PRBool *_retval) = 0;
 
-  /* void resetBranch (in string starting_at); */
-  NS_IMETHOD ResetBranch(const char *starting_at) = 0;
+  /**
+   * Called to unlock a specific preference. Unlocking a previously locked 
+   * preference allows the preference service to once again return the user set
+   * value of the preference.
+   *
+   * @param aPrefName The preference to be unlocked.
+   *
+   * @note
+   * This method can be called on either a default or user branch but, in
+   * effect, always operates on the default branch.
+   *
+   * @return NS_OK The preference was successfully unlocked.
+   * @return Other The preference does not exist or an error occurred.
+   *
+   * @see lockPref
+   */
+  /* void unlockPref (in string aPrefName); */
+  NS_IMETHOD UnlockPref(const char *aPrefName) = 0;
 
-  /* void DeleteBranch (in string starting_at); */
-  NS_IMETHOD DeleteBranch(const char *starting_at) = 0;
+  /**
+   * Called to remove all of the preferences referenced by this branch.
+   *
+   * @param aStartingAt The point on the branch at which to start the deleting
+   *                    preferences. Pass in "" to remove all preferences
+   *                    referenced by this branch.
+   *
+   * @note
+   * This method can be called on either a default or user branch but, in
+   * effect, always operates on both.
+   *
+   * @return NS_OK The preference(s) were successfully removed.
+   * @return Other The preference(s) do not exist or an error occurred.
+   */
+  /* void deleteBranch (in string aStartingAt); */
+  NS_IMETHOD DeleteBranch(const char *aStartingAt) = 0;
 
-  /* void getChildList (in string starting_at, out unsigned long count, [array, size_is (count), retval] out string child_array); */
-  NS_IMETHOD GetChildList(const char *starting_at, PRUint32 *count, char ***child_array) = 0;
+  /**
+   * Returns an array of strings representing the child preferences of the
+   * root of this branch.
+   * 
+   * @param aStartingAt The point on the branch at which to start enumerating
+   *                    the child preferences. Pass in "" to enumerate all
+   *                    preferences referenced by this branch.
+   * @param aCount      Receives the number of elements in the array.
+   * @param aChildArray Receives the array of child preferences.
+   *
+   * @note
+   * This method can be called on either a default or user branch but, in
+   * effect, always operates on both.
+   *
+   * @return NS_OK The preference list was successfully retrieved.
+   * @return Other The preference(s) do not exist or an error occurred.
+   */
+  /* void getChildList (in string aStartingAt, [optional] out unsigned long aCount, [array, size_is (aCount), retval] out string aChildArray); */
+  NS_IMETHOD GetChildList(const char *aStartingAt, PRUint32 *aCount, char ***aChildArray) = 0;
 
-  /* void addObserver (in string domain, in nsIObserver observer, in boolean hold_weak); */
-  NS_IMETHOD AddObserver(const char *domain, nsIObserver *observer, PRBool hold_weak) = 0;
-
-  /* void removeObserver (in string domain, in nsIObserver observer); */
-  NS_IMETHOD RemoveObserver(const char *domain, nsIObserver *observer) = 0;
-
-  /* string CopyCharPref (in string pref); */
-  NS_IMETHOD CopyCharPref(const char *pref, char **_retval) = 0;
-
-  /* string CopyDefaultCharPref (in string pref); */
-  NS_IMETHOD CopyDefaultCharPref(const char *pref, char **_retval) = 0;
-
-  /* boolean GetDefaultBoolPref (in string pref); */
-  NS_IMETHOD GetDefaultBoolPref(const char *pref, PRBool *_retval) = 0;
-
-  /* long GetDefaultIntPref (in string pref); */
-  NS_IMETHOD GetDefaultIntPref(const char *pref, PRInt32 *_retval) = 0;
-
-  /* void SetDefaultBoolPref (in string pref, in boolean value); */
-  NS_IMETHOD SetDefaultBoolPref(const char *pref, PRBool value) = 0;
-
-  /* void SetDefaultCharPref (in string pref, in string value); */
-  NS_IMETHOD SetDefaultCharPref(const char *pref, const char *value) = 0;
-
-  /* void SetDefaultIntPref (in string pref, in long value); */
-  NS_IMETHOD SetDefaultIntPref(const char *pref, PRInt32 value) = 0;
-
-  /* wstring CopyUnicharPref (in string pref); */
-  NS_IMETHOD CopyUnicharPref(const char *pref, PRUnichar **_retval) = 0;
-
-  /* wstring CopyDefaultUnicharPref (in string pref); */
-  NS_IMETHOD CopyDefaultUnicharPref(const char *pref, PRUnichar **_retval) = 0;
-
-  /* void SetUnicharPref (in string pref, in wstring value); */
-  NS_IMETHOD SetUnicharPref(const char *pref, const PRUnichar *value) = 0;
-
-  /* void SetDefaultUnicharPref (in string pref, in wstring value); */
-  NS_IMETHOD SetDefaultUnicharPref(const char *pref, const PRUnichar *value) = 0;
-
-  /* wstring getDefaultLocalizedUnicharPref (in string pref); */
-  NS_IMETHOD GetDefaultLocalizedUnicharPref(const char *pref, PRUnichar **_retval) = 0;
-
-  /* wstring getLocalizedUnicharPref (in string pref); */
-  NS_IMETHOD GetLocalizedUnicharPref(const char *pref, PRUnichar **_retval) = 0;
-
-  /* nsIFileSpec GetFilePref (in string pref); */
-  NS_IMETHOD GetFilePref(const char *pref, nsIFileSpec **_retval) = 0;
-
-  /* void SetFilePref (in string pref, in nsIFileSpec value, in boolean set_default); */
-  NS_IMETHOD SetFilePref(const char *pref, nsIFileSpec *value, PRBool set_default) = 0;
-
-  /* nsILocalFile getFileXPref (in string pref); */
-  NS_IMETHOD GetFileXPref(const char *pref, nsILocalFile **_retval) = 0;
-
-  /* void setFileXPref (in string pref, in nsILocalFile value); */
-  NS_IMETHOD SetFileXPref(const char *pref, nsILocalFile *value) = 0;
-
-  /* [noscript] void RegisterCallback (in string domain, in PrefChangedFunc callback, in voidPtr closure); */
-  NS_IMETHOD RegisterCallback(const char *domain, PrefChangedFunc callback, void * closure) = 0;
-
-  /* [noscript] void UnregisterCallback (in string domain, in PrefChangedFunc callback, in voidPtr closure); */
-  NS_IMETHOD UnregisterCallback(const char *domain, PrefChangedFunc callback, void * closure) = 0;
-
-  /* [noscript] void EnumerateChildren (in string parent, in PrefEnumerationFunc callback, in voidPtr data); */
-  NS_IMETHOD EnumerateChildren(const char *parent, PrefEnumerationFunc callback, void * data) = 0;
+  /**
+   * Called to reset all of the preferences referenced by this branch to their
+   * default values.
+   *
+   * @param aStartingAt The point on the branch at which to start the resetting
+   *                    preferences to their default values. Pass in "" to
+   *                    reset all preferences referenced by this branch.
+   *
+   * @note
+   * This method can be called on either a default or user branch but, in
+   * effect, always operates on the user branch.
+   *
+   * @return NS_OK The preference(s) were successfully reset.
+   * @return Other The preference(s) do not exist or an error occurred.
+   */
+  /* void resetBranch (in string aStartingAt); */
+  NS_IMETHOD ResetBranch(const char *aStartingAt) = 0;
 
 };
 
 /* Use this macro when declaring classes that implement this interface. */
-#define NS_DECL_NSIPREF \
-  NS_IMETHOD ReadUserPrefs(nsIFile *file); \
-  NS_IMETHOD ResetPrefs(void); \
-  NS_IMETHOD ResetUserPrefs(void); \
-  NS_IMETHOD SavePrefFile(nsIFile *file); \
-  NS_IMETHOD GetBranch(const char *pref_root, nsIPrefBranch **_retval); \
-  NS_IMETHOD GetDefaultBranch(const char *pref_root, nsIPrefBranch **_retval); \
+#define NS_DECL_NSIPREFBRANCH \
   NS_IMETHOD GetRoot(char * *aRoot); \
-  NS_IMETHOD GetPrefType(const char *pref_name, PRInt32 *_retval); \
-  NS_IMETHOD GetBoolPref(const char *pref_name, PRBool *_retval); \
-  NS_IMETHOD SetBoolPref(const char *pref_name, PRInt32 value); \
-  NS_IMETHOD GetCharPref(const char *pref_name, char **_retval); \
-  NS_IMETHOD SetCharPref(const char *pref_name, const char *value); \
-  NS_IMETHOD GetIntPref(const char *pref_name, PRInt32 *_retval); \
-  NS_IMETHOD SetIntPref(const char *pref_name, PRInt32 value); \
-  NS_IMETHOD GetComplexValue(const char *pref_name, const nsIID & type, void * *value); \
-  NS_IMETHOD SetComplexValue(const char *pref_name, const nsIID & type, nsISupports *value); \
-  NS_IMETHOD ClearUserPref(const char *pref_name); \
-  NS_IMETHOD PrefIsLocked(const char *pref_name, PRBool *_retval); \
-  NS_IMETHOD LockPref(const char *pref_name); \
-  NS_IMETHOD UnlockPref(const char *pref_name); \
-  NS_IMETHOD ResetBranch(const char *starting_at); \
-  NS_IMETHOD DeleteBranch(const char *starting_at); \
-  NS_IMETHOD GetChildList(const char *starting_at, PRUint32 *count, char ***child_array); \
-  NS_IMETHOD AddObserver(const char *domain, nsIObserver *observer, PRBool hold_weak); \
-  NS_IMETHOD RemoveObserver(const char *domain, nsIObserver *observer); \
-  NS_IMETHOD CopyCharPref(const char *pref, char **_retval); \
-  NS_IMETHOD CopyDefaultCharPref(const char *pref, char **_retval); \
-  NS_IMETHOD GetDefaultBoolPref(const char *pref, PRBool *_retval); \
-  NS_IMETHOD GetDefaultIntPref(const char *pref, PRInt32 *_retval); \
-  NS_IMETHOD SetDefaultBoolPref(const char *pref, PRBool value); \
-  NS_IMETHOD SetDefaultCharPref(const char *pref, const char *value); \
-  NS_IMETHOD SetDefaultIntPref(const char *pref, PRInt32 value); \
-  NS_IMETHOD CopyUnicharPref(const char *pref, PRUnichar **_retval); \
-  NS_IMETHOD CopyDefaultUnicharPref(const char *pref, PRUnichar **_retval); \
-  NS_IMETHOD SetUnicharPref(const char *pref, const PRUnichar *value); \
-  NS_IMETHOD SetDefaultUnicharPref(const char *pref, const PRUnichar *value); \
-  NS_IMETHOD GetDefaultLocalizedUnicharPref(const char *pref, PRUnichar **_retval); \
-  NS_IMETHOD GetLocalizedUnicharPref(const char *pref, PRUnichar **_retval); \
-  NS_IMETHOD GetFilePref(const char *pref, nsIFileSpec **_retval); \
-  NS_IMETHOD SetFilePref(const char *pref, nsIFileSpec *value, PRBool set_default); \
-  NS_IMETHOD GetFileXPref(const char *pref, nsILocalFile **_retval); \
-  NS_IMETHOD SetFileXPref(const char *pref, nsILocalFile *value); \
-  NS_IMETHOD RegisterCallback(const char *domain, PrefChangedFunc callback, void * closure); \
-  NS_IMETHOD UnregisterCallback(const char *domain, PrefChangedFunc callback, void * closure); \
-  NS_IMETHOD EnumerateChildren(const char *parent, PrefEnumerationFunc callback, void * data); 
+  NS_IMETHOD GetPrefType(const char *aPrefName, PRInt32 *_retval); \
+  NS_IMETHOD GetBoolPref(const char *aPrefName, PRBool *_retval); \
+  NS_IMETHOD SetBoolPref(const char *aPrefName, PRInt32 aValue); \
+  NS_IMETHOD GetCharPref(const char *aPrefName, char **_retval); \
+  NS_IMETHOD SetCharPref(const char *aPrefName, const char *aValue); \
+  NS_IMETHOD GetIntPref(const char *aPrefName, PRInt32 *_retval); \
+  NS_IMETHOD SetIntPref(const char *aPrefName, PRInt32 aValue); \
+  NS_IMETHOD GetComplexValue(const char *aPrefName, const nsIID & aType, void * *aValue); \
+  NS_IMETHOD SetComplexValue(const char *aPrefName, const nsIID & aType, nsISupports *aValue); \
+  NS_IMETHOD ClearUserPref(const char *aPrefName); \
+  NS_IMETHOD LockPref(const char *aPrefName); \
+  NS_IMETHOD PrefHasUserValue(const char *aPrefName, PRBool *_retval); \
+  NS_IMETHOD PrefIsLocked(const char *aPrefName, PRBool *_retval); \
+  NS_IMETHOD UnlockPref(const char *aPrefName); \
+  NS_IMETHOD DeleteBranch(const char *aStartingAt); \
+  NS_IMETHOD GetChildList(const char *aStartingAt, PRUint32 *aCount, char ***aChildArray); \
+  NS_IMETHOD ResetBranch(const char *aStartingAt); 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object. */
-#define NS_FORWARD_NSIPREF(_to) \
-  NS_IMETHOD ReadUserPrefs(nsIFile *file) { return _to ReadUserPrefs(file); } \
-  NS_IMETHOD ResetPrefs(void) { return _to ResetPrefs(); } \
-  NS_IMETHOD ResetUserPrefs(void) { return _to ResetUserPrefs(); } \
-  NS_IMETHOD SavePrefFile(nsIFile *file) { return _to SavePrefFile(file); } \
-  NS_IMETHOD GetBranch(const char *pref_root, nsIPrefBranch **_retval) { return _to GetBranch(pref_root, _retval); } \
-  NS_IMETHOD GetDefaultBranch(const char *pref_root, nsIPrefBranch **_retval) { return _to GetDefaultBranch(pref_root, _retval); } \
+#define NS_FORWARD_NSIPREFBRANCH(_to) \
   NS_IMETHOD GetRoot(char * *aRoot) { return _to GetRoot(aRoot); } \
-  NS_IMETHOD GetPrefType(const char *pref_name, PRInt32 *_retval) { return _to GetPrefType(pref_name, _retval); } \
-  NS_IMETHOD GetBoolPref(const char *pref_name, PRBool *_retval) { return _to GetBoolPref(pref_name, _retval); } \
-  NS_IMETHOD SetBoolPref(const char *pref_name, PRInt32 value) { return _to SetBoolPref(pref_name, value); } \
-  NS_IMETHOD GetCharPref(const char *pref_name, char **_retval) { return _to GetCharPref(pref_name, _retval); } \
-  NS_IMETHOD SetCharPref(const char *pref_name, const char *value) { return _to SetCharPref(pref_name, value); } \
-  NS_IMETHOD GetIntPref(const char *pref_name, PRInt32 *_retval) { return _to GetIntPref(pref_name, _retval); } \
-  NS_IMETHOD SetIntPref(const char *pref_name, PRInt32 value) { return _to SetIntPref(pref_name, value); } \
-  NS_IMETHOD GetComplexValue(const char *pref_name, const nsIID & type, void * *value) { return _to GetComplexValue(pref_name, type, value); } \
-  NS_IMETHOD SetComplexValue(const char *pref_name, const nsIID & type, nsISupports *value) { return _to SetComplexValue(pref_name, type, value); } \
-  NS_IMETHOD ClearUserPref(const char *pref_name) { return _to ClearUserPref(pref_name); } \
-  NS_IMETHOD PrefIsLocked(const char *pref_name, PRBool *_retval) { return _to PrefIsLocked(pref_name, _retval); } \
-  NS_IMETHOD LockPref(const char *pref_name) { return _to LockPref(pref_name); } \
-  NS_IMETHOD UnlockPref(const char *pref_name) { return _to UnlockPref(pref_name); } \
-  NS_IMETHOD ResetBranch(const char *starting_at) { return _to ResetBranch(starting_at); } \
-  NS_IMETHOD DeleteBranch(const char *starting_at) { return _to DeleteBranch(starting_at); } \
-  NS_IMETHOD GetChildList(const char *starting_at, PRUint32 *count, char ***child_array) { return _to GetChildList(starting_at, count, child_array); } \
-  NS_IMETHOD AddObserver(const char *domain, nsIObserver *observer, PRBool hold_weak) { return _to AddObserver(domain, observer, hold_weak); } \
-  NS_IMETHOD RemoveObserver(const char *domain, nsIObserver *observer) { return _to RemoveObserver(domain, observer); } \
-  NS_IMETHOD CopyCharPref(const char *pref, char **_retval) { return _to CopyCharPref(pref, _retval); } \
-  NS_IMETHOD CopyDefaultCharPref(const char *pref, char **_retval) { return _to CopyDefaultCharPref(pref, _retval); } \
-  NS_IMETHOD GetDefaultBoolPref(const char *pref, PRBool *_retval) { return _to GetDefaultBoolPref(pref, _retval); } \
-  NS_IMETHOD GetDefaultIntPref(const char *pref, PRInt32 *_retval) { return _to GetDefaultIntPref(pref, _retval); } \
-  NS_IMETHOD SetDefaultBoolPref(const char *pref, PRBool value) { return _to SetDefaultBoolPref(pref, value); } \
-  NS_IMETHOD SetDefaultCharPref(const char *pref, const char *value) { return _to SetDefaultCharPref(pref, value); } \
-  NS_IMETHOD SetDefaultIntPref(const char *pref, PRInt32 value) { return _to SetDefaultIntPref(pref, value); } \
-  NS_IMETHOD CopyUnicharPref(const char *pref, PRUnichar **_retval) { return _to CopyUnicharPref(pref, _retval); } \
-  NS_IMETHOD CopyDefaultUnicharPref(const char *pref, PRUnichar **_retval) { return _to CopyDefaultUnicharPref(pref, _retval); } \
-  NS_IMETHOD SetUnicharPref(const char *pref, const PRUnichar *value) { return _to SetUnicharPref(pref, value); } \
-  NS_IMETHOD SetDefaultUnicharPref(const char *pref, const PRUnichar *value) { return _to SetDefaultUnicharPref(pref, value); } \
-  NS_IMETHOD GetDefaultLocalizedUnicharPref(const char *pref, PRUnichar **_retval) { return _to GetDefaultLocalizedUnicharPref(pref, _retval); } \
-  NS_IMETHOD GetLocalizedUnicharPref(const char *pref, PRUnichar **_retval) { return _to GetLocalizedUnicharPref(pref, _retval); } \
-  NS_IMETHOD GetFilePref(const char *pref, nsIFileSpec **_retval) { return _to GetFilePref(pref, _retval); } \
-  NS_IMETHOD SetFilePref(const char *pref, nsIFileSpec *value, PRBool set_default) { return _to SetFilePref(pref, value, set_default); } \
-  NS_IMETHOD GetFileXPref(const char *pref, nsILocalFile **_retval) { return _to GetFileXPref(pref, _retval); } \
-  NS_IMETHOD SetFileXPref(const char *pref, nsILocalFile *value) { return _to SetFileXPref(pref, value); } \
-  NS_IMETHOD RegisterCallback(const char *domain, PrefChangedFunc callback, void * closure) { return _to RegisterCallback(domain, callback, closure); } \
-  NS_IMETHOD UnregisterCallback(const char *domain, PrefChangedFunc callback, void * closure) { return _to UnregisterCallback(domain, callback, closure); } \
-  NS_IMETHOD EnumerateChildren(const char *parent, PrefEnumerationFunc callback, void * data) { return _to EnumerateChildren(parent, callback, data); } 
+  NS_IMETHOD GetPrefType(const char *aPrefName, PRInt32 *_retval) { return _to GetPrefType(aPrefName, _retval); } \
+  NS_IMETHOD GetBoolPref(const char *aPrefName, PRBool *_retval) { return _to GetBoolPref(aPrefName, _retval); } \
+  NS_IMETHOD SetBoolPref(const char *aPrefName, PRInt32 aValue) { return _to SetBoolPref(aPrefName, aValue); } \
+  NS_IMETHOD GetCharPref(const char *aPrefName, char **_retval) { return _to GetCharPref(aPrefName, _retval); } \
+  NS_IMETHOD SetCharPref(const char *aPrefName, const char *aValue) { return _to SetCharPref(aPrefName, aValue); } \
+  NS_IMETHOD GetIntPref(const char *aPrefName, PRInt32 *_retval) { return _to GetIntPref(aPrefName, _retval); } \
+  NS_IMETHOD SetIntPref(const char *aPrefName, PRInt32 aValue) { return _to SetIntPref(aPrefName, aValue); } \
+  NS_IMETHOD GetComplexValue(const char *aPrefName, const nsIID & aType, void * *aValue) { return _to GetComplexValue(aPrefName, aType, aValue); } \
+  NS_IMETHOD SetComplexValue(const char *aPrefName, const nsIID & aType, nsISupports *aValue) { return _to SetComplexValue(aPrefName, aType, aValue); } \
+  NS_IMETHOD ClearUserPref(const char *aPrefName) { return _to ClearUserPref(aPrefName); } \
+  NS_IMETHOD LockPref(const char *aPrefName) { return _to LockPref(aPrefName); } \
+  NS_IMETHOD PrefHasUserValue(const char *aPrefName, PRBool *_retval) { return _to PrefHasUserValue(aPrefName, _retval); } \
+  NS_IMETHOD PrefIsLocked(const char *aPrefName, PRBool *_retval) { return _to PrefIsLocked(aPrefName, _retval); } \
+  NS_IMETHOD UnlockPref(const char *aPrefName) { return _to UnlockPref(aPrefName); } \
+  NS_IMETHOD DeleteBranch(const char *aStartingAt) { return _to DeleteBranch(aStartingAt); } \
+  NS_IMETHOD GetChildList(const char *aStartingAt, PRUint32 *aCount, char ***aChildArray) { return _to GetChildList(aStartingAt, aCount, aChildArray); } \
+  NS_IMETHOD ResetBranch(const char *aStartingAt) { return _to ResetBranch(aStartingAt); } 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
-#define NS_FORWARD_SAFE_NSIPREF(_to) \
-  NS_IMETHOD ReadUserPrefs(nsIFile *file) { return !_to ? NS_ERROR_NULL_POINTER : _to->ReadUserPrefs(file); } \
-  NS_IMETHOD ResetPrefs(void) { return !_to ? NS_ERROR_NULL_POINTER : _to->ResetPrefs(); } \
-  NS_IMETHOD ResetUserPrefs(void) { return !_to ? NS_ERROR_NULL_POINTER : _to->ResetUserPrefs(); } \
-  NS_IMETHOD SavePrefFile(nsIFile *file) { return !_to ? NS_ERROR_NULL_POINTER : _to->SavePrefFile(file); } \
-  NS_IMETHOD GetBranch(const char *pref_root, nsIPrefBranch **_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetBranch(pref_root, _retval); } \
-  NS_IMETHOD GetDefaultBranch(const char *pref_root, nsIPrefBranch **_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetDefaultBranch(pref_root, _retval); } \
+#define NS_FORWARD_SAFE_NSIPREFBRANCH(_to) \
   NS_IMETHOD GetRoot(char * *aRoot) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetRoot(aRoot); } \
-  NS_IMETHOD GetPrefType(const char *pref_name, PRInt32 *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPrefType(pref_name, _retval); } \
-  NS_IMETHOD GetBoolPref(const char *pref_name, PRBool *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetBoolPref(pref_name, _retval); } \
-  NS_IMETHOD SetBoolPref(const char *pref_name, PRInt32 value) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetBoolPref(pref_name, value); } \
-  NS_IMETHOD GetCharPref(const char *pref_name, char **_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetCharPref(pref_name, _retval); } \
-  NS_IMETHOD SetCharPref(const char *pref_name, const char *value) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetCharPref(pref_name, value); } \
-  NS_IMETHOD GetIntPref(const char *pref_name, PRInt32 *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetIntPref(pref_name, _retval); } \
-  NS_IMETHOD SetIntPref(const char *pref_name, PRInt32 value) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetIntPref(pref_name, value); } \
-  NS_IMETHOD GetComplexValue(const char *pref_name, const nsIID & type, void * *value) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetComplexValue(pref_name, type, value); } \
-  NS_IMETHOD SetComplexValue(const char *pref_name, const nsIID & type, nsISupports *value) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetComplexValue(pref_name, type, value); } \
-  NS_IMETHOD ClearUserPref(const char *pref_name) { return !_to ? NS_ERROR_NULL_POINTER : _to->ClearUserPref(pref_name); } \
-  NS_IMETHOD PrefIsLocked(const char *pref_name, PRBool *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->PrefIsLocked(pref_name, _retval); } \
-  NS_IMETHOD LockPref(const char *pref_name) { return !_to ? NS_ERROR_NULL_POINTER : _to->LockPref(pref_name); } \
-  NS_IMETHOD UnlockPref(const char *pref_name) { return !_to ? NS_ERROR_NULL_POINTER : _to->UnlockPref(pref_name); } \
-  NS_IMETHOD ResetBranch(const char *starting_at) { return !_to ? NS_ERROR_NULL_POINTER : _to->ResetBranch(starting_at); } \
-  NS_IMETHOD DeleteBranch(const char *starting_at) { return !_to ? NS_ERROR_NULL_POINTER : _to->DeleteBranch(starting_at); } \
-  NS_IMETHOD GetChildList(const char *starting_at, PRUint32 *count, char ***child_array) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetChildList(starting_at, count, child_array); } \
-  NS_IMETHOD AddObserver(const char *domain, nsIObserver *observer, PRBool hold_weak) { return !_to ? NS_ERROR_NULL_POINTER : _to->AddObserver(domain, observer, hold_weak); } \
-  NS_IMETHOD RemoveObserver(const char *domain, nsIObserver *observer) { return !_to ? NS_ERROR_NULL_POINTER : _to->RemoveObserver(domain, observer); } \
-  NS_IMETHOD CopyCharPref(const char *pref, char **_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->CopyCharPref(pref, _retval); } \
-  NS_IMETHOD CopyDefaultCharPref(const char *pref, char **_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->CopyDefaultCharPref(pref, _retval); } \
-  NS_IMETHOD GetDefaultBoolPref(const char *pref, PRBool *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetDefaultBoolPref(pref, _retval); } \
-  NS_IMETHOD GetDefaultIntPref(const char *pref, PRInt32 *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetDefaultIntPref(pref, _retval); } \
-  NS_IMETHOD SetDefaultBoolPref(const char *pref, PRBool value) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetDefaultBoolPref(pref, value); } \
-  NS_IMETHOD SetDefaultCharPref(const char *pref, const char *value) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetDefaultCharPref(pref, value); } \
-  NS_IMETHOD SetDefaultIntPref(const char *pref, PRInt32 value) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetDefaultIntPref(pref, value); } \
-  NS_IMETHOD CopyUnicharPref(const char *pref, PRUnichar **_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->CopyUnicharPref(pref, _retval); } \
-  NS_IMETHOD CopyDefaultUnicharPref(const char *pref, PRUnichar **_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->CopyDefaultUnicharPref(pref, _retval); } \
-  NS_IMETHOD SetUnicharPref(const char *pref, const PRUnichar *value) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetUnicharPref(pref, value); } \
-  NS_IMETHOD SetDefaultUnicharPref(const char *pref, const PRUnichar *value) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetDefaultUnicharPref(pref, value); } \
-  NS_IMETHOD GetDefaultLocalizedUnicharPref(const char *pref, PRUnichar **_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetDefaultLocalizedUnicharPref(pref, _retval); } \
-  NS_IMETHOD GetLocalizedUnicharPref(const char *pref, PRUnichar **_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetLocalizedUnicharPref(pref, _retval); } \
-  NS_IMETHOD GetFilePref(const char *pref, nsIFileSpec **_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetFilePref(pref, _retval); } \
-  NS_IMETHOD SetFilePref(const char *pref, nsIFileSpec *value, PRBool set_default) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetFilePref(pref, value, set_default); } \
-  NS_IMETHOD GetFileXPref(const char *pref, nsILocalFile **_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetFileXPref(pref, _retval); } \
-  NS_IMETHOD SetFileXPref(const char *pref, nsILocalFile *value) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetFileXPref(pref, value); } \
-  NS_IMETHOD RegisterCallback(const char *domain, PrefChangedFunc callback, void * closure) { return !_to ? NS_ERROR_NULL_POINTER : _to->RegisterCallback(domain, callback, closure); } \
-  NS_IMETHOD UnregisterCallback(const char *domain, PrefChangedFunc callback, void * closure) { return !_to ? NS_ERROR_NULL_POINTER : _to->UnregisterCallback(domain, callback, closure); } \
-  NS_IMETHOD EnumerateChildren(const char *parent, PrefEnumerationFunc callback, void * data) { return !_to ? NS_ERROR_NULL_POINTER : _to->EnumerateChildren(parent, callback, data); } 
+  NS_IMETHOD GetPrefType(const char *aPrefName, PRInt32 *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetPrefType(aPrefName, _retval); } \
+  NS_IMETHOD GetBoolPref(const char *aPrefName, PRBool *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetBoolPref(aPrefName, _retval); } \
+  NS_IMETHOD SetBoolPref(const char *aPrefName, PRInt32 aValue) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetBoolPref(aPrefName, aValue); } \
+  NS_IMETHOD GetCharPref(const char *aPrefName, char **_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetCharPref(aPrefName, _retval); } \
+  NS_IMETHOD SetCharPref(const char *aPrefName, const char *aValue) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetCharPref(aPrefName, aValue); } \
+  NS_IMETHOD GetIntPref(const char *aPrefName, PRInt32 *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetIntPref(aPrefName, _retval); } \
+  NS_IMETHOD SetIntPref(const char *aPrefName, PRInt32 aValue) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetIntPref(aPrefName, aValue); } \
+  NS_IMETHOD GetComplexValue(const char *aPrefName, const nsIID & aType, void * *aValue) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetComplexValue(aPrefName, aType, aValue); } \
+  NS_IMETHOD SetComplexValue(const char *aPrefName, const nsIID & aType, nsISupports *aValue) { return !_to ? NS_ERROR_NULL_POINTER : _to->SetComplexValue(aPrefName, aType, aValue); } \
+  NS_IMETHOD ClearUserPref(const char *aPrefName) { return !_to ? NS_ERROR_NULL_POINTER : _to->ClearUserPref(aPrefName); } \
+  NS_IMETHOD LockPref(const char *aPrefName) { return !_to ? NS_ERROR_NULL_POINTER : _to->LockPref(aPrefName); } \
+  NS_IMETHOD PrefHasUserValue(const char *aPrefName, PRBool *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->PrefHasUserValue(aPrefName, _retval); } \
+  NS_IMETHOD PrefIsLocked(const char *aPrefName, PRBool *_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->PrefIsLocked(aPrefName, _retval); } \
+  NS_IMETHOD UnlockPref(const char *aPrefName) { return !_to ? NS_ERROR_NULL_POINTER : _to->UnlockPref(aPrefName); } \
+  NS_IMETHOD DeleteBranch(const char *aStartingAt) { return !_to ? NS_ERROR_NULL_POINTER : _to->DeleteBranch(aStartingAt); } \
+  NS_IMETHOD GetChildList(const char *aStartingAt, PRUint32 *aCount, char ***aChildArray) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetChildList(aStartingAt, aCount, aChildArray); } \
+  NS_IMETHOD ResetBranch(const char *aStartingAt) { return !_to ? NS_ERROR_NULL_POINTER : _to->ResetBranch(aStartingAt); } 
 
 #if 0
 /* Use the code below as a template for the implementation class for this interface. */
 
 /* Header file */
-class nsPref : public nsIPref
+class nsPrefBranch : public nsIPrefBranch
 {
 public:
   NS_DECL_ISUPPORTS
-  NS_DECL_NSIPREF
+  NS_DECL_NSIPREFBRANCH
 
-  nsPref();
+  nsPrefBranch();
 
 private:
-  ~nsPref();
+  ~nsPrefBranch();
 
 protected:
   /* additional members */
 };
 
 /* Implementation file */
-NS_IMPL_ISUPPORTS1(nsPref, nsIPref)
+NS_IMPL_ISUPPORTS1(nsPrefBranch, nsIPrefBranch)
 
-nsPref::nsPref()
+nsPrefBranch::nsPrefBranch()
 {
   /* member initializers and constructor code */
 }
 
-nsPref::~nsPref()
+nsPrefBranch::~nsPrefBranch()
 {
   /* destructor code */
 }
 
-/* void readUserPrefs (in nsIFile file); */
-NS_IMETHODIMP nsPref::ReadUserPrefs(nsIFile *file)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* void ResetPrefs (); */
-NS_IMETHODIMP nsPref::ResetPrefs()
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* void ResetUserPrefs (); */
-NS_IMETHODIMP nsPref::ResetUserPrefs()
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* void savePrefFile (in nsIFile file); */
-NS_IMETHODIMP nsPref::SavePrefFile(nsIFile *file)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* nsIPrefBranch getBranch (in string pref_root); */
-NS_IMETHODIMP nsPref::GetBranch(const char *pref_root, nsIPrefBranch **_retval)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* nsIPrefBranch getDefaultBranch (in string pref_root); */
-NS_IMETHODIMP nsPref::GetDefaultBranch(const char *pref_root, nsIPrefBranch **_retval)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
 /* readonly attribute string root; */
-NS_IMETHODIMP nsPref::GetRoot(char * *aRoot)
+NS_IMETHODIMP nsPrefBranch::GetRoot(char * *aRoot)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* long GetPrefType (in string pref_name); */
-NS_IMETHODIMP nsPref::GetPrefType(const char *pref_name, PRInt32 *_retval)
+/* long getPrefType (in string aPrefName); */
+NS_IMETHODIMP nsPrefBranch::GetPrefType(const char *aPrefName, PRInt32 *_retval)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* boolean GetBoolPref (in string pref_name); */
-NS_IMETHODIMP nsPref::GetBoolPref(const char *pref_name, PRBool *_retval)
+/* boolean getBoolPref (in string aPrefName); */
+NS_IMETHODIMP nsPrefBranch::GetBoolPref(const char *aPrefName, PRBool *_retval)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* void SetBoolPref (in string pref_name, in long value); */
-NS_IMETHODIMP nsPref::SetBoolPref(const char *pref_name, PRInt32 value)
+/* void setBoolPref (in string aPrefName, in long aValue); */
+NS_IMETHODIMP nsPrefBranch::SetBoolPref(const char *aPrefName, PRInt32 aValue)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* string GetCharPref (in string pref_name); */
-NS_IMETHODIMP nsPref::GetCharPref(const char *pref_name, char **_retval)
+/* string getCharPref (in string aPrefName); */
+NS_IMETHODIMP nsPrefBranch::GetCharPref(const char *aPrefName, char **_retval)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* void SetCharPref (in string pref_name, in string value); */
-NS_IMETHODIMP nsPref::SetCharPref(const char *pref_name, const char *value)
+/* void setCharPref (in string aPrefName, in string aValue); */
+NS_IMETHODIMP nsPrefBranch::SetCharPref(const char *aPrefName, const char *aValue)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* long GetIntPref (in string pref_name); */
-NS_IMETHODIMP nsPref::GetIntPref(const char *pref_name, PRInt32 *_retval)
+/* long getIntPref (in string aPrefName); */
+NS_IMETHODIMP nsPrefBranch::GetIntPref(const char *aPrefName, PRInt32 *_retval)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* void SetIntPref (in string pref_name, in long value); */
-NS_IMETHODIMP nsPref::SetIntPref(const char *pref_name, PRInt32 value)
+/* void setIntPref (in string aPrefName, in long aValue); */
+NS_IMETHODIMP nsPrefBranch::SetIntPref(const char *aPrefName, PRInt32 aValue)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* void getComplexValue (in string pref_name, in nsIIDRef type, [iid_is (type), retval] out nsQIResult value); */
-NS_IMETHODIMP nsPref::GetComplexValue(const char *pref_name, const nsIID & type, void * *value)
+/* void getComplexValue (in string aPrefName, in nsIIDRef aType, [iid_is (aType), retval] out nsQIResult aValue); */
+NS_IMETHODIMP nsPrefBranch::GetComplexValue(const char *aPrefName, const nsIID & aType, void * *aValue)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* void setComplexValue (in string pref_name, in nsIIDRef type, in nsISupports value); */
-NS_IMETHODIMP nsPref::SetComplexValue(const char *pref_name, const nsIID & type, nsISupports *value)
+/* void setComplexValue (in string aPrefName, in nsIIDRef aType, in nsISupports aValue); */
+NS_IMETHODIMP nsPrefBranch::SetComplexValue(const char *aPrefName, const nsIID & aType, nsISupports *aValue)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* void ClearUserPref (in string pref_name); */
-NS_IMETHODIMP nsPref::ClearUserPref(const char *pref_name)
+/* void clearUserPref (in string aPrefName); */
+NS_IMETHODIMP nsPrefBranch::ClearUserPref(const char *aPrefName)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* boolean PrefIsLocked (in string pref_name); */
-NS_IMETHODIMP nsPref::PrefIsLocked(const char *pref_name, PRBool *_retval)
+/* void lockPref (in string aPrefName); */
+NS_IMETHODIMP nsPrefBranch::LockPref(const char *aPrefName)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* void lockPref (in string pref_name); */
-NS_IMETHODIMP nsPref::LockPref(const char *pref_name)
+/* boolean prefHasUserValue (in string aPrefName); */
+NS_IMETHODIMP nsPrefBranch::PrefHasUserValue(const char *aPrefName, PRBool *_retval)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* void unlockPref (in string pref_name); */
-NS_IMETHODIMP nsPref::UnlockPref(const char *pref_name)
+/* boolean prefIsLocked (in string aPrefName); */
+NS_IMETHODIMP nsPrefBranch::PrefIsLocked(const char *aPrefName, PRBool *_retval)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* void resetBranch (in string starting_at); */
-NS_IMETHODIMP nsPref::ResetBranch(const char *starting_at)
+/* void unlockPref (in string aPrefName); */
+NS_IMETHODIMP nsPrefBranch::UnlockPref(const char *aPrefName)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* void DeleteBranch (in string starting_at); */
-NS_IMETHODIMP nsPref::DeleteBranch(const char *starting_at)
+/* void deleteBranch (in string aStartingAt); */
+NS_IMETHODIMP nsPrefBranch::DeleteBranch(const char *aStartingAt)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* void getChildList (in string starting_at, out unsigned long count, [array, size_is (count), retval] out string child_array); */
-NS_IMETHODIMP nsPref::GetChildList(const char *starting_at, PRUint32 *count, char ***child_array)
+/* void getChildList (in string aStartingAt, [optional] out unsigned long aCount, [array, size_is (aCount), retval] out string aChildArray); */
+NS_IMETHODIMP nsPrefBranch::GetChildList(const char *aStartingAt, PRUint32 *aCount, char ***aChildArray)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* void addObserver (in string domain, in nsIObserver observer, in boolean hold_weak); */
-NS_IMETHODIMP nsPref::AddObserver(const char *domain, nsIObserver *observer, PRBool hold_weak)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* void removeObserver (in string domain, in nsIObserver observer); */
-NS_IMETHODIMP nsPref::RemoveObserver(const char *domain, nsIObserver *observer)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* string CopyCharPref (in string pref); */
-NS_IMETHODIMP nsPref::CopyCharPref(const char *pref, char **_retval)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* string CopyDefaultCharPref (in string pref); */
-NS_IMETHODIMP nsPref::CopyDefaultCharPref(const char *pref, char **_retval)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* boolean GetDefaultBoolPref (in string pref); */
-NS_IMETHODIMP nsPref::GetDefaultBoolPref(const char *pref, PRBool *_retval)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* long GetDefaultIntPref (in string pref); */
-NS_IMETHODIMP nsPref::GetDefaultIntPref(const char *pref, PRInt32 *_retval)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* void SetDefaultBoolPref (in string pref, in boolean value); */
-NS_IMETHODIMP nsPref::SetDefaultBoolPref(const char *pref, PRBool value)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* void SetDefaultCharPref (in string pref, in string value); */
-NS_IMETHODIMP nsPref::SetDefaultCharPref(const char *pref, const char *value)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* void SetDefaultIntPref (in string pref, in long value); */
-NS_IMETHODIMP nsPref::SetDefaultIntPref(const char *pref, PRInt32 value)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* wstring CopyUnicharPref (in string pref); */
-NS_IMETHODIMP nsPref::CopyUnicharPref(const char *pref, PRUnichar **_retval)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* wstring CopyDefaultUnicharPref (in string pref); */
-NS_IMETHODIMP nsPref::CopyDefaultUnicharPref(const char *pref, PRUnichar **_retval)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* void SetUnicharPref (in string pref, in wstring value); */
-NS_IMETHODIMP nsPref::SetUnicharPref(const char *pref, const PRUnichar *value)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* void SetDefaultUnicharPref (in string pref, in wstring value); */
-NS_IMETHODIMP nsPref::SetDefaultUnicharPref(const char *pref, const PRUnichar *value)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* wstring getDefaultLocalizedUnicharPref (in string pref); */
-NS_IMETHODIMP nsPref::GetDefaultLocalizedUnicharPref(const char *pref, PRUnichar **_retval)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* wstring getLocalizedUnicharPref (in string pref); */
-NS_IMETHODIMP nsPref::GetLocalizedUnicharPref(const char *pref, PRUnichar **_retval)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* nsIFileSpec GetFilePref (in string pref); */
-NS_IMETHODIMP nsPref::GetFilePref(const char *pref, nsIFileSpec **_retval)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* void SetFilePref (in string pref, in nsIFileSpec value, in boolean set_default); */
-NS_IMETHODIMP nsPref::SetFilePref(const char *pref, nsIFileSpec *value, PRBool set_default)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* nsILocalFile getFileXPref (in string pref); */
-NS_IMETHODIMP nsPref::GetFileXPref(const char *pref, nsILocalFile **_retval)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* void setFileXPref (in string pref, in nsILocalFile value); */
-NS_IMETHODIMP nsPref::SetFileXPref(const char *pref, nsILocalFile *value)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* [noscript] void RegisterCallback (in string domain, in PrefChangedFunc callback, in voidPtr closure); */
-NS_IMETHODIMP nsPref::RegisterCallback(const char *domain, PrefChangedFunc callback, void * closure)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* [noscript] void UnregisterCallback (in string domain, in PrefChangedFunc callback, in voidPtr closure); */
-NS_IMETHODIMP nsPref::UnregisterCallback(const char *domain, PrefChangedFunc callback, void * closure)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-/* [noscript] void EnumerateChildren (in string parent, in PrefEnumerationFunc callback, in voidPtr data); */
-NS_IMETHODIMP nsPref::EnumerateChildren(const char *parent, PrefEnumerationFunc callback, void * data)
+/* void resetBranch (in string aStartingAt); */
+NS_IMETHODIMP nsPrefBranch::ResetBranch(const char *aStartingAt)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
@@ -9943,6 +9854,259 @@ NS_IMETHODIMP nsPref::EnumerateChildren(const char *parent, PrefEnumerationFunc 
 /* End of implementation class template. */
 #endif
 
+#define NS_PREFBRANCH_CONTRACTID "@mozilla.org/preferencesbranch;1"
+#define NS_PREFBRANCH_CLASSNAME "Preferences Branch"
+class nsIFile; /* forward declaration */
+
+
+/* starting interface:    nsIPrefService */
+#define NS_IPREFSERVICE_IID_STR "decb9cc7-c08f-4ea5-be91-a8fc637ce2d2"
+
+#define NS_IPREFSERVICE_IID \
+  {0xdecb9cc7, 0xc08f, 0x4ea5, \
+    { 0xbe, 0x91, 0xa8, 0xfc, 0x63, 0x7c, 0xe2, 0xd2 }}
+
+/**
+ * The nsIPrefService interface is the main entry point into the back end
+ * preferences management library. The preference service is directly
+ * responsible for the management of the preferences files and also facilitates
+ * access to the preference branch object which allows the direct manipulation
+ * of the preferences themselves.
+ *
+ * @see nsIPrefBranch
+ * 
+ * @status FROZEN
+ */
+class NS_NO_VTABLE nsIPrefService : public nsISupports {
+ public: 
+
+  NS_DEFINE_STATIC_IID_ACCESSOR(NS_IPREFSERVICE_IID)
+
+  /**
+   * Called to read in the preferences specified in a user preference file.
+   *
+   * @param aFile The file to be read.
+   *
+   * @note
+   * If nsnull is passed in for the aFile parameter the default preferences
+   * file(s) [prefs.js, user.js] will be read and processed.
+   *
+   * @return NS_OK File was read and processed.
+   * @return Other File failed to read or contained invalid data.
+   *
+   * @see savePrefFile
+   * @see nsIFile
+   */
+  /* void readUserPrefs (in nsIFile aFile); */
+  NS_IMETHOD ReadUserPrefs(nsIFile *aFile) = 0;
+
+  /**
+   * Called to completely flush and re-initialize the preferences system.
+   *
+   * @return NS_OK The preference service was re-initialized correctly.
+   * @return Other The preference service failed to restart correctly.
+   */
+  /* void resetPrefs (); */
+  NS_IMETHOD ResetPrefs(void) = 0;
+
+  /**
+   * Called to reset all preferences with user set values back to the
+   * application default values.
+   *
+   * @return NS_OK Always.
+   */
+  /* void resetUserPrefs (); */
+  NS_IMETHOD ResetUserPrefs(void) = 0;
+
+  /**
+   * Called to write current preferences state to a file.
+   *
+   * @param aFile The file to be written.
+   *
+   * @note
+   * If nsnull is passed in for the aFile parameter the preference data is
+   * written out to the current preferences file (usually prefs.js.)
+   *
+   * @return NS_OK File was written.
+   * @return Other File failed to write.
+   *
+   * @see readUserPrefs
+   * @see nsIFile
+   */
+  /* void savePrefFile (in nsIFile aFile); */
+  NS_IMETHOD SavePrefFile(nsIFile *aFile) = 0;
+
+  /**
+   * Call to get a Preferences "Branch" which accesses user preference data.
+   * Using a Set method on this object will always create or set a user
+   * preference value. When using a Get method a user set value will be
+   * returned if one exists, otherwise a default value will be returned.
+   *
+   * @param aPrefRoot The preference "root" on which to base this "branch".
+   *                  For example, if the root "browser.startup." is used, the
+   *                  branch will be able to easily access the preferences
+   *                  "browser.startup.page", "browser.startup.homepage", or
+   *                  "browser.startup.homepage_override" by simply requesting
+   *                  "page", "homepage", or "homepage_override". nsnull or "" 
+   *                  may be used to access to the entire preference "tree".
+   *
+   * @return nsIPrefBranch The object representing the requested branch.
+   *
+   * @see getDefaultBranch
+   */
+  /* nsIPrefBranch getBranch (in string aPrefRoot); */
+  NS_IMETHOD GetBranch(const char *aPrefRoot, nsIPrefBranch **_retval) = 0;
+
+  /**
+   * Call to get a Preferences "Branch" which accesses only the default 
+   * preference data. Using a Set method on this object will always create or
+   * set a default preference value. When using a Get method a default value
+   * will always be returned.
+   *
+   * @param aPrefRoot The preference "root" on which to base this "branch".
+   *                  For example, if the root "browser.startup." is used, the
+   *                  branch will be able to easily access the preferences
+   *                  "browser.startup.page", "browser.startup.homepage", or
+   *                  "browser.startup.homepage_override" by simply requesting
+   *                  "page", "homepage", or "homepage_override". nsnull or "" 
+   *                  may be used to access to the entire preference "tree".
+   *
+   * @note
+   * Few consumers will want to create default branch objects. Many of the
+   * branch methods do nothing on a default branch because the operations only
+   * make sense when applied to user set preferences.
+   *
+   * @return nsIPrefBranch The object representing the requested default branch.
+   *
+   * @see getBranch
+   */
+  /* nsIPrefBranch getDefaultBranch (in string aPrefRoot); */
+  NS_IMETHOD GetDefaultBranch(const char *aPrefRoot, nsIPrefBranch **_retval) = 0;
+
+};
+
+/* Use this macro when declaring classes that implement this interface. */
+#define NS_DECL_NSIPREFSERVICE \
+  NS_IMETHOD ReadUserPrefs(nsIFile *aFile); \
+  NS_IMETHOD ResetPrefs(void); \
+  NS_IMETHOD ResetUserPrefs(void); \
+  NS_IMETHOD SavePrefFile(nsIFile *aFile); \
+  NS_IMETHOD GetBranch(const char *aPrefRoot, nsIPrefBranch **_retval); \
+  NS_IMETHOD GetDefaultBranch(const char *aPrefRoot, nsIPrefBranch **_retval); 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object. */
+#define NS_FORWARD_NSIPREFSERVICE(_to) \
+  NS_IMETHOD ReadUserPrefs(nsIFile *aFile) { return _to ReadUserPrefs(aFile); } \
+  NS_IMETHOD ResetPrefs(void) { return _to ResetPrefs(); } \
+  NS_IMETHOD ResetUserPrefs(void) { return _to ResetUserPrefs(); } \
+  NS_IMETHOD SavePrefFile(nsIFile *aFile) { return _to SavePrefFile(aFile); } \
+  NS_IMETHOD GetBranch(const char *aPrefRoot, nsIPrefBranch **_retval) { return _to GetBranch(aPrefRoot, _retval); } \
+  NS_IMETHOD GetDefaultBranch(const char *aPrefRoot, nsIPrefBranch **_retval) { return _to GetDefaultBranch(aPrefRoot, _retval); } 
+
+/* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
+#define NS_FORWARD_SAFE_NSIPREFSERVICE(_to) \
+  NS_IMETHOD ReadUserPrefs(nsIFile *aFile) { return !_to ? NS_ERROR_NULL_POINTER : _to->ReadUserPrefs(aFile); } \
+  NS_IMETHOD ResetPrefs(void) { return !_to ? NS_ERROR_NULL_POINTER : _to->ResetPrefs(); } \
+  NS_IMETHOD ResetUserPrefs(void) { return !_to ? NS_ERROR_NULL_POINTER : _to->ResetUserPrefs(); } \
+  NS_IMETHOD SavePrefFile(nsIFile *aFile) { return !_to ? NS_ERROR_NULL_POINTER : _to->SavePrefFile(aFile); } \
+  NS_IMETHOD GetBranch(const char *aPrefRoot, nsIPrefBranch **_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetBranch(aPrefRoot, _retval); } \
+  NS_IMETHOD GetDefaultBranch(const char *aPrefRoot, nsIPrefBranch **_retval) { return !_to ? NS_ERROR_NULL_POINTER : _to->GetDefaultBranch(aPrefRoot, _retval); } 
+
+#if 0
+/* Use the code below as a template for the implementation class for this interface. */
+
+/* Header file */
+class nsPrefService : public nsIPrefService
+{
+public:
+  NS_DECL_ISUPPORTS
+  NS_DECL_NSIPREFSERVICE
+
+  nsPrefService();
+
+private:
+  ~nsPrefService();
+
+protected:
+  /* additional members */
+};
+
+/* Implementation file */
+NS_IMPL_ISUPPORTS1(nsPrefService, nsIPrefService)
+
+nsPrefService::nsPrefService()
+{
+  /* member initializers and constructor code */
+}
+
+nsPrefService::~nsPrefService()
+{
+  /* destructor code */
+}
+
+/* void readUserPrefs (in nsIFile aFile); */
+NS_IMETHODIMP nsPrefService::ReadUserPrefs(nsIFile *aFile)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void resetPrefs (); */
+NS_IMETHODIMP nsPrefService::ResetPrefs()
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void resetUserPrefs (); */
+NS_IMETHODIMP nsPrefService::ResetUserPrefs()
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void savePrefFile (in nsIFile aFile); */
+NS_IMETHODIMP nsPrefService::SavePrefFile(nsIFile *aFile)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* nsIPrefBranch getBranch (in string aPrefRoot); */
+NS_IMETHODIMP nsPrefService::GetBranch(const char *aPrefRoot, nsIPrefBranch **_retval)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* nsIPrefBranch getDefaultBranch (in string aPrefRoot); */
+NS_IMETHODIMP nsPrefService::GetDefaultBranch(const char *aPrefRoot, nsIPrefBranch **_retval)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* End of implementation class template. */
+#endif
+
+#define NS_PREFSERVICE_CID                             \
+  { /* {1cd91b88-1dd2-11b2-92e1-ed22ed298000} */       \
+    0x1cd91b88,                                        \
+    0x1dd2,                                            \
+    0x11b2,                                            \
+    { 0x92, 0xe1, 0xed, 0x22, 0xed, 0x29, 0x80, 0x00 } \
+  }
+#define NS_PREFSERVICE_CONTRACTID "@mozilla.org/preferences-service;1"
+#define NS_PREFSERVICE_CLASSNAME "Preferences Server"
+/**
+ * Notification sent before reading the default user preferences files.
+ */
+#define NS_PREFSERVICE_READ_TOPIC_ID "prefservice:before-read-userprefs"
+/**
+ * Notification sent when resetPrefs has been called, but before the actual
+ * reset process occurs.
+ */
+#define NS_PREFSERVICE_RESET_TOPIC_ID "prefservice:before-reset"
+/**
+ * Notification sent when after reading app-provided default
+ * preferences, but before user profile override defaults or extension
+ * defaults are loaded.
+ */
+#define NS_PREFSERVICE_APPDEFAULTS_TOPIC_ID "prefservice:after-app-defaults"
 class nsIPrintSettings; /* forward declaration */
 
 class nsIDOMWindow; /* forward declaration */

@@ -24,7 +24,8 @@ void freeUnichar(PRUnichar* p);
 
 
 ns_smartptr<nsIWindowWatcher> nsGetWindowWatcherService();
-ns_smartptr<nsIPref> nsGetPrefService();
+ns_smartptr<nsIPrefService> nsGetPrefService();
+ns_smartptr<nsIPrefBranch> nsGetPrefBranch(const wxString& branch_name);
 ns_smartptr<nsIProperties> nsGetDirectoryService();
 ns_smartptr<nsISupports> nsGetService(const char* contract_id);
 ns_smartptr<nsISupports> nsCreateInstance(const char* contract_id);

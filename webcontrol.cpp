@@ -2049,23 +2049,17 @@ bool GeckoEngine::Init()
     
 
     // set up preferences
-    
-    ns_smartptr<nsIPref> prefs = nsGetPrefService();
-    if (!prefs)
-        return false;
-    
+    wxWebPreferences prefs = wxWebControl::GetPreferences();
+
     // this was originally so that we wouldn't have to set
     // up a prompting service.
-    prefs->SetBoolPref("security.warn_submit_insecure", PR_FALSE);
+    prefs.SetBoolPref(wxT("security."), wxT("warn_submit_insecure"), PR_FALSE);
     
     // don't store a history
-    prefs->SetIntPref("browser.history_expire_days", 0);
+    prefs.SetIntPref(wxT("browser."), wxT("history_expire_days"), 0);
     
     // set path for our cache directory
-    PRUnichar* temps = wxToUnichar(m_storage_path);
-    prefs->SetUnicharPref("browser.cache.disk.parent_directory", temps);
-    freeUnichar(temps);
-
+    prefs.SetStringPref(wxT("browser.cache.disk."), wxT("parent_directory"), m_storage_path);
 
     m_ok = true;
     

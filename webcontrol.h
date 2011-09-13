@@ -286,24 +286,24 @@ private:
 //     preferences of a web control.
 
 // (METHOD) wxWebPreferences::GetBoolPref
-// Syntax: bool wxWebPreferences::GetBoolPref(const wxString& name)
+// Syntax: bool wxWebPreferences::GetBoolPref(const wxString& branch_name, const wxString& name)
 
 // (METHOD) wxWebPreferences::GetStringPref
-// Syntax: wxString wxWebPreferences::GetStringPref(const wxString& name)
+// Syntax: wxString wxWebPreferences::GetStringPref(const wxString& branch_name, const wxString& name)
 
 // (METHOD) wxWebPreferences::GetIntPref
-// Syntax: int wxWebPreferences::GetIntPref(const wxString& name)
+// Syntax: int wxWebPreferences::GetIntPref(const wxString& branch_name, const wxString& name)
 
 // (METHOD) wxWebPreferences::SetIntPref
-// Syntax: void wxWebPreferences::SetIntPref(const wxString& name, 
+// Syntax: void wxWebPreferences::SetIntPref(const wxString& branch_name, const wxString& name, 
 //                                           int value)
 
 // (METHOD) wxWebPreferences::SetStringPref
-// Syntax: void wxWebPreferences::SetStringPref(const wxString& name, 
+// Syntax: void wxWebPreferences::SetStringPref(const wxString& branch_name, const wxString& name, 
 //                                              const wxString& value)
 
 // (METHOD) wxWebPreferences::SetBoolPref
-// Syntax: void wxWebPreferences::SetBoolPref(const wxString& name, 
+// Syntax: void wxWebPreferences::SetBoolPref(const wxString& branch_name, const wxString& name, 
 //                                            bool value)
 
 class wxWebPreferences
@@ -317,13 +317,13 @@ private:
     
 public:
 
-    bool GetBoolPref(const wxString& name);
-    wxString GetStringPref(const wxString& name);
-    int GetIntPref(const wxString& name);
+    bool GetBoolPref(const wxString& branch_name, const wxString& name);
+    wxString GetStringPref(const wxString& branch_name, const wxString& name);
+    int GetIntPref(const wxString& branch_name, const wxString& name);
 
-    void SetIntPref(const wxString& name, int value);
-    void SetStringPref(const wxString& name, const wxString& value);
-    void SetBoolPref(const wxString& name, bool value);
+    void SetIntPref(const wxString& branch_name, const wxString& name, int value);
+    void SetStringPref(const wxString& branch_name, const wxString& name, const wxString& value);
+    void SetBoolPref(const wxString& branch_name, const wxString& name, bool value);
 };
 
 
