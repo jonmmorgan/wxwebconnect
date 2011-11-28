@@ -8,7 +8,7 @@ Prerequisites:
 Setup:
 * Set the WXWIN environment variable to point to your wxWidgets source directory. If you used wxPack this should
 have been done automatically for you.
-* Set the environment variable XUL_SDK_PATH to the path where you have a version of the XulRunner SDK that you
+* Set the environment variable XUL_SDK_DIR to the path where you have a version of the XulRunner SDK that you
 intend to build against.
 * Set the preprocessor directive that controls which XulRunner version will be used to one of the supported
 values, currently - XULRUNNER_20 corresponding to XulRunner 2.0 (default) or XULRUNNER_192 corresponding to XulRunner 1.9.2.
