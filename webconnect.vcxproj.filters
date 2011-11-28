@@ -2,11 +2,11 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{764b689a-01ac-45c1-882a-22ebea5770df}</UniqueIdentifier>
+      <UniqueIdentifier>{f8e97c33-47f9-4ccf-a5b4-1effc35ad6e8}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
     </Filter>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{3847f64b-52ff-426e-97c8-1ceaa4bf37ff}</UniqueIdentifier>
+      <UniqueIdentifier>{2067fdbb-4d41-44de-8dea-28ab1ac23da6}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl</Extensions>
     </Filter>
   </ItemGroup>
@@ -20,16 +20,22 @@
     <ClCompile Include="promptservice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="testapp.cpp">
+    <ClCompile Include="webcontrol.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="webcontrol.cpp">
+    <ClCompile Include="protocolhandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="webframe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="webprefs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="testapp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="xh_webcontrol.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -64,16 +70,46 @@
     <ClInclude Include="promptservice.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="protocolhandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="webcontrol.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="webframe.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="xulrunner_private_headers_192.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="xh_webcontrol.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="xulrunner_private_headers_20.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ns_generic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ns_xulrunner_20.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ns_xulrunner_192.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Midl Include="nsall.idl">
       <Filter>Header Files</Filter>
+    </Midl>
+    <Midl Include="ns_generic.idl">
+      <Filter>Source Files</Filter>
+    </Midl>
+    <Midl Include="ns_xulrunner_20.idl">
+      <Filter>Source Files</Filter>
+    </Midl>
+    <Midl Include="ns_xulrunner_192.idl">
+      <Filter>Source Files</Filter>
     </Midl>
   </ItemGroup>
 </Project>
