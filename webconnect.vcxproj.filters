@@ -112,4 +112,8 @@
       <Filter>Source Files</Filter>
     </Midl>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="README.txt" />
+    <None Include="BUILDING.txt" />
+  </ItemGroup>
 </Project>
