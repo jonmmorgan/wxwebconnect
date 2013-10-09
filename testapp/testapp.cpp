@@ -1,13 +1,12 @@
-///////////////////////////////////////////////////////////////////////////////
-// Name:        testapp.cpp
-// Purpose:     wxwebconnect test application
-// Author:      Benjamin I. Williams
-// Modified by:
-// Created:     2007-05-14
-// RCS-ID:      
-// Copyright:   (C) Copyright 2006-2009, Kirix Corporation, All Rights Reserved.
-// Licence:     wxWindows Library Licence, Version 3.1
-///////////////////////////////////////////////////////////////////////////////
+/*!
+ *
+ * Copyright (c) 2009-2013, Kirix Research, LLC.  All rights reserved.
+ *
+ * Project:  wxWebConnect Test Application
+ * Author:   Benjamin I. Williams
+ * Created:  2009-05-14
+ *
+ */
 
 
 #include <wx/wx.h>
@@ -16,11 +15,14 @@
 #include <wx/filename.h>
 #include <wx/textfile.h>
 #include <wx/printdlg.h>
+#include "wx/artprov.h"
+#include "wx/aui/aui.h"
 #include "../webconnect/webcontrol.h"
 
 
-// web control id
+// web control and url combobox ids
 const int wxID_WEB = 9001;
+const int wxID_URL = 9002;
 
 
 class MyFrame : public wxFrame
@@ -58,10 +60,13 @@ class MyFrame : public wxFrame
         ID_ZoomIn,
         ID_ZoomOut,
         ID_ZoomReset,
+        ID_ShowSource,
         ID_ShowLinks,
         
         // help
-        ID_Help
+        ID_GoHelp,
+        ID_GoForums,
+        ID_GoAbout
     };
 
 public:
@@ -78,6 +83,9 @@ private:
 
     void OnSize(wxSizeEvent& evt);
     void OnEraseBackground(wxEraseEvent& evt);
+
+    void OnUrlTextEntered(wxCommandEvent& evt);
+    void OnUrlItemSelected(wxCommandEvent& evt);    
 
     void OnOpenHref(wxCommandEvent& evt);
     void OnOpenLocation(wxCommandEvent& evt);
@@ -105,9 +113,12 @@ private:
     void OnZoomIn(wxCommandEvent& evt);
     void OnZoomOut(wxCommandEvent& evt);
     void OnZoomReset(wxCommandEvent& evt);
+    void OnShowSource(wxCommandEvent& evt);    
     void OnShowLinks(wxCommandEvent& evt);
 
-    void OnHelp(wxCommandEvent& evt);
+    void OnGoHelp(wxCommandEvent& evt);
+    void OnGoForums(wxCommandEvent& evt);
+    void OnGoAbout(wxCommandEvent& evt);        
 
     void OnStatusText(wxWebEvent& evt);
     void OnStatusChange(wxWebEvent& evt);
@@ -123,17 +134,24 @@ private:
 
 private:
 
+    void SetUrlBarValue(const wxString& str);
     void ShowLinks();
     void GetChildLinks(wxDOMNode node, wxArrayString& arr);
 
 private:
 
+    // frame manager
+    wxAuiManager m_mgr;
+
+    // web control and url bar
     wxWebControl* m_browser;
-    wxTextCtrl* m_urlbar;
+    wxComboBox* m_urlbar;
 
     // default locations
     wxString m_uri_home;
     wxString m_uri_help;
+    wxString m_uri_forums;
+    wxString m_uri_about;     
 
     // href location
     wxString m_uri_href;
@@ -155,30 +173,46 @@ public:
 
     bool OnInit()
     {
-        // Calling wxWebControl::InitEngine() is very important.  It let's
-        // the library know where xulrunner is located. It has to be made
-        // before using wxWebControl.  It instructs wxWebConnect where the
-        // xulrunner directory is.
-        //
-        // This can be hardcoded to an existing xulrunner path, but
-        // it's sometimes useful to find the relative path based on this
-        // executable's path. The following call will look for a directory
-        // named "xr"
-        
+        // Locate the XULRunner engine; the following call will look for 
+        // a directory named "xr"
         wxString xulrunner_path = FindXulRunner(wxT("xr"));
         if (xulrunner_path.IsEmpty())
         {
             wxMessageBox(wxT("Could not find xulrunner directory"));
             return false;
-        }
-            
+        }    
+    
+        // Locate some common paths and initialize the control with
+        // the plugin paths; add these common plugin directories to 
+        // MOZ_PLUGIN_PATH
+        wxString program_files_dir;
+        ::wxGetEnv(wxT("ProgramFiles"), &program_files_dir);
+        if (program_files_dir.Length() == 0 || program_files_dir.Last() != '\\')
+            program_files_dir += wxT("\\");
+
+        wxString dir = program_files_dir;
+        dir += wxT("Mozilla Firefox\\plugins");
+        wxWebControl::AddPluginPath(dir);
+
+        // to install the flash plugin automatically, if it exists, 
+        // add a path to the flash location; for example, on windows,
+        // if the system directory is given by system_dir, then, we have:
+        //
+        // wxString dir2 = system_dir;
+        // dir2 += wxT("Macromed\\Flash");
+        // wxWebControl::AddPluginPath(dir2);
+
+        // Finally, initialize the engine; Calling wxWebControl::InitEngine()
+        // is very important and has to be made before using wxWebControl.  
+        // It instructs wxWebConnect where the xulrunner directory is.
         wxWebControl::InitEngine(xulrunner_path);
 
+        // Create and show the frame
         wxFrame* frame = new MyFrame(NULL,
                                      wxID_ANY,
                                      wxT("Gecko Embedding Test"),
                                      wxDefaultPosition,
-                                     wxSize(800, 580));
+                                     wxSize(1024, 768));
         SetTopWindow(frame);
         frame->Show();
 
@@ -186,19 +220,20 @@ public:
     }
     
     wxString FindXulRunner(const wxString& xulrunner_dirname)
-    {        
+    {
+        // get the location of this executable
         wxString exe_path = wxStandardPaths::Get().GetExecutablePath();
         wxString path_separator = wxFileName::GetPathSeparator();
         exe_path = exe_path.BeforeLast(path_separator[0]);
         exe_path += path_separator;
-        
+
         wxString path;
 
         // first, check <exe_path>/<xulrunner_path>
         path = exe_path + xulrunner_dirname;
         if (wxDir::Exists(path))
             return path;
-
+  
         // next, check <exe_path>/../<xulrunner_path>
         path = exe_path + wxT("..") + path_separator + xulrunner_dirname;
         if (wxDir::Exists(path))
@@ -224,6 +259,10 @@ BEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_SIZE(MyFrame::OnSize)
     EVT_ERASE_BACKGROUND(MyFrame::OnEraseBackground)
 
+    // url combobox events
+    EVT_TEXT_ENTER(wxID_URL, MyFrame::OnUrlTextEntered)
+    EVT_COMBOBOX(wxID_URL, MyFrame::OnUrlItemSelected)
+
     // menu events
     EVT_MENU(ID_OpenHref, MyFrame::OnOpenHref)
     EVT_MENU(ID_OpenLocation, MyFrame::OnOpenLocation)
@@ -247,8 +286,11 @@ BEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_MENU(ID_ZoomIn, MyFrame::OnZoomIn)
     EVT_MENU(ID_ZoomOut, MyFrame::OnZoomOut)
     EVT_MENU(ID_ZoomReset, MyFrame::OnZoomReset)
+    EVT_MENU(ID_ShowSource, MyFrame::OnShowSource)
     EVT_MENU(ID_ShowLinks, MyFrame::OnShowLinks)
-    EVT_MENU(ID_Help, MyFrame::OnHelp)
+    EVT_MENU(ID_GoHelp, MyFrame::OnGoHelp)
+    EVT_MENU(ID_GoForums, MyFrame::OnGoForums)
+    EVT_MENU(ID_GoAbout, MyFrame::OnGoAbout)
 
     // update events
     EVT_UPDATE_UI(ID_Undo, MyFrame::OnUpdateUI)
@@ -257,8 +299,9 @@ BEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_UPDATE_UI(ID_Copy, MyFrame::OnUpdateUI)
     EVT_UPDATE_UI(ID_Copy, MyFrame::OnUpdateUI)
     EVT_UPDATE_UI(ID_FindAgain, MyFrame::OnUpdateUI)
+    EVT_UPDATE_UI(ID_ShowSource, MyFrame::OnUpdateUI)    
     EVT_UPDATE_UI(ID_ShowLinks, MyFrame::OnUpdateUI)
-    
+
     // web events
     EVT_WEB_STATUSTEXT(wxID_WEB, MyFrame::OnStatusText)
     EVT_WEB_STATUSCHANGE(wxID_WEB, MyFrame::OnStatusChange)
@@ -286,6 +329,11 @@ MyFrame::MyFrame(wxWindow* parent,
     #ifdef __WXMSW__
     SetIcon(wxIcon(wxT("mondrian"), wxBITMAP_TYPE_ICO_RESOURCE, 16, 16));
     #endif
+
+
+    // use wxAuiManager to manage this frame
+    m_mgr.SetManagedWindow(this);
+
 
     // create the menu
     wxMenuBar* mb = new wxMenuBar;
@@ -325,10 +373,13 @@ MyFrame::MyFrame(wxWindow* parent,
     view_menu->Append(ID_ZoomOut, _("Zoom &Out"));
     view_menu->Append(ID_ZoomReset, _("Reset &Zoom"));
     view_menu->AppendSeparator();
+    view_menu->Append(ID_ShowSource, _("Sho&w Source"));
     view_menu->Append(ID_ShowLinks, _("Show &Links"));
 
     wxMenu* help_menu = new wxMenu;
-    help_menu->Append(ID_Help, _("Help\tF1"));
+    help_menu->Append(ID_GoHelp, _("Help\tF1"));
+    help_menu->Append(ID_GoForums, _("Forums"));
+    help_menu->Append(ID_GoAbout, _("About"));
 
     mb->Append(file_menu, _("&File"));
     mb->Append(edit_menu, _("&Edit"));
@@ -339,25 +390,40 @@ MyFrame::MyFrame(wxWindow* parent,
     CreateStatusBar();
     GetStatusBar()->SetStatusText(_("Ready"));
 
-    // create a new url bar
-    //m_urlbar = new wxTextCtrl(this, -1);
-    //wxBoxSizer* text_sizer = new wxBoxSizer(wxHORIZONTAL);
-    //text_sizer->Add(m_urlbar, -1, wxEXPAND | wxTOP | wxLEFT | wxRIGHT | wxBOTTOM, 2);
 
-    // create a new browser control
+    // create the main toolbar
+    wxAuiToolBar* toolbar = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                             wxAUI_TB_DEFAULT_STYLE);
+    toolbar->SetToolBitmapSize(wxSize(24,24));
+    toolbar->AddTool(ID_GoBack, wxT("Go Back"), wxArtProvider::GetBitmap(wxART_GO_BACK));
+    toolbar->AddTool(ID_GoForward, wxT("Go Forward"), wxArtProvider::GetBitmap(wxART_GO_FORWARD));
+    toolbar->AddTool(ID_GoHome, wxT("Go Home"), wxArtProvider::GetBitmap(wxART_GO_HOME));
+
+    m_urlbar = new wxComboBox(toolbar, wxID_URL, wxT(""), wxPoint(0,0), wxSize(850,18));    
+    toolbar->AddControl(m_urlbar, wxT("Location"));
+
+    toolbar->Realize();
+
+
+    // create the main browser control
     m_browser = new wxWebControl(this, wxID_WEB, wxPoint(0,0), wxSize(800,600));
-    wxBoxSizer* browser_sizer = new wxBoxSizer(wxHORIZONTAL);
-    browser_sizer->Add(m_browser, 1, wxEXPAND);
 
-    // add the url bar and the browser to the main sizer
-    wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
-    //sizer->Add(text_sizer, 0, wxEXPAND);
-    sizer->Add(browser_sizer, 1, wxEXPAND);
-    SetSizer(sizer);
 
-    //wxBoxSizer* sizer = new wxBoxSizer(wxHORIZONTAL);
-    //sizer->Add(m_browser, 1, wxEXPAND);
-    //SetSizer(sizer);
+    // add the toolbar to the manager
+    m_mgr.AddPane(toolbar, wxAuiPaneInfo().
+                  Name(wxT("Toolbar")).Caption(wxT("Toolbar")).
+                  ToolbarPane().Top().
+                  LeftDockable(false).RightDockable(false));    
+
+
+    // add the browser to the manager
+    m_mgr.AddPane(m_browser, wxAuiPaneInfo().
+                  Name(wxT("Browser")).
+                  CenterPane().Show());
+
+
+    // update the wxAUI manager
+    m_mgr.Update();    
 
 
     // set the default browser preferences; to learn
@@ -395,9 +461,11 @@ MyFrame::MyFrame(wxWindow* parent,
 
 
     // set the default home and help URIs
-    m_uri_home = wxT("http://www.google.com");
-    m_uri_help = wxT("http://www.google.com");
-    
+    m_uri_home = wxT("http://www.kirix.com/labs");
+    m_uri_help = wxT("http://www.kirix.com/labs/wxwebconnect/documentation/quick-facts.html");
+    m_uri_forums = wxT("http://www.kirix.com/forums/");
+    m_uri_about = wxT("http://www.kirix.com/labs/wxwebconnect.html");       
+
     // set the DOM content loaded flag
     m_dom_contentloaded = false;
 
@@ -407,16 +475,25 @@ MyFrame::MyFrame(wxWindow* parent,
 
 MyFrame::~MyFrame()
 {
+    m_mgr.UnInit();
 }
 
 void MyFrame::OnSize(wxSizeEvent& evt)
 {
-    evt.Skip();
 }
 
 void MyFrame::OnEraseBackground(wxEraseEvent& evt)
 {
-    evt.Skip();
+}
+
+void MyFrame::OnUrlTextEntered(wxCommandEvent& evt)
+{
+    m_browser->OpenURI(evt.GetString());
+}
+
+void MyFrame::OnUrlItemSelected(wxCommandEvent& evt)
+{
+    m_browser->OpenURI(evt.GetString());
 }
 
 void MyFrame::OnOpenHref(wxCommandEvent& evt)
@@ -637,14 +714,78 @@ void MyFrame::OnZoomReset(wxCommandEvent& evt)
     m_browser->SetTextZoom(1);
 }
 
+void MyFrame::OnShowSource(wxCommandEvent& evt)
+{
+    m_browser->ViewSource();
+}
+
 void MyFrame::OnShowLinks(wxCommandEvent& evt)
 {
     ShowLinks();
 }
 
-void MyFrame::OnHelp(wxCommandEvent& evt)
+void MyFrame::OnGoHelp(wxCommandEvent& evt)
 {
     m_browser->OpenURI(m_uri_help);
+}
+
+void MyFrame::OnGoForums(wxCommandEvent& evt)
+{
+    m_browser->OpenURI(m_uri_forums);
+}
+
+void MyFrame::OnGoAbout(wxCommandEvent& evt)
+{
+    wxArrayString arr;
+
+    arr.Add(wxT("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\""));
+    arr.Add(wxT("\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">"));
+    arr.Add(wxT("<?xml version=\"1.0\" encoding=\"utf-8\"?>"));
+    arr.Add(wxT("<html>"));
+    arr.Add(wxT("<head>"));
+    arr.Add(wxT("	<title id=\"title\">About the wxWebConnect Test Application</title>"));
+    arr.Add(wxT("	<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso8859-1\" />"));
+    arr.Add(wxT("	<style type=\"text/css\"><!--"));
+    arr.Add(wxT("		body         { background: #eee; }"));
+    arr.Add(wxT("		div#main     { width: 540px; padding: 40px 40px 20px 40px; margin: 50px auto; background: #fff; border: 1px solid #bbb; -moz-border-radius: 10px; }"));
+    arr.Add(wxT("       h3, p        { padding: 0; margin: 0; font-family: Arial, Helvetica, sans-serif; clear: left }"));
+    arr.Add(wxT("       h5, p        { padding: 0; margin: 0; font-family: Arial, Helvetica, sans-serif; clear: left }"));
+    arr.Add(wxT("		p            { font-size: 11px; padding: 0; margin: 20px 0; line-height: 16px; }"));
+    arr.Add(wxT("		p.gray       { color: #999; padding-top: 20px; margin-bottom: 0; clear: both;  }"));
+    arr.Add(wxT("		p.copyright  { float: left; text-align: left; clear: left                      }"));
+    arr.Add(wxT("	//--></style>"));
+    arr.Add(wxT("</head>"));
+    arr.Add(wxT("<body>"));
+    arr.Add(wxT("	<div id=\"main\">"));
+    arr.Add(wxT("		<h3>wxWebConnect Test Application<br/></h3>"));
+    arr.Add(wxT("		<h5>Version 1.0<br/></h5>"));
+    arr.Add(wxT("		<p class=\"copyright\">Copyright (c) 2009-2013, Kirix Research, LLC.  All rights reserved.<br/>"));
+    arr.Add(wxT("		                       Licence:     wxWindows Library Licence, Version 3.1</p>"));
+    arr.Add(wxT("		<p class=\"gray\">This software contains an unmodified binary version of the open-source XULRunner"));
+    arr.Add(wxT("                         engine as provided by the Mozilla Foundation. Please read the"));
+    arr.Add(wxT("                         <a href=\"http://www.mozilla.org/MPL/\">license terms and notices"));
+    arr.Add(wxT("                         </a> for the XULRunner engine. This software uses XULRunner version 1.8.1.3.</p>"));
+    arr.Add(wxT("	</div>"));
+    arr.Add(wxT("</body>"));
+    arr.Add(wxT("</html>"));
+
+    // create a temporary file listing the links
+    wxTextFile file;    
+    wxString temp_file = wxFileName::CreateTempFileName(wxT("web"));
+    file.Create(temp_file);
+
+    int i, count = arr.Count();
+    for (i = 0; i < count; ++i)
+    {
+        wxString html = arr.Item(i);
+        file.AddLine(html);
+    }
+
+    file.Write();
+
+    // open the temporary file with the links in
+    // the browser
+    m_browser->OpenURI(temp_file);
 }
 
 void MyFrame::OnUpdateUI(wxUpdateUIEvent& evt)
@@ -679,7 +820,8 @@ void MyFrame::OnUpdateUI(wxUpdateUIEvent& evt)
         case ID_FindAgain:
             evt.Enable(m_find_text.Length() > 0 ? true : false);
             break;
-            
+
+        case ID_ShowSource:
         case ID_ShowLinks:
             evt.Enable(m_dom_contentloaded);
             break;
@@ -731,6 +873,9 @@ void MyFrame::OnStateChange(wxWebEvent& evt)
 
 void MyFrame::OnLocationChange(wxWebEvent& evt)
 {
+    // set the url bar
+    SetUrlBarValue(evt.GetString());
+
     // set the DOM content loaded flag to false
     // until the DOM is safely loaded
     m_dom_contentloaded = false;
@@ -860,6 +1005,19 @@ void MyFrame::OnDOMContentLoaded(wxWebEvent& evt)
     m_dom_contentloaded = true;
 }
 
+void MyFrame::SetUrlBarValue(const wxString& str)
+{
+    // don't show 'about::blank'
+    if (str.CmpNoCase(wxT("about:blank")) == 0)
+        return;
+
+    // set the value
+    m_urlbar->SetValue(str);
+    
+    // save the value in the combo list values
+    m_urlbar->AppendString(str);
+}
+
 void MyFrame::ShowLinks()
 {
     // make sure the DOM content is loaded
@@ -906,7 +1064,15 @@ void MyFrame::GetChildLinks(wxDOMNode node, wxArrayString& arr)
         wxDOMHTMLAnchorElement anchor = node;
 
         if (anchor.IsOk())
-            arr.Add(anchor.GetHref());
+        {
+            // get the anchor and create a list of urls similar to
+            // <a href="http://www.kirix.com">http://www.kirix.com</a><br>
+            // so we can see both the href as well as click on it
+
+            wxString href = anchor.GetHref();
+            wxString link = wxT("<a href=\"") + href + wxT("\">") + href + wxT("</a><br>");
+            arr.Add(link);
+        }
 
         GetChildLinks(node, arr);
     }

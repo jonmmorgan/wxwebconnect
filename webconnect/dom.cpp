@@ -1,13 +1,12 @@
-///////////////////////////////////////////////////////////////////////////////
-// Name:        dom.cpp
-// Purpose:     wxwebconnect: embedded web browser control library
-// Author:      Benjamin I. Williams
-// Modified by:
-// Created:     2006-09-30
-// RCS-ID:      
-// Copyright:   (C) Copyright 2006-2010, Kirix Corporation, All Rights Reserved.
-// Licence:     wxWindows Library Licence, Version 3.1
-///////////////////////////////////////////////////////////////////////////////
+/*!
+ *
+ * Copyright (c) 2006-2013, Kirix Research, LLC.  All rights reserved.
+ *
+ * Project:  wxWebConnect Embedded Web Browser Control Library
+ * Author:   Benjamin I. Williams; Aaron L. Williams
+ * Created:  2006-09-30
+ *
+ */
 
 
 #include <wx/wx.h>
@@ -15,6 +14,21 @@
 #include "webcontrol.h"
 #include "domprivate.h"
 
+
+
+class wxDOMNodeDataDeleter : public wxEvtHandler
+{
+public:
+    
+    bool ProcessEvent(wxEvent& evt)
+    {
+        wxDOMNodeData* data = (wxDOMNodeData*)(((wxCommandEvent&)evt).GetExtraLong());
+        delete data;
+        return true;
+    }
+};
+
+wxDOMNodeDataDeleter g_dom_node_data_deleter;
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -36,7 +50,19 @@ wxDOMNode::wxDOMNode()
 
 wxDOMNode::~wxDOMNode()
 {
-    delete m_data;
+    if (wxThread::IsMain())
+    {
+        delete m_data;
+    }
+     else
+    {
+        if (m_data)
+        {
+            wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, 10000);
+            evt.SetExtraLong((long)m_data);
+            ::wxPostEvent(&g_dom_node_data_deleter, evt);
+        }
+    }
 }
 
 wxDOMNode::wxDOMNode(const wxDOMNode& c)
@@ -754,7 +780,8 @@ bool wxDOMNode::AddEventListener(const wxString& type,
     
     if (NS_SUCCEEDED(evt_target->AddEventListener(nstype,
                                              listener_adaptor,
-                                             use_capture ? PR_TRUE : PR_FALSE)))
+                                             use_capture ? PR_TRUE : PR_FALSE,
+                                             PR_TRUE, 2)))
     {
         return true;
     }
@@ -4926,8 +4953,8 @@ void wxDOMHTMLSelectElement::Add(const wxDOMHTMLElement& element,
     if (!IsOk())
         return;
         
-    m_data->select_ptr->Add(element.m_data->htmlelement_ptr,
-                            before.m_data->htmlelement_ptr);
+    //m_data->select_ptr->Add(element.m_data->htmlelement_ptr,
+    //                        before.m_data->htmlelement_ptr);
 }
 
 // (METHOD) wxDOMHTMLSelectElement::Remove
@@ -5124,9 +5151,9 @@ int wxDOMHTMLTextAreaElement::GetCols()
     if (!IsOk())
         return 0;
         
-    PRInt32 val = 0;
+    PRUint32 val = 0;
     m_data->textarea_ptr->GetCols(&val);
-    return val;
+    return (int)val;
 }
 
 // (METHOD) wxDOMHTMLTextAreaElement::SetCols
@@ -5143,7 +5170,7 @@ void wxDOMHTMLTextAreaElement::SetCols(int value)
     if (!IsOk())
         return;
         
-    PRInt32 val = value;
+    PRUint32 val = (PRUint32)value;
     m_data->textarea_ptr->SetCols(val);
 }
 
@@ -5275,9 +5302,9 @@ int wxDOMHTMLTextAreaElement::GetRows()
     if (!IsOk())
         return 0;
         
-    PRInt32 val = 0;
+    PRUint32 val = 0;
     m_data->textarea_ptr->GetRows(&val);
-    return val;
+    return (int)val;
 }
 
 // (METHOD) wxDOMHTMLTextAreaElement::SetRows
@@ -5294,7 +5321,7 @@ void wxDOMHTMLTextAreaElement::SetRows(int value)
     if (!IsOk())
         return;
         
-    PRInt32 val = value;
+    PRUint32 val = (PRUint32)value;
     m_data->textarea_ptr->SetRows(val);
 }
 

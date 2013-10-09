@@ -1,13 +1,12 @@
-///////////////////////////////////////////////////////////////////////////////
-// Name:        webcontrol.h
-// Purpose:     wxwebconnect: embedded web browser control library
-// Author:      Benjamin I. Williams
-// Modified by:
-// Created:     2006-09-22
-// RCS-ID:      
-// Copyright:   (C) Copyright 2006-2010, Kirix Corporation, All Rights Reserved.
-// Licence:     wxWindows Library Licence, Version 3.1
-///////////////////////////////////////////////////////////////////////////////
+/*!
+ *
+ * Copyright (c) 2006-2013, Kirix Research, LLC.  All rights reserved.
+ *
+ * Project:  wxWebConnect Embedded Web Browser Control Library
+ * Author:   Benjamin I. Williams
+ * Created:  2006-09-22
+ *
+ */
 
 
 #ifndef __WXWEBCONNECT_WEBCONTROL_H
@@ -15,7 +14,6 @@
 
 
 #include "dom.h"
-
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -346,10 +344,12 @@ friend class BrowserChrome;
 friend class PromptService;
 friend class WindowCreator;
 friend class wxWebFavIconProgress;
+friend class WebControlRefreshTimer;
 
 public:
 
     static bool InitEngine(const wxString& path);
+    static bool IsEngineOk();
     static bool AddContentHandler(wxWebContentHandler* handler, bool take_ownership = false);
     static void AddPluginPath(const wxString& path);
     static void SetProfilePath(const wxString& path);

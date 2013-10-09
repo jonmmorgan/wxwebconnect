@@ -1,13 +1,12 @@
-///////////////////////////////////////////////////////////////////////////////
-// Name:        nsptr.h
-// Purpose:     wxwebconnect: embedded web browser control library
-// Author:      Benjamin I. Williams
-// Modified by:
-// Created:     2006-10-08
-// RCS-ID:      
-// Copyright:   (C) Copyright 2006-2010, Kirix Corporation, All Rights Reserved.
-// Licence:     wxWindows Library Licence, Version 3.1
-///////////////////////////////////////////////////////////////////////////////
+/*!
+ *
+ * Copyright (c) 2006-2013, Kirix Research, LLC.  All rights reserved.
+ *
+ * Project:  wxWebConnect Embedded Web Browser Control Library
+ * Author:   Benjamin I. Williams
+ * Created:  2006-10-08
+ *
+ */
 
 
 #ifndef __WXWEBCONNECT_NSPTR_H

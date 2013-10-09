@@ -1,13 +1,12 @@
-///////////////////////////////////////////////////////////////////////////////
-// Name:        dom.h
-// Purpose:     wxwebconnect: embedded web browser control library
-// Author:      Benjamin I. Williams
-// Modified by:
-// Created:     2009-05-14
-// RCS-ID:      
-// Copyright:   (C) Copyright 2006-2010, Kirix Corporation, All Rights Reserved.
-// Licence:     wxWindows Library Licence, Version 3.1
-///////////////////////////////////////////////////////////////////////////////
+/*!
+ *
+ * Copyright (c) 2006-2013, Kirix Research, LLC.  All rights reserved.
+ *
+ * Project:  wxWebConnect Embedded Web Browser Control Library
+ * Author:   Benjamin I. Williams; Aaron L. Williams
+ * Created:  2006-09-30
+ *
+ */
 
 
 #ifndef __WXWEBCONNECT_DOM_H
@@ -23,7 +22,6 @@ struct wxDOMNodeData;
 struct wxDOMNodeListData;
 struct wxDOMNamedNodeMapData;
 struct wxDOMEventData;
-
 
 
 ///////////////////////////////////////////////////////////////////////////////

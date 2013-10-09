@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../wxWidgets/include;../wxWidgets/lib/vc_lib/mswud"
+				AdditionalIncludeDirectories="../supp/wxWidgets/include;../supp/wxWidgets/lib/vc_lib/mswud"
 				PreprocessorDefinitions="WIN32;_DEBUG;UNICODE;_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -194,7 +194,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="../wxWidgets/include;../wxWidgets/lib/vc_lib/mswu"
+				AdditionalIncludeDirectories="../supp/wxWidgets/include;../supp/wxWidgets/lib/vc_lib/mswu"
 				PreprocessorDefinitions="WIN32;NDEBUG;UNICODE;_LIB"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -336,12 +336,44 @@
 				>
 			</File>
 			<File
-				RelativePath=".\testapp.cpp"
+				RelativePath="webcontrol.cpp"
 				>
-			</File>
-			<File
-				RelativePath=".\webcontrol.cpp"
-				>
+				<FileConfiguration
+					Name="Debug Unicode|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release Unicode|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\webframe.cpp"
@@ -441,6 +473,10 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\Makefile"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

@@ -1,20 +1,18 @@
-///////////////////////////////////////////////////////////////////////////////
-// Name:        webprefs.cpp
-// Purpose:     wxwebconnect: embedded web browser control library
-// Author:      Benjamin I. Williams
-// Modified by:
-// Created:     2007-04-23
-// RCS-ID:      
-// Copyright:   (C) Copyright 2006-2010, Kirix Corporation, All Rights Reserved.
-// Licence:     wxWindows Library Licence, Version 3.1
-///////////////////////////////////////////////////////////////////////////////
+/*!
+ *
+ * Copyright (c) 2007-2013, Kirix Research, LLC.  All rights reserved.
+ *
+ * Project:  wxWebConnect Embedded Web Browser Control Library
+ * Author:   Benjamin I. Williams
+ * Created:  2007-04-23
+ *
+ */
 
 
 #include <wx/wx.h>
 #include "webframe.h"
 #include "webcontrol.h"
 #include "nsinclude.h"
-
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -28,7 +26,7 @@ wxWebPreferences::wxWebPreferences()
 
 bool wxWebPreferences::GetBoolPref(const wxString& name)
 {
-    ns_smartptr<nsIPref> prefs = nsGetPrefService();
+    ns_smartptr<nsIPrefBranch> prefs = nsGetPrefBranch();
     wxASSERT(!prefs.empty());
     if (prefs.empty())
         return false;
@@ -44,7 +42,7 @@ wxString wxWebPreferences::GetStringPref(const wxString& name)
 {
     wxString val;
     
-    ns_smartptr<nsIPref> prefs = nsGetPrefService();
+    ns_smartptr<nsIPrefBranch> prefs = nsGetPrefBranch();
     wxASSERT(!prefs.empty());
     if (prefs.empty())
         return val;
@@ -56,7 +54,7 @@ wxString wxWebPreferences::GetStringPref(const wxString& name)
     
     if (cstr)
     {
-        val = wxString::FromAscii(cstr);
+        val = wxString::From8BitData(cstr);
         NS_Free(cstr);
     }
     
@@ -65,7 +63,7 @@ wxString wxWebPreferences::GetStringPref(const wxString& name)
 
 int wxWebPreferences::GetIntPref(const wxString& name)
 {
-    ns_smartptr<nsIPref> prefs = nsGetPrefService();
+    ns_smartptr<nsIPrefBranch> prefs = nsGetPrefBranch();
     wxASSERT(!prefs.empty());
     if (prefs.empty())
         return 0;
@@ -80,7 +78,7 @@ int wxWebPreferences::GetIntPref(const wxString& name)
 
 void wxWebPreferences::SetIntPref(const wxString& name, int value)
 {
-    ns_smartptr<nsIPref> prefs = nsGetPrefService();
+    ns_smartptr<nsIPrefBranch> prefs = nsGetPrefBranch();
     if (prefs.empty())
         return;
         
@@ -89,7 +87,7 @@ void wxWebPreferences::SetIntPref(const wxString& name, int value)
 
 void wxWebPreferences::SetStringPref(const wxString& name, const wxString& value)
 {
-    ns_smartptr<nsIPref> prefs = nsGetPrefService();
+    ns_smartptr<nsIPrefBranch> prefs = nsGetPrefBranch();
     if (prefs.empty())
         return;
 
@@ -98,7 +96,7 @@ void wxWebPreferences::SetStringPref(const wxString& name, const wxString& value
 
 void wxWebPreferences::SetBoolPref(const wxString& name, bool value)
 {
-    ns_smartptr<nsIPref> prefs = nsGetPrefService();
+    ns_smartptr<nsIPrefBranch> prefs = nsGetPrefBranch();
     if (prefs.empty())
         return;
 

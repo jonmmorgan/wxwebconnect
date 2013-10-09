@@ -1,13 +1,12 @@
-///////////////////////////////////////////////////////////////////////////////
-// Name:        nsbase.h
-// Purpose:     wxwebconnect: embedded web browser control library
-// Author:      Benjamin I. Williams
-// Modified by:
-// Created:     2006-10-10
-// RCS-ID:      
-// Copyright:   (C) Copyright 2006-2010, Kirix Corporation, All Rights Reserved.
-// Licence:     wxWindows Library Licence, Version 3.1
-///////////////////////////////////////////////////////////////////////////////
+/*!
+ *
+ * Copyright (c) 2006-2013, Kirix Research, LLC.  All rights reserved.
+ *
+ * Project:  wxWebConnect Embedded Web Browser Control Library
+ * Author:   Benjamin I. Williams
+ * Created:  2006-10-10
+ *
+ */
 
 
 #ifndef __WXWEBCONNECT_NSBASE_H
@@ -17,7 +16,6 @@
 #ifdef WIN32
 #define XP_WIN
 #endif
-
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -117,12 +115,24 @@ PRUint32 NS_CStringGetData(const nsACString& str, const char** str_data, PRBool*
     #define NS_IMETHODIMP nsresult __stdcall
     #define NS_IMETHODIMP_(retval) retval __stdcall
     #define NS_CALLBACK(func) nsresult __stdcall func
+    
+    #if _MSC_VER >= 1100
+    #define NS_NO_VTABLE __declspec(novtable)
+    #else 
+    #define NS_NO_VTABLE
+    #endif
+    
+    #define NS_SCRIPTABLE
+    #define NS_OUTPARAM
 #else
     #define NS_IMETHOD virtual nsresult
     #define NS_IMETHOD_(retval) virtual retval
     #define NS_IMETHODIMP nsresult
     #define NS_IMETHODIMP_(retval) retval
     #define NS_CALLBACK(func) nsresult func
+    #define NS_NO_VTABLE
+    #define NS_SCRIPTABLE
+    #define NS_OUTPARAM
 #endif
 
 

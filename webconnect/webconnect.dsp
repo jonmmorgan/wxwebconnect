@@ -116,7 +116,7 @@ LIB32=link.exe -lib
 # PROP Target_Dir ""
 LINK32=link.exe
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I "../wxWidgets/include" /I "../wxWidgets/lib/vc_lib/mswu" /I "../supp/gecko-sdk/include" /D "WIN32" /D "NDEBUG" /D "_UNICODE" /D "UNICODE" /D "_LIB" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I "../supp/wxWidgets/include" /I "../supp/wxWidgets/lib/vc_lib/mswu" /I "../supp/gecko-sdk/include" /D "WIN32" /D "NDEBUG" /D "_UNICODE" /D "UNICODE" /D "_LIB" /YX /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -151,10 +151,6 @@ SOURCE=.\promptservice.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\testapp.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\webcontrol.cpp
 # End Source File
 # Begin Source File
@@ -171,15 +167,7 @@ SOURCE=.\webprefs.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=.\dom.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\domprivate.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\nsall.h
 # End Source File
 # Begin Source File
 

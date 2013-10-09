@@ -1,13 +1,12 @@
-///////////////////////////////////////////////////////////////////////////////
-// Name:        nsimpl.cpp
-// Purpose:     wxwebconnect: embedded web browser control library
-// Author:      Benjamin I. Williams
-// Modified by:
-// Created:     2006-10-08
-// RCS-ID:      
-// Copyright:   (C) Copyright 2006-2010, Kirix Corporation, All Rights Reserved.
-// Licence:     wxWindows Library Licence, Version 3.1
-///////////////////////////////////////////////////////////////////////////////
+/*!
+ *
+ * Copyright (c) 2006-2013, Kirix Research, LLC.  All rights reserved.
+ *
+ * Project:  wxWebConnect Embedded Web Browser Control Library
+ * Author:   Benjamin I. Williams
+ * Created:  2006-10-08
+ *
+ */
 
 
 #define _CRT_SECURE_NO_WARNINGS
@@ -24,7 +23,6 @@
 #else
 #include <dlfcn.h>
 #endif
-
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -119,7 +117,7 @@ typedef nsresult (PR_CALLBACK *GetFrozenFunctionsFunc)(XPCOMFunctionTable *func_
 static void GetDependentLibraryList(const char* xpcom_dll_path, wxArrayString& arr)
 {
     // first load dependent libraries
-    wxString fname = wxString::FromAscii(xpcom_dll_path);
+    wxString fname = wxString::From8BitData(xpcom_dll_path);
     wxString xpcom_dir;
     
     // remove a trailing slash, if any
@@ -145,7 +143,7 @@ static void GetDependentLibraryList(const char* xpcom_dll_path, wxArrayString& a
             
             full_path = xpcom_dir;
             full_path += XPCOM_PATH_SEPARATOR;
-            full_path += wxString::FromAscii(buf);
+            full_path += wxString::From8BitData(buf);
             
             // remove trailing \n
             if (full_path.Length() > 1 && full_path.Last() == L'\n')
@@ -399,7 +397,7 @@ PRUint32 NS_CStringGetData(const nsACString& str,
 wxString ns2wx(nsEmbedCString& str)
 {
     wxString res;
-    res = wxString::FromAscii(str.get());
+    res = wxString::From8BitData(str.get());
     return res;
 }
 
@@ -483,22 +481,29 @@ ns_smartptr<nsIWindowWatcher> nsGetWindowWatcherService()
     return result;
 }
 
-ns_smartptr<nsIPref> nsGetPrefService()
+ns_smartptr<nsIPrefBranch> nsGetPrefBranch()
 {
     ns_smartptr<nsIServiceManager> service_mgr;
-    ns_smartptr<nsIPref> result;
+    ns_smartptr<nsIPrefService> pref_service;
+    ns_smartptr<nsIPrefBranch> pref_branch;
     nsresult res;
     
     res = NS_GetServiceManager(&service_mgr.p);
     if (NS_FAILED(res))
-        return result;
+        return pref_service; // null
     
-    nsIID iid = NS_IPREF_IID;
-    service_mgr->GetServiceByContractID("@mozilla.org/preferences;1",
+    nsIID iid = NS_IPREFSERVICE_IID;
+    service_mgr->GetServiceByContractID("@mozilla.org/preferences-service;1",
                                         iid,
-                                        (void**)&result.p);
+                                        (void**)&pref_service.p);
     
-    return result;
+    if (!pref_service)
+        return pref_service; // null
+        
+        
+    pref_service->GetBranch(NULL, &pref_branch.p);
+    
+    return pref_branch;
 }
 
 ns_smartptr<nsIProperties> nsGetDirectoryService()
@@ -619,138 +624,6 @@ ns_smartptr<nsIURI> nsNewURI(const wxString& spec)
     
     return res;
 }
-
-
-
-
-///////////////////////////////////////////////////////////////////////////////
-//  ProgressListenerAdaptor18 class implementation
-///////////////////////////////////////////////////////////////////////////////
-
-
-ProgressListenerAdaptor18::ProgressListenerAdaptor18(wxWebProgressBase* progress)
-{
-    m_progress = progress;
-    
-    if (m_progress)
-        m_progress->OnStart();
-}
-
-ProgressListenerAdaptor18::~ProgressListenerAdaptor18()
-{
-}
-
-NS_IMETHODIMP ProgressListenerAdaptor18::Init(
-                                           nsIURI* source,
-                                           nsIURI* target,
-                                           const nsAString& display_name,
-                                           nsIMIMEInfo* mime_info,
-                                           PRTime start_time,
-                                           nsILocalFile* temp_file,
-                                           nsICancelable* cancelable)
-{
-    return NS_OK;
-}
-
-NS_IMETHODIMP ProgressListenerAdaptor18::OnStateChange(
-                         nsIWebProgress* web_progress,
-                         nsIRequest* request,
-                         PRUint32 state_flags,
-                         nsresult status)
-{
-    if (state_flags & nsIWebProgressListener::STATE_STOP)
-    {
-        if (m_progress)
-            m_progress->OnFinish();
-    }
-    
-    return NS_OK;
-}
-
-NS_IMETHODIMP ProgressListenerAdaptor18::OnProgressChange(
-                         nsIWebProgress* web_progress,
-                         nsIRequest* request,
-                         PRInt32 cur_self_progress,
-                         PRInt32 max_self_progress,
-                         PRInt32 cur_total_progress,
-                         PRInt32 max_total_progress)
-{
-    return OnProgressChange64(web_progress,
-                              request,
-                              cur_self_progress,
-                              max_self_progress,
-                              cur_total_progress,
-                              max_total_progress);
-}
-
-NS_IMETHODIMP ProgressListenerAdaptor18::OnProgressChange64(
-                         nsIWebProgress* web_progress,
-                         nsIRequest* request,
-                         PRInt64 cur_self_progress,
-                         PRInt64 max_self_progress,
-                         PRInt64 cur_total_progress,
-                         PRInt64 max_total_progress)
-{
-    if (m_progress)
-    {
-        m_progress->OnProgressChange(wxLongLong(cur_self_progress),
-                                     wxLongLong(max_self_progress));
-                                     
-        if (m_progress->IsCancelled())
-            request->Cancel(0x804b0002 /*NS_BINDING_ABORTED*/);
-    }
-    
-    return NS_OK;
-}
-
-
-NS_IMETHODIMP ProgressListenerAdaptor18::OnLocationChange(
-                     nsIWebProgress* web_progress,
-                     nsIRequest* request,
-                     nsIURI* location)
-{
-   return NS_OK;
-}
-
-NS_IMETHODIMP ProgressListenerAdaptor18::OnStatusChange(
-                     nsIWebProgress* web_progress,
-                     nsIRequest* request,
-                     nsresult status,
-                     const PRUnichar* message)
-{
-    if (NS_FAILED(status))
-    {
-        if (m_progress && !m_progress->IsCancelled())
-            m_progress->OnError(ns2wx(message));
-    }
-    
-    return NS_OK;
-}
-
-
-NS_IMETHODIMP ProgressListenerAdaptor18::OnSecurityChange(
-                     nsIWebProgress* web_progress,
-                     nsIRequest* request,
-                     PRUint32 state)
-{
-   return NS_OK;
-}
-
-             
-NS_IMPL_ADDREF(ProgressListenerAdaptor18)
-NS_IMPL_RELEASE(ProgressListenerAdaptor18)
-
-NS_INTERFACE_MAP_BEGIN(ProgressListenerAdaptor18)
-    NS_INTERFACE_MAP_ENTRY(nsISupports)
-    NS_INTERFACE_MAP_ENTRY(nsITransfer18)
-    NS_INTERFACE_MAP_ENTRY(nsIWebProgressListener2_18)
-    NS_INTERFACE_MAP_ENTRY(nsIWebProgressListener)
-NS_INTERFACE_MAP_END
-
-
-
-
-
 
 
 
@@ -893,16 +766,7 @@ NS_INTERFACE_MAP_END
 
 nsIWebProgressListener* CreateProgressListenerAdaptor(wxWebProgressBase* progress)
 {
-    if (wxWebControl::IsVersion18())
-    {
-        ProgressListenerAdaptor18* p = new ProgressListenerAdaptor18(progress);
-        p->AddRef();
-        return (nsIWebProgressListener*)p;
-    }
-     else
-    {
-        ProgressListenerAdaptor* p = new ProgressListenerAdaptor(progress);
-        p->AddRef();
-        return (nsIWebProgressListener*)p;
-    }
+    ProgressListenerAdaptor* p = new ProgressListenerAdaptor(progress);
+    p->AddRef();
+    return static_cast<nsIWebProgressListener*>(p);
 }

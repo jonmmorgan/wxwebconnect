@@ -1,18 +1,19 @@
-///////////////////////////////////////////////////////////////////////////////
-// Name:        promptservice.cpp
-// Purpose:     wxwebconnect: embedded web browser control library
-// Author:      Benjamin I. Williams
-// Modified by:
-// Created:     2006-10-07
-// RCS-ID:      
-// Copyright:   (C) Copyright 2006-2010, Kirix Corporation, All Rights Reserved.
-// Licence:     wxWindows Library Licence, Version 3.1
-///////////////////////////////////////////////////////////////////////////////
+/*!
+ *
+ * Copyright (c) 2006-2013, Kirix Research, LLC.  All rights reserved.
+ *
+ * Project:  wxWebConnect Embedded Web Browser Control Library
+ * Author:   Benjamin I. Williams
+ * Created:  2006-10-07
+ *
+ */
 
 
-#include <string>
+
 #include <wx/wx.h>
 #include <wx/artprov.h>
+#include <wx/printdlg.h>
+#include <string>
 #include "webcontrol.h"
 #include "nsinclude.h"
 #include "promptservice.h"
@@ -394,9 +395,11 @@ END_EVENT_TABLE()
 ///////////////////////////////////////////////////////////////////////////////
 
 
-class PromptService : public nsIPromptService2,
+class PromptService : public nsIPrompt,
+                      public nsIPromptService2,
                       public nsIBadCertListener,
-                      public nsIBadCertListener2
+                      public nsIBadCertListener2,
+                      public nsIAuthPrompt2
 {
 public:
 
@@ -410,6 +413,55 @@ public:
     NS_DECL_NSIPROMPTSERVICE2
     NS_DECL_NSIBADCERTLISTENER
     NS_DECL_NSIBADCERTLISTENER2
+    NS_DECL_NSIAUTHPROMPT2
+    
+    
+    NS_IMETHOD Alert(const PRUnichar* dialog_title, const PRUnichar *text)
+    {
+        return this->Alert(m_parent, dialog_title, text);
+    }
+
+    NS_IMETHOD AlertCheck(const PRUnichar* dialog_title, const PRUnichar* text, const PRUnichar* check_msg, PRBool* check_state)
+    {
+        return this->AlertCheck(m_parent, dialog_title, text, check_msg, check_state);
+    }
+
+    NS_IMETHOD Confirm(const PRUnichar* dialog_title, const PRUnichar* text, PRBool* _retval)
+    {
+        return this->Confirm(m_parent, dialog_title, text, _retval);
+    }
+
+    NS_IMETHOD ConfirmCheck(const PRUnichar* dialog_title, const PRUnichar* text, const PRUnichar* check_msg, PRBool* check_state, PRBool* _retval)
+    {
+        return this->ConfirmCheck(m_parent, dialog_title, text, check_msg, check_state, _retval);
+    }
+
+    NS_IMETHOD ConfirmEx(const PRUnichar* dialog_title, const PRUnichar* text, PRUint32 button_flags, const PRUnichar* button0_title, const PRUnichar* button1_title, const PRUnichar* button2_title, const PRUnichar* check_msg, PRBool* check_state, PRInt32* _retval)
+    {
+        return this->ConfirmEx(m_parent, dialog_title, text, button_flags, button0_title, button1_title, button2_title, check_msg, check_state, _retval);
+    }
+
+    NS_IMETHOD Prompt(const PRUnichar* dialog_title, const PRUnichar* text, PRUnichar** value, const PRUnichar* check_msg, PRBool* check_state, PRBool* _retval)
+    {
+        return this->Prompt(m_parent, dialog_title, text, value, check_msg, check_state, _retval);
+    }
+
+    NS_IMETHOD PromptPassword(const PRUnichar* dialog_title, const PRUnichar* text, PRUnichar** password, const PRUnichar* check_msg, PRBool* check_state, PRBool* _retval)
+    {
+        return this->PromptPassword(m_parent, dialog_title, text, password, check_msg, check_state, _retval);
+    }
+
+    NS_IMETHOD PromptUsernameAndPassword(const PRUnichar* dialog_title, const PRUnichar* text, PRUnichar** username, PRUnichar** password, const PRUnichar* check_msg, PRBool* check_state, PRBool *_retval)
+    {
+        return this->PromptUsernameAndPassword(m_parent, dialog_title, text, username, password, check_msg, check_state, _retval);
+    }
+
+    NS_IMETHOD Select(const PRUnichar* dialog_title, const PRUnichar* text, PRUint32 count, const PRUnichar** select_list, PRInt32 *out_selection, PRBool *_retval)
+    {
+        return this->Select(m_parent, dialog_title, text, count, select_list, out_selection, _retval);
+    }
+    
+    nsIDOMWindow* m_parent;
 };
 
 
@@ -418,14 +470,18 @@ NS_IMPL_RELEASE(PromptService)
 
 NS_INTERFACE_MAP_BEGIN(PromptService)
     NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIPromptService)
+    NS_INTERFACE_MAP_ENTRY(nsIPrompt)
     NS_INTERFACE_MAP_ENTRY(nsIPromptService)
     NS_INTERFACE_MAP_ENTRY(nsIPromptService2)
     NS_INTERFACE_MAP_ENTRY(nsIBadCertListener)
+    NS_INTERFACE_MAP_ENTRY(nsIBadCertListener2)
+    NS_INTERFACE_MAP_ENTRY(nsIAuthPrompt2)
 NS_INTERFACE_MAP_END
 
 
 PromptService::PromptService()
 {
+    m_parent = NULL;
 }
 
 PromptService::~PromptService()
@@ -446,8 +502,6 @@ NS_IMETHODIMP PromptService::Alert(nsIDOMWindow* parent,
         onBadCertificate(text, parent);
         return NS_OK;
     }
-
-
 
 
     wxMessageBox(text,
@@ -858,17 +912,250 @@ void PromptService::onBadCertificate(const wxString& message, nsIDOMWindow* dom_
 
 
 
+// nsIAuthPrompt2 implementation
+
+NS_IMETHODIMP PromptService::PromptAuth(nsIChannel* channel,
+                                        PRUint32 level,
+                                        nsIAuthInformation* auth_info,
+                                        PRBool* _retval)
+{
+    return this->PromptAuth(m_parent, channel, level, auth_info, NULL, NULL, _retval);
+}
+
+NS_IMETHODIMP PromptService::AsyncPromptAuth(
+                                        nsIChannel* channel,
+                                        nsIAuthPromptCallback* callback,
+                                        nsISupports* context,
+                                        PRUint32 level,
+                                        nsIAuthInformation* auth_info,
+                                        nsICancelable** _retval)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 ///////////////////////////////////////////////////////////////////////////////
-//  PromptServiceFactory class implementation
+//  PromptFactory class implementation
 ///////////////////////////////////////////////////////////////////////////////
 
 
-class PromptServiceFactory : public nsIFactory
+class PromptFactory : public nsIFactory,
+                      public nsIPromptFactory
+{
+public:
+    
+    PromptFactory()
+    {
+        NS_INIT_ISUPPORTS()
+    }
+    
+    virtual ~PromptFactory()
+    {
+    }
+    
+    NS_DECL_ISUPPORTS
+    NS_DECL_NSIFACTORY
+    NS_DECL_NSIPROMPTFACTORY
+};
+
+NS_IMPL_ADDREF(PromptFactory)
+NS_IMPL_RELEASE(PromptFactory)
+
+NS_INTERFACE_MAP_BEGIN(PromptFactory)
+    NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIFactory)
+    NS_INTERFACE_MAP_ENTRY(nsIFactory)
+    NS_INTERFACE_MAP_ENTRY(nsIPromptFactory)
+NS_INTERFACE_MAP_END
+
+
+
+void CreatePromptServiceFactory(nsIFactory** result)
+{
+    PromptFactory* obj = new PromptFactory;
+    obj->AddRef();
+    *result = static_cast<nsIFactory*>(obj);
+}
+
+NS_IMETHODIMP PromptFactory::CreateInstance(nsISupports* outer,
+                                            const nsIID& iid,
+                                            void** result)
+{
+    nsresult res;
+    
+    if (!result)
+        return NS_ERROR_NULL_POINTER;
+        
+    if (outer)
+        return NS_ERROR_NO_AGGREGATION;
+    
+    PromptFactory* obj = new PromptFactory;
+    if (!obj)
+        return NS_ERROR_OUT_OF_MEMORY;
+        
+    obj->AddRef();
+    res = obj->QueryInterface(iid, result);
+    obj->Release();
+    
+    return res;
+}
+
+NS_IMETHODIMP PromptFactory::LockFactory(PRBool lock)
+{
+    return NS_OK;
+}
+
+NS_IMETHODIMP PromptFactory::GetPrompt(nsIDOMWindow *parent,
+                                       const nsIID& iid,
+                                       void** result)
+{
+    nsresult res;
+        
+    PromptService* obj = new PromptService;
+    obj->m_parent = parent;
+    
+    obj->AddRef();
+    res = obj->QueryInterface(iid, result);
+    obj->Release();
+    
+    return res;
+}
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+//  PrintintPromptService class implementation
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+class PrintingPromptService : public nsIPrintingPromptService
 {
 public:
     NS_DECL_ISUPPORTS
+    NS_DECL_NSIPRINTINGPROMPTSERVICE
+
+    PrintingPromptService() { }
+    virtual ~PrintingPromptService() { }
+
+};
+
+NS_IMPL_ISUPPORTS1(PrintingPromptService, nsIPrintingPromptService)
+
+
+NS_IMETHODIMP PrintingPromptService::ShowPrintDialog(nsIDOMWindow *parent,
+                                                     nsIWebBrowserPrint* webBrowserPrint,
+                                                     nsIPrintSettings* settings)
+{
+    static wxPrintDialogData wxdatain;
+
+    wxdatain.EnableSelection(true);
+    wxdatain.EnablePageNumbers(true);
     
-    PromptServiceFactory()
+    wxPrintDialog dlg(GetTopFrameFromDOMWindow(parent), &wxdatain);
+    if (dlg.ShowModal() == wxID_CANCEL)
+        return NS_ERROR_ABORT;
+        
+    wxPrintDialogData& wxdata = dlg.GetPrintDialogData();
+    wxPrintData& wxpdata = wxdata.GetPrintData();
+    
+    // save the info for next time
+    wxdatain = wxdata;
+    wxdatain = wxpdata;
+    
+    settings->SetNumCopies(wxdata.GetNoCopies());
+    settings->SetPrintToFile(wxdata.GetPrintToFile() ? PR_TRUE : PR_FALSE);
+    settings->SetPrinterName(wxToUnichar(wxpdata.GetPrinterName()));
+
+    if (wxpdata.GetOrientation() == wxPORTRAIT)
+        settings->SetOrientation(nsIPrintSettings::kPortraitOrientation);
+    else if (wxpdata.GetOrientation() == wxLANDSCAPE)
+        settings->SetOrientation(nsIPrintSettings::kLandscapeOrientation);
+
+    if (wxdata.GetAllPages())
+    {
+        settings->SetPrintRange(nsIPrintSettings::kRangeAllPages);
+    }
+     else if (wxdata.GetSelection())
+    {
+        settings->SetPrintRange(nsIPrintSettings::kRangeSelection);
+    }
+     else
+    {
+        settings->SetPrintRange(nsIPrintSettings::kRangeSpecifiedPageRange);
+        settings->SetStartPageRange(wxdata.GetFromPage());
+        settings->SetEndPageRange(wxdata.GetToPage());
+    }
+    
+    
+    switch (wxpdata.GetPaperId())
+    {
+        case wxPAPER_LETTER: settings->SetPaperName(wxToUnichar(wxT("Letter"))); break;
+        case wxPAPER_LEGAL: settings->SetPaperName(wxToUnichar(wxT("Legal"))); break;
+        case wxPAPER_EXECUTIVE: settings->SetPaperName(wxToUnichar(wxT("Executive"))); break;
+        case wxPAPER_A3: settings->SetPaperName(wxToUnichar(wxT("A3"))); break;
+        case wxPAPER_A4: settings->SetPaperName(wxToUnichar(wxT("A4"))); break;
+        case wxPAPER_A5: settings->SetPaperName(wxToUnichar(wxT("A5"))); break;
+        default:
+            // don't set paper type
+            break;
+    }
+    
+    
+    return NS_OK;
+}
+
+NS_IMETHODIMP PrintingPromptService::ShowProgress(nsIDOMWindow* parent,
+                                                  nsIWebBrowserPrint* webBrowserPrint,
+                                                  nsIPrintSettings* printSettings,
+                                                  nsIObserver* openDialogObserver,
+                                                  PRBool isForPrinting,
+                                                  nsIWebProgressListener** webProgressListener,
+                                                  nsIPrintProgressParams** printProgressParams,
+                                                  PRBool* notifyOnOpen)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+NS_IMETHODIMP PrintingPromptService::ShowPageSetup(nsIDOMWindow* parent,
+                                                   nsIPrintSettings* printSettings,
+                                                   nsIObserver* aObs)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+NS_IMETHODIMP PrintingPromptService::ShowPrinterProperties(nsIDOMWindow* parent,
+                                                           const PRUnichar* printerName,
+                                                           nsIPrintSettings* printSettings)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+//  PrintingPromptFactory class implementation
+///////////////////////////////////////////////////////////////////////////////
+
+
+class PrintingPromptFactory : public nsIFactory
+{
+public:
+
+    NS_DECL_ISUPPORTS
+    
+    PrintingPromptFactory()
     {
         NS_INIT_ISUPPORTS();
     }
@@ -885,14 +1172,14 @@ public:
         if (outer)
             return NS_ERROR_NO_AGGREGATION;
         
-        PromptService* obj = new PromptService;
+
+        PrintingPromptService* obj = new PrintingPromptService();
         if (!obj)
             return NS_ERROR_OUT_OF_MEMORY;
-            
         obj->AddRef();
         res = obj->QueryInterface(iid, result);
         obj->Release();
-        
+
         return res;
     }
     
@@ -902,116 +1189,18 @@ public:
     }
 };
 
-NS_IMPL_ISUPPORTS1(PromptServiceFactory, nsIFactory);
+NS_IMPL_ISUPPORTS1(PrintingPromptFactory, nsIFactory);
 
 
-void CreatePromptServiceFactory(nsIFactory** result)
+void CreatePrintingPromptFactory(nsIFactory** result)
 {
-    PromptServiceFactory* obj = new PromptServiceFactory;
+    PrintingPromptFactory* obj = new PrintingPromptFactory;
     obj->AddRef();
     *result = obj;
 }
 
 
 
-
-///////////////////////////////////////////////////////////////////////////////
-//  TransferService class implementation
-///////////////////////////////////////////////////////////////////////////////
-
-
-class TransferService18 : public nsITransfer18
-{
-public:
-
-    NS_DECL_ISUPPORTS
-
-    TransferService18()
-    {
-    }
-
-    NS_IMETHODIMP Init(nsIURI* source,
-                       nsIURI* target,
-                       const nsAString& display_name,
-                       nsIMIMEInfo* mime_info,
-                       PRTime start_time,
-                       nsILocalFile* temp_file,
-                       nsICancelable* cancelable)
-    {
-        return NS_OK;
-    }
-
-    NS_IMETHOD OnStateChange(nsIWebProgress* web_progress,
-                             nsIRequest* request,
-                             PRUint32 state_flags,
-                             nsresult status)
-    {
-        return NS_OK;
-    }
-
-    NS_IMETHOD OnProgressChange(nsIWebProgress* web_progress,
-                                nsIRequest* request,
-                                PRInt32 cur_self_progress,
-                                PRInt32 max_self_progress,
-                                PRInt32 cur_total_progress,
-                                PRInt32 max_total_progress)
-    {
-        return OnProgressChange64(web_progress,
-                                  request,
-                                  cur_self_progress,
-                                  max_self_progress,
-                                  cur_total_progress,
-                                  max_total_progress);
-    }
-    
-    NS_IMETHOD OnProgressChange64(
-                                 nsIWebProgress* web_progress,
-                                 nsIRequest* request,
-                                 PRInt64 cur_self_progress,
-                                 PRInt64 max_self_progress,
-                                 PRInt64 cur_total_progress,
-                                 PRInt64 max_total_progress)
-    {
-       return NS_OK;
-    }
-    
-    NS_IMETHOD OnLocationChange(
-                             nsIWebProgress* web_progress,
-                             nsIRequest* request,
-                             nsIURI* location)
-    {
-       return NS_OK;
-    }
-
-    NS_IMETHOD OnStatusChange(
-                             nsIWebProgress* web_progress,
-                             nsIRequest* request,
-                             nsresult status,
-                             const PRUnichar* message)
-    {
-        return NS_OK;
-    }
-
-
-    NS_IMETHOD OnSecurityChange(
-                             nsIWebProgress* web_progress,
-                             nsIRequest* request,
-                             PRUint32 state)
-    {
-       return NS_OK;
-    }
-};
-
-
-NS_IMPL_ADDREF(TransferService18)
-NS_IMPL_RELEASE(TransferService18)
-
-NS_INTERFACE_MAP_BEGIN(TransferService18)
-    NS_INTERFACE_MAP_ENTRY(nsISupports)
-    NS_INTERFACE_MAP_ENTRY(nsITransfer18)
-    NS_INTERFACE_MAP_ENTRY(nsIWebProgressListener2_18)
-    NS_INTERFACE_MAP_ENTRY(nsIWebProgressListener)
-NS_INTERFACE_MAP_END
 
 
 
@@ -1152,26 +1341,14 @@ public:
         if (outer)
             return NS_ERROR_NO_AGGREGATION;
         
-        if (wxWebControl::IsVersion18())
-        {
-            TransferService18* obj = new TransferService18();
-            if (!obj)
-                return NS_ERROR_OUT_OF_MEMORY;
-            obj->AddRef();
-            res = obj->QueryInterface(iid, result);
-            obj->Release();
-        }
-         else
-        {
-            TransferService* obj = new TransferService();
-            if (!obj)
-                return NS_ERROR_OUT_OF_MEMORY;
-            obj->AddRef();
-            res = obj->QueryInterface(iid, result);
-            obj->Release();
-        }
-        
-        
+
+        TransferService* obj = new TransferService();
+        if (!obj)
+            return NS_ERROR_OUT_OF_MEMORY;
+        obj->AddRef();
+        res = obj->QueryInterface(iid, result);
+        obj->Release();
+
         return res;
     }
     
@@ -1199,8 +1376,7 @@ void CreateTransferFactory(nsIFactory** result)
 ///////////////////////////////////////////////////////////////////////////////
 
 
-class UnknownContentTypeHandler : public nsIHelperAppLauncherDialog,
-                                  public nsIHelperAppLauncherDialog18
+class UnknownContentTypeHandler : public nsIHelperAppLauncherDialog
 {
 public:
 
@@ -1247,12 +1423,7 @@ public:
         launcher->GetMIMEInfo((nsIMIMEInfo**)&mime_info_supports.p);
         wxString mime_type;
         
-        ns_smartptr<nsIMIMEInfo18> mime_info18 = mime_info_supports;
-        if (mime_info18)
-        {
-            mime_info18->GetMIMEType(ns_mimetype);
-            mime_type = ns2wx(ns_mimetype);
-        }
+
         ns_smartptr<nsIMIMEInfo> mime_info = mime_info_supports;
         if (mime_info)
         {
@@ -1312,10 +1483,7 @@ public:
                 evt.m_download_listener->Init(url, evt.m_download_action_path);
                 nsIWebProgressListener* progress = CreateProgressListenerAdaptor(evt.m_download_listener);
                 
-                if (wxWebControl::IsVersion18())
-                    launcher->SetWebProgressListener((nsIWebProgressListener2*)(nsIWebProgressListener2_18*)progress);
-                     else
-                    launcher->SetWebProgressListener((nsIWebProgressListener2*)progress);
+                launcher->SetWebProgressListener((nsIWebProgressListener2*)progress);
                 
                 progress->Release();
             }
@@ -1344,15 +1512,6 @@ public:
         }
             
         return NS_OK;
-    }
-
-    NS_IMETHOD PromptForSaveToFile(nsIHelperAppLauncher* launcher,
-                                   nsISupports* window_context,
-                                   const PRUnichar* default_file,
-                                   const PRUnichar* suggested_file_extension,
-                                   nsILocalFile** new_file)
-    {
-        return PromptForSaveToFile(launcher, window_context, default_file, suggested_file_extension, false, new_file);
     }
     
     NS_IMETHOD PromptForSaveToFile(nsIHelperAppLauncher* launcher,
@@ -1399,7 +1558,6 @@ NS_IMPL_RELEASE(UnknownContentTypeHandler)
 NS_INTERFACE_MAP_BEGIN(UnknownContentTypeHandler)
     NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIHelperAppLauncherDialog)
     NS_INTERFACE_MAP_ENTRY(nsIHelperAppLauncherDialog)
-    NS_INTERFACE_MAP_ENTRY(nsIHelperAppLauncherDialog18)
 NS_INTERFACE_MAP_END
 
 

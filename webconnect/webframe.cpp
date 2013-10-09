@@ -1,19 +1,17 @@
-///////////////////////////////////////////////////////////////////////////////
-// Name:        webframe.cpp
-// Purpose:     wxwebconnect: embedded web browser control library
-// Author:      Benjamin I. Williams
-// Modified by:
-// Created:     2007-04-23
-// RCS-ID:      
-// Copyright:   (C) Copyright 2006-2010, Kirix Corporation, All Rights Reserved.
-// Licence:     wxWindows Library Licence, Version 3.1
-///////////////////////////////////////////////////////////////////////////////
+/*!
+ *
+ * Copyright (c) 2007-2013, Kirix Research, LLC.  All rights reserved.
+ *
+ * Project:  wxWebConnect Embedded Web Browser Control Library
+ * Author:   Benjamin I. Williams
+ * Created:  2007-04-23
+ *
+ */
 
 
 #include <wx/wx.h>
 #include "webframe.h"
 #include "webcontrol.h"
-
 
 
 ///////////////////////////////////////////////////////////////////////////////

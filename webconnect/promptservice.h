@@ -1,13 +1,12 @@
-///////////////////////////////////////////////////////////////////////////////
-// Name:        promptservice.h
-// Purpose:     wxwebconnect: embedded web browser control library
-// Author:      Benjamin I. Williams
-// Modified by:
-// Created:     2006-10-07
-// RCS-ID:      
-// Copyright:   (C) Copyright 2006-2010, Kirix Corporation, All Rights Reserved.
-// Licence:     wxWindows Library Licence, Version 3.1
-///////////////////////////////////////////////////////////////////////////////
+/*!
+ *
+ * Copyright (c) 2006-2013, Kirix Research, LLC.  All rights reserved.
+ *
+ * Project:  wxWebConnect Embedded Web Browser Control Library
+ * Author:   Benjamin I. Williams
+ * Created:  2006-10-07
+ *
+ */
 
 
 #ifndef __WXWEBCONNECT_PROMPTSERVICE_H
@@ -32,7 +31,11 @@
 #define NS_CERTOVERRIDE_CID \
  {0x67ba681d, 0x5485, 0x4fff, {0x95, 0x2c, 0x2e, 0xe3, 0x37, 0xff, 0xdc, 0xd6}}
 
+#define NS_PRINTINGPROMPTSERVICE_CID \
+ {0xe042570b, 0x62da, 0x4bb3, { 0xa2, 0xff, 0x71, 0x3e, 0x3c, 0x7, 0xb4, 0xde}}
+
 void CreatePromptServiceFactory(nsIFactory** result);
+void CreatePrintingPromptFactory(nsIFactory** result);
 void CreateTransferFactory(nsIFactory** result);
 void CreateUnknownContentTypeHandlerFactory(nsIFactory** result);
 void CreateCertOverrideFactory(nsIFactory** result);

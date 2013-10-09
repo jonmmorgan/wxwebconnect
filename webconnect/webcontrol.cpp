@@ -1,13 +1,12 @@
-///////////////////////////////////////////////////////////////////////////////
-// Name:        webcontrol.cpp
-// Purpose:     wxwebconnect: embedded web browser control library
-// Author:      Benjamin I. Williams
-// Modified by:
-// Created:     2006-09-22
-// RCS-ID:      
-// Copyright:   (C) Copyright 2006-2010, Kirix Corporation, All Rights Reserved.
-// Licence:     wxWindows Library Licence, Version 3.1
-///////////////////////////////////////////////////////////////////////////////
+/*!
+ *
+ * Copyright (c) 2006-2013, Kirix Research, LLC.  All rights reserved.
+ *
+ * Project:  wxWebConnect Embedded Web Browser Control Library
+ * Author:   Benjamin I. Williams
+ * Created:  2006-09-22
+ *
+ */
 
 
 #define _CRT_SECURE_NO_WARNINGS
@@ -27,7 +26,6 @@
 
 // global preference for whether or not to show certificate errors
 bool g_ignore_ssl_cert_errors = false;
-
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -256,33 +254,39 @@ void BrowserChrome::ChromeInit()
     res = m_wnd->m_ptrs->m_event_target->AddEventListener(
                                             NS_LITERAL_STRING("mousedown"),
                                             this,
-                                            PR_TRUE);
+                                            PR_TRUE,
+                                            PR_FALSE, 2);
 
     res = m_wnd->m_ptrs->m_event_target->AddEventListener(
                                             NS_LITERAL_STRING("mouseup"),
                                             this,
-                                            PR_TRUE);
+                                            PR_TRUE,
+                                            PR_FALSE, 2);
                                                    
     res = m_wnd->m_ptrs->m_event_target->AddEventListener(
                                             NS_LITERAL_STRING("dblclick"),
                                             this,
-                                            PR_TRUE);
+                                            PR_TRUE,
+                                            PR_FALSE, 2);
 
     res = m_wnd->m_ptrs->m_event_target->AddEventListener(
                                             NS_LITERAL_STRING("dragdrop"),
                                             this,
-                                            PR_FALSE);
+                                            PR_FALSE,
+                                            PR_FALSE, 2);
                                  
     // these two event types are used to capture favicon information
     res = m_wnd->m_ptrs->m_event_target->AddEventListener(
                                             NS_LITERAL_STRING("DOMLinkAdded"),
                                             this,
-                                            PR_FALSE);
+                                            PR_FALSE,
+                                            PR_FALSE, 2);
                                             
     res = m_wnd->m_ptrs->m_event_target->AddEventListener(
                                             NS_LITERAL_STRING("DOMContentLoaded"),
                                             this,
-                                            PR_FALSE);
+                                            PR_FALSE,
+                                            PR_FALSE, 2);
 }
 
 void BrowserChrome::ChromeUninit()
@@ -1006,7 +1010,7 @@ public:
                                    char** desired_content_type,
                                    PRBool* retval)
     {
-        wxString content_type = wxString::FromAscii(_content_type);
+        wxString content_type = wxString::From8BitData(_content_type);
         content_type.MakeLower();
         
         *retval = m_handler->CanHandleContent(m_current_uri, content_type) ? PR_TRUE : PR_FALSE;
@@ -1202,7 +1206,7 @@ public:
             return NS_OK;
         }
 
-        wxString content_type = wxString::FromAscii(_content_type);
+        wxString content_type = wxString::From8BitData(_content_type);
         content_type.MakeLower();
         
         // this event will decide if the _browser_ should handle the content
@@ -1696,28 +1700,48 @@ bool GeckoEngine::Init()
 
     // set up our own custom prompting service
     
+    ns_smartptr<nsIFactory> factory;
     ns_smartptr<nsIComponentRegistrar> comp_reg;
     res = NS_GetComponentRegistrar(&comp_reg.p);
     if (NS_FAILED(res))
         return false;
     
-    ns_smartptr<nsIFactory> prompt_factory;
-    CreatePromptServiceFactory(&prompt_factory.p);
+    
+    // create prompt service factory and register it
+    factory.clear();
+    CreatePromptServiceFactory(&factory.p);
 
     nsCID prompt_cid = NS_PROMPTSERVICE_CID;
     res = comp_reg->RegisterFactory(prompt_cid,
                                     "Prompt Service",
-                                    "@mozilla.org/embedcomp/prompt-service;1",
-                                    prompt_factory);
+                                    //"@mozilla.org/embedcomp/prompt-service;1",
+                                    "@mozilla.org/prompter;1",
+                                    //"@mozilla.org/passwordmanager/authpromptfactory;1",
+                                    factory);
 
-    prompt_factory.clear();
-    CreatePromptServiceFactory(&prompt_factory.p);
+    // create bad certificate listener service factory and register it
+    factory.clear();
+    CreatePromptServiceFactory(&factory.p);
     
     nsCID nssdialogs_cid = NS_NSSDIALOGS_CID;
     res = comp_reg->RegisterFactory(nssdialogs_cid,
                                     "PSM Dialog Impl",
                                     "@mozilla.org/nsBadCertListener;1",
-                                    prompt_factory);
+                                    factory);
+
+    // create a printing prompt service factory and register it
+    factory.clear();
+    CreatePrintingPromptFactory(&factory.p);
+    
+    nsCID printingpromptservice_cid = NS_PRINTINGPROMPTSERVICE_CID;
+    res = comp_reg->RegisterFactory(printingpromptservice_cid,
+                                    "PSM Dialog Impl",
+                                    "@mozilla.org/embedcomp/printingprompt-service;1",
+                                    factory);
+    factory.clear();
+
+
+
 
     // set up our own download progress service
     
@@ -1802,8 +1826,8 @@ bool GeckoEngine::Init()
     
 
     // set up preferences
-    
-    ns_smartptr<nsIPref> prefs = nsGetPrefService();
+
+    ns_smartptr<nsIPrefBranch> prefs = nsGetPrefBranch();
     if (!prefs)
         return false;
     
@@ -1815,9 +1839,8 @@ bool GeckoEngine::Init()
     prefs->SetIntPref("browser.history_expire_days", 0);
     
     // set path for our cache directory
-    PRUnichar* temps = wxToUnichar(m_storage_path);
-    prefs->SetUnicharPref("browser.cache.disk.parent_directory", temps);
-    freeUnichar(temps);
+    prefs->SetCharPref("browser.cache.disk.parent_directory", m_storage_path.mbc_str());
+
 
 
     m_ok = true;
@@ -1961,6 +1984,11 @@ bool wxWebControl::InitEngine(const wxString& path)
     return g_gecko_engine.Init();
 }
 
+bool wxWebControl::IsEngineOk()
+{
+    return g_gecko_engine.IsOk();
+}
+
 wxWebPreferences wxWebControl::GetPreferences()
 {
     wxWebPreferences p;
@@ -2009,10 +2037,7 @@ public:
     {
         if (m_progress)
         {
-            if (wxWebControl::IsVersion18())
-                ((ProgressListenerAdaptor18*)m_progress)->ClearProgressReference();
-                 else
-                ((ProgressListenerAdaptor*)m_progress)->ClearProgressReference();
+            ((ProgressListenerAdaptor*)m_progress)->ClearProgressReference();
             
             m_progress->Release();
         }
@@ -2091,6 +2116,7 @@ BEGIN_EVENT_TABLE(wxWebControl, wxControl)
     EVT_KILL_FOCUS(wxWebControl::OnKillFocus)
 END_EVENT_TABLE()
 
+
 // (CONSTRUCTOR) wxWebControl::wxWebControl
 // Description: Creates a new wxWebControl object.
 //
@@ -2105,16 +2131,16 @@ wxWebControl::wxWebControl(wxWindow* parent,
                            wxWindowID id,
                            const wxPoint& pos,
                            const wxSize& size)
-                           : wxControl(parent, id, pos, size, wxNO_BORDER)
+                           : wxControl(parent, id, pos, size,  wxNO_BORDER)
 {
     // set return value for IsOk() to false until initialization can be
     // verified as successful (end of the constructor)
     m_ok = false;
     m_content_loaded = true;
 
-
     m_favicon_progress = NULL;
-
+    m_main_uri_listener = NULL;
+    
     m_ptrs = new EmbeddingPtrs;
     
     // create browser chrome
@@ -2163,14 +2189,8 @@ wxWebControl::wxWebControl(wxWindow* parent,
     }
      else
     {
-        // 1.8.x support
-        ns_smartptr<ns18IDocShellTreeItem> dsti = m_ptrs->m_web_browser;
-        if (dsti.empty())
-        {
-            wxASSERT(0);
-            return;
-        }
-        dsti->SetItemType(nsIDocShellTreeItem::typeContentWrapper);
+        wxASSERT(0);
+        return;
     }
     
     // get base window interface and set its native window
@@ -2223,31 +2243,11 @@ wxWebControl::wxWebControl(wxWindow* parent,
     }
     
     
-    ns_smartptr<nsIDOMWindow2> dom_window2(dom_window);
-    if (dom_window2)
+    res = dom_window->GetWindowRoot(&m_ptrs->m_event_target.p);
+    if (NS_FAILED(res))
     {
-        res = dom_window2->GetWindowRoot(&m_ptrs->m_event_target.p);
-        if (NS_FAILED(res))
-        {
-            wxASSERT(0);
-            return;
-        }
-    }
-     else
-    {
-        // 1.8.x support
-        ns_smartptr<ns18IDOMWindow2> dom_window2(dom_window);
-        if (!dom_window2)
-        {
-            wxASSERT(0);
-            return;
-        }
-        res = dom_window2->GetWindowRoot(&m_ptrs->m_event_target.p);
-        if (NS_FAILED(res))
-        {
-            wxASSERT(0);
-            return;
-        }
+        wxASSERT(0);
+        return;
     }
 
 
@@ -2300,9 +2300,12 @@ wxWebControl::wxWebControl(wxWindow* parent,
 
 wxWebControl::~wxWebControl()
 {
-    m_main_uri_listener->m_wnd = NULL;
-    m_main_uri_listener->Release();
-
+    if (m_main_uri_listener)
+    {
+        m_main_uri_listener->m_wnd = NULL;
+        m_main_uri_listener->Release();
+    }
+    
     if (m_ok)
     {
         // destroy web browser
@@ -2417,16 +2420,7 @@ bool wxWebControl::AddContentHandler(wxWebContentHandler* handler,
     }
      else
     {
-        ns_smartptr<ns18IURILoader> uri_loader18 = uri_loader;
-        if (uri_loader18.empty())
-            return false;
-    
-        ContentListener* l = new ContentListener(handler);
-        l->AddRef(); // will be released later
-        res = uri_loader18->RegisterContentListener(static_cast<nsIURIContentListener*>(l));
-        if (NS_FAILED(res))
-            return false;
-        g_gecko_engine.AddContentListener(l);
+        return false;
     }
     
     return true;
@@ -2622,7 +2616,7 @@ bool wxWebControl::SaveRequestToString(const wxString& uri_str,
                 break;
             buf[r] = 0;
             
-            res += wxString::FromAscii(buf);
+            res += wxString::From8BitData(buf);
             
             if (r != 1024)
                 break;
@@ -3019,24 +3013,14 @@ void wxWebControl::Print(bool silent)
     
     InitPrintSettings();
     
-    ns_smartptr<nsIPrintSettings18> settings18 = m_ptrs->m_print_settings;
-    if (settings18)
-    {
-        settings18->SetShowPrintProgress(PR_FALSE);
-        settings18->SetPrintSilent(silent ? PR_TRUE : PR_FALSE);
-        
-        ns_smartptr<nsIWebBrowserPrint18> web_browser_print = nsRequestInterface(m_ptrs->m_web_browser);
-        web_browser_print->Print(settings18.p, NULL);
-    }
 
-    ns_smartptr<nsIPrintSettings> settings19 = m_ptrs->m_print_settings;
-    if (settings19)
-    {
-        settings19->SetShowPrintProgress(PR_FALSE);
-        settings19->SetPrintSilent(silent ? PR_TRUE : PR_FALSE);
-        web_browser_print->Print(settings19, NULL);
+    ns_smartptr<nsIPrintSettings> settings = m_ptrs->m_print_settings;
+    if (settings)
+    {        
+        settings->SetShowPrintProgress(PR_TRUE);
+        settings->SetPrintSilent(silent ? PR_TRUE : PR_FALSE);
+        web_browser_print->Print(settings, NULL);        
     }
-    
 }
 
 // (METHOD) wxWebControl::SetPageSettings
@@ -3066,51 +3050,27 @@ void wxWebControl::SetPageSettings(double page_width, double page_height,
     InitPrintSettings();
     
     
-    ns_smartptr<nsIPrintSettings18> settings18 = m_ptrs->m_print_settings;
-    if (settings18)
+    ns_smartptr<nsIPrintSettings> settings = m_ptrs->m_print_settings;
+    if (settings)
     {
         // if the page width is greater than the page height,
         // set the proper orientation
-        settings18->SetOrientation(settings18->kPortraitOrientation);
+        settings->SetOrientation(settings->kPortraitOrientation);
         if (page_width > page_height)
         {
             double t = page_width;
             page_width = page_height;
             page_height = t;
 
-            settings18->SetOrientation(settings18->kLandscapeOrientation);
+            settings->SetOrientation(settings->kLandscapeOrientation);
         }
 
-        settings18->SetPaperWidth(page_width);
-        settings18->SetPaperHeight(page_height);
-        settings18->SetMarginLeft(left_margin);
-        settings18->SetMarginRight(right_margin);
-        settings18->SetMarginTop(top_margin);
-        settings18->SetMarginBottom(bottom_margin);
-    }
-    
-    
-    ns_smartptr<nsIPrintSettings> settings19 = m_ptrs->m_print_settings;
-    if (settings19)
-    {
-        // if the page width is greater than the page height,
-        // set the proper orientation
-        settings19->SetOrientation(settings19->kPortraitOrientation);
-        if (page_width > page_height)
-        {
-            double t = page_width;
-            page_width = page_height;
-            page_height = t;
-
-            settings19->SetOrientation(settings19->kLandscapeOrientation);
-        }
-
-        settings19->SetPaperWidth(page_width);
-        settings19->SetPaperHeight(page_height);
-        settings19->SetMarginLeft(left_margin);
-        settings19->SetMarginRight(right_margin);
-        settings19->SetMarginTop(top_margin);
-        settings19->SetMarginBottom(bottom_margin);
+        settings->SetPaperWidth(page_width);
+        settings->SetPaperHeight(page_height);
+        settings->SetMarginLeft(left_margin);
+        settings->SetMarginRight(right_margin);
+        settings->SetMarginTop(top_margin);
+        settings->SetMarginBottom(bottom_margin);
     }
 }
 
@@ -3141,43 +3101,21 @@ void wxWebControl::GetPageSettings(double* page_width, double* page_height,
     InitPrintSettings();
 
 
-    ns_smartptr<nsIPrintSettings18> settings18 = m_ptrs->m_print_settings;
-    if (settings18)
+    ns_smartptr<nsIPrintSettings> settings = m_ptrs->m_print_settings;
+    if (settings)
     {
-        settings18->GetPaperWidth(page_width);
-        settings18->GetPaperHeight(page_height);
-        settings18->GetMarginLeft(left_margin);
-        settings18->GetMarginRight(right_margin);
-        settings18->GetMarginTop(top_margin);
-        settings18->GetMarginBottom(bottom_margin);
+        settings->GetPaperWidth(page_width);
+        settings->GetPaperHeight(page_height);
+        settings->GetMarginLeft(left_margin);
+        settings->GetMarginRight(right_margin);
+        settings->GetMarginTop(top_margin);
+        settings->GetMarginBottom(bottom_margin);
         
         // if the orientation is set, reverse the page width
         // and page height
         PRInt32 orientation;
-        settings18->GetOrientation(&orientation);
-        if (orientation == settings18->kLandscapeOrientation)
-        {
-            double t = *page_width;
-            *page_width = *page_height;
-            *page_height = t;
-        }
-    }
-    
-    ns_smartptr<nsIPrintSettings> settings19 = m_ptrs->m_print_settings;
-    if (settings19)
-    {
-        settings19->GetPaperWidth(page_width);
-        settings19->GetPaperHeight(page_height);
-        settings19->GetMarginLeft(left_margin);
-        settings19->GetMarginRight(right_margin);
-        settings19->GetMarginTop(top_margin);
-        settings19->GetMarginBottom(bottom_margin);
-        
-        // if the orientation is set, reverse the page width
-        // and page height
-        PRInt32 orientation;
-        settings19->GetOrientation(&orientation);
-        if (orientation == settings19->kLandscapeOrientation)
+        settings->GetOrientation(&orientation);
+        if (orientation == settings->kLandscapeOrientation)
         {
             double t = *page_width;
             *page_width = *page_height;
@@ -3598,21 +3536,54 @@ void wxWebControl::OnKillFocus(wxFocusEvent& evt)
 {
 }
 
+
+
+// on wxGTK 2.9 and above, if we call nsIBaseWindow::SetPositionAndSize()
+// directly from the wxWebControl handler, the window will blank out.  To
+// make it work we have to defer handling the size event until OnSize()
+// execution is complete.  On MSW, this is not necessary.
+
+class WebControlRefreshTimer : public wxTimer
+{
+public:
+
+    wxWebControl* m_ctrl;
+
+    void Notify()
+    {
+        wxRect cli_rect = m_ctrl->GetClientRect();
+
+        if (m_ctrl->m_ptrs->m_base_window)
+        {
+            m_ctrl->m_ptrs->m_base_window->SetPositionAndSize(0, 0,
+                                        cli_rect.GetWidth(),
+                                        cli_rect.GetHeight(),
+                                        PR_TRUE);
+        }
+
+        wxPendingDelete.Append(this);
+    }
+};
+
+
+
 void wxWebControl::OnSize(wxSizeEvent& evt)
 {
     if (!IsOk())
         return;
 
-    wxRect cli_rect = this->GetClientRect();
+    WebControlRefreshTimer* t = new WebControlRefreshTimer;
+    t->m_ctrl = this;
 
-    if (m_ptrs->m_base_window)
-    {
-        m_ptrs->m_base_window->SetPositionAndSize(0, 0,
-                                    cli_rect.GetWidth(),
-                                    cli_rect.GetHeight(),
-                                    PR_TRUE);
-    }
+#ifdef __WXGTK__
+    t->Start(1,true);
+#else
+    t->Notify();
+#endif
+
 }
+
+
 
 
 
