@@ -21,6 +21,7 @@
 #include "webframe.h"
 #include "webcontrol.h"
 #include "nsinclude.h"
+#include "xh_webcontrol.h"
 #include "domprivate.h"
 #include "promptservice.h"
 
@@ -2162,6 +2163,12 @@ bool wxWebControl::InitEngine(const wxString& path)
     return g_gecko_engine.Init();
 }
 
+void wxWebControl::InstallXRCHandler(wxXmlResource *xml)
+{
+    if (!xml) xml = wxXmlResource::Get();
+    xml->AddHandler(new wxWebControlXmlHandler);
+}
+
 bool wxWebControl::IsEngineOk()
 {
     return g_gecko_engine.IsOk();
@@ -2298,22 +2305,22 @@ END_EVENT_TABLE()
 // (CONSTRUCTOR) wxWebControl::wxWebControl
 // Description: Creates a new wxWebControl object.
 //
-// Syntax: wxWebControl::wxWebControl(wxWindow* parent,
+// Syntax: wxWebControl::Create(wxWindow* parent,
 //                                    wxWindowID id,
 //                                    const wxPoint& pos,
 //                                    const wxSize& size)
 //
 // Remarks: Creates a new wxWebControl object.
 
-wxWebControl::wxWebControl(wxWindow* parent,
+bool wxWebControl::Create(wxWindow* parent,
                            wxWindowID id,
                            const wxPoint& pos,
                            const wxSize& size)
-                           : wxControl(parent, id, pos, size,  wxNO_BORDER)
 {
     // set return value for IsOk() to false until initialization can be
     // verified as successful (end of the constructor)
     m_ok = false;
+    wxControl::Create(parent, id, pos, size, wxNO_BORDER);
     m_content_loaded = true;
 
     m_favicon_progress = NULL;
@@ -2333,7 +2340,7 @@ wxWebControl::wxWebControl(wxWindow* parent,
         {
             m_chrome->Release();
             m_chrome = NULL;
-            return;
+            return false;
         }
     }
 
@@ -2344,7 +2351,7 @@ wxWebControl::wxWebControl(wxWindow* parent,
     if (!m_ptrs->m_web_browser)
     {
         wxASSERT(0);
-        return;
+        return false;
     }
 
     chrome->m_web_browser = m_ptrs->m_web_browser;
@@ -2353,7 +2360,7 @@ wxWebControl::wxWebControl(wxWindow* parent,
     if (!m_ptrs->m_base_window)
     {
         wxASSERT(0);
-        return;
+        return false;
     }
 
     // create browser chrome
@@ -2368,7 +2375,7 @@ wxWebControl::wxWebControl(wxWindow* parent,
      else
     {
         wxASSERT(0);
-        return;
+        return false;
     }
     
     // get base window interface and set its native window
@@ -2386,14 +2393,14 @@ wxWebControl::wxWebControl(wxWindow* parent,
     if (NS_FAILED(res))
     {
         wxASSERT(0);
-        return;
+        return false;
     }
       
     res = m_ptrs->m_base_window->Create();
     if (NS_FAILED(res))
     {
         wxASSERT(0);
-        return;
+        return false;
     }
     
     // set our web progress listener
@@ -2417,7 +2424,7 @@ wxWebControl::wxWebControl(wxWindow* parent,
     if (!dom_window)
     {
         wxASSERT(0);
-        return;
+        return false;
     }
     
     
@@ -2425,7 +2432,7 @@ wxWebControl::wxWebControl(wxWindow* parent,
     if (NS_FAILED(res))
     {
         wxASSERT(0);
-        return;
+        return false;
     }
 
 
@@ -2438,7 +2445,7 @@ wxWebControl::wxWebControl(wxWindow* parent,
     if (!m_ptrs->m_clipboard_commands)
     {
         wxASSERT(0);
-        return;
+        return false;
     }
     
     // get the nsIWebBrowserFind interface
@@ -2446,7 +2453,7 @@ wxWebControl::wxWebControl(wxWindow* parent,
     if (!m_ptrs->m_web_browser_find)
     {
         wxASSERT(0);
-        return;
+        return false;
     }
     
     // get the nsIWebNavigation interface
@@ -2454,7 +2461,7 @@ wxWebControl::wxWebControl(wxWindow* parent,
     if (!m_ptrs->m_web_navigation)
     {
         wxASSERT(0);
-        return;
+        return false;
     }
     
     m_favicon_progress = new wxWebFavIconProgress(this);
@@ -2474,26 +2481,29 @@ wxWebControl::wxWebControl(wxWindow* parent,
     
     // show the browser component
     res = m_ptrs->m_base_window->SetVisibility(PR_TRUE);
+    return true;
 }
 
 wxWebControl::~wxWebControl()
 {
+    if (!m_ok)
+    {
+        return;
+    }
+
     if (m_main_uri_listener)
     {
         m_main_uri_listener->m_wnd = NULL;
         m_main_uri_listener->Release();
     }
     
-    if (m_ok)
-    {
-        // destroy web browser
-        m_ptrs->m_base_window->Destroy();
-        m_ptrs->m_base_window.clear();
+    // destroy web browser
+    m_ptrs->m_base_window->Destroy();
+    m_ptrs->m_base_window.clear();
     
-        // release chrome
-        m_chrome->ChromeUninit();
-        m_chrome->Release();
-    }
+    // release chrome
+    m_chrome->ChromeUninit();
+    m_chrome->Release();
 
 
     // delete any web content handlers that we 'own'
