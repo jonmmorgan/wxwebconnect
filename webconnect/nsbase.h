@@ -108,9 +108,10 @@ PRUint32 NS_CStringGetData(const nsACString& str, const char** str_data, PRBool*
 
 typedef JSString *(*JS_ValueToStringFunc)(JSContext *context, jsval val);
 extern JS_ValueToStringFunc JS_ValueToStringImpl;
-typedef char *(*JS_GetStringBytesFunc)(JSString *str);
-extern JS_GetStringBytesFunc JS_GetStringBytesImpl;
-
+typedef char *(*JS_EncodeStringFunc)(JSContext *cx, JSString *str);
+extern JS_EncodeStringFunc JS_EncodeStringImpl;
+typedef void (*JS_freeFunc)(JSContext *cx, void *p);
+extern JS_freeFunc JS_freeImpl;
 
 ///////////////////////////////////////////////////////////////////////////////
 //  macros and interface implementations

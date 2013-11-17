@@ -4429,20 +4429,19 @@ bool wxWebControl::ExecuteJSCode(const wxString& js_code, wxString &result)
     ns_smartptr<nsIScriptGlobalObject> sgo = nsRequestInterface(m_ptrs->m_web_browser);
     if (sgo.empty())
         return false;
-    ns_smartptr<nsIScriptContext> ctx = sgo->GetContext();
+    ns_smartptr<nsIScriptContext> ctx = sgo->GetScriptContext(nsIProgrammingLanguage::JAVASCRIPT);
     if (ctx.empty())
         return false;
 
     nsEmbedString str;
     wx2ns(js_code, str);
 
-    JSContext *jscontext = (JSContext*)ctx->GetNativeContext();
-
     jsval out;
     PRBool isUndefined;
     rv = ctx->EvaluateStringWithValue(
         str,
-        sgo->GetGlobalJSObject(),
+        //sgo->GetGlobalJSObject(),
+        (JSObject *)sgo->GetScriptGlobal(nsIProgrammingLanguage::JAVASCRIPT),
         principal,
         "wxWebConnect",
         0,
@@ -4459,10 +4458,13 @@ bool wxWebControl::ExecuteJSCode(const wxString& js_code, wxString &result)
     }
 
     // XXX: Root this variable properly to prevent GC?
+    JSContext *jscontext = ctx->GetNativeContext();
     JSString *jsstring = JS_ValueToStringImpl(jscontext, out);
     if (jsstring)  {
-        wxString _wxString(JS_GetStringBytesImpl(jsstring), wxConvUTF8);
+        char *utf8_str = JS_EncodeStringImpl(jscontext, jsstring);
+        wxString _wxString(utf8_str, wxConvUTF8);
         result = _wxString;
+        JS_freeImpl(jscontext, utf8_str);
     }
 
     return true;

@@ -100,7 +100,8 @@ typedef nsresult (PR_CALLBACK *GetFrozenFunctionsFunc)(XPCOMFunctionTable *func_
 
 
 JS_ValueToStringFunc JS_ValueToStringImpl;
-JS_GetStringBytesFunc JS_GetStringBytesImpl;
+JS_EncodeStringFunc JS_EncodeStringImpl;
+JS_freeFunc JS_freeImpl;
 
 
 #ifdef __WXMSW__
@@ -313,7 +314,8 @@ bool SetupJSFunctions(const char* js_dll_path)
     }
 
     GetFunctionImpl(h, JS_ValueToString);
-    GetFunctionImpl(h, JS_GetStringBytes);
+    GetFunctionImpl(h, JS_EncodeString);
+    GetFunctionImpl(h, JS_free);
 
     return true;
 }
